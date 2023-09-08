@@ -38,9 +38,9 @@ RUN wget ${CANN_URL} && \
     ./Ascend-cann-nnae_7.0.RC1.alpha001_linux-aarch64.run --install && \
     rm -f ./Ascend-cann-nnae_7.0.RC1.alpha001_linux-aarch64.run
 
-# from /usr/local/Ascend/nnae/set_env.sh
-ENV ASCEND_NNAE_HOME=/usr/local/Ascend/nnae/latest \
-    LD_LIBRARY_PATH=${ASCEND_NNAE_HOME}/lib64:${ASCEND_NNAE_HOME}/lib64/plugin/opskernel:${ASCEND_NNAE_HOME}/lib64/plugin/nnengine:$LD_LIBRARY_PATH \
+# Put ASCEND_NNAE_HOME in separate line to make sure ASCEND_NNAE_HOME work in next lines
+ENV ASCEND_NNAE_HOME=/usr/local/Ascend/nnae/latest
+ENV LD_LIBRARY_PATH=${ASCEND_NNAE_HOME}/lib64:${ASCEND_NNAE_HOME}/lib64/plugin/opskernel:${ASCEND_NNAE_HOME}/lib64/plugin/nnengine:$LD_LIBRARY_PATH \
     PYTHONPATH=${ASCEND_NNAE_HOME}/python/site-packages:${ASCEND_NNAE_HOME}/opp/built-in/op_impl/ai_core/tbe:$PYTHONPATH \
     PATH=${ASCEND_NNAE_HOME}/bin:${ASCEND_NNAE_HOME}/compiler/ccec_compiler/bin:$PATH \
     ASCEND_AICPU_PATH=${ASCEND_NNAE_HOME} \
