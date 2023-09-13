@@ -1,4 +1,5 @@
-FROM ascendai/cann:910b-ubuntu2004
+ARG BASE_IMAGE=ascendai/cann:910b-ubuntu2004
+FROM ${BASE_IMAGE}
 
 RUN pip install cmake ninja -i https://repo.huaweicloud.com/repository/pypi/simple
 
@@ -14,10 +15,6 @@ RUN git clone https://github.com/pytorch/pytorch.git && \
     export USE_CUDA=0 && \
     export USE_XNNPACK=0 && \
     python3 setup.py develop
-
-RUN apt update && \
-    apt install patchelf && \
-    rm -rf /var/lib/apt/lists/*
 
 # Replace below commands with `pip install torch_npu` after PyTorch 2.1.0 release.
 RUN git clone https://gitee.com/ascend/pytorch.git ascend-pytorch && \

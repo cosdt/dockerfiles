@@ -1,4 +1,5 @@
-FROM ascendai/pytorch:910b-ubuntu2004
+ARG BASE_IMAGE=ascendai/pytorch:910b-ubuntu2004
+FROM ${BASE_IMAGE}
 
 COPY fastchat_npu.patch ./
 

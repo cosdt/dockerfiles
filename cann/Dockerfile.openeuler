@@ -1,26 +1,24 @@
-FROM ubuntu:20.04
+FROM openeuler/openeuler:22.03-lts-sp2
 
-RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive apt install -y \
+RUN yum install -y \
     git \
     wget \
     gcc \
-    g++ \
+    gcc-c++ \
     make \
-    zlib1g \
-    zlib1g-dev \
-    openssl \
-    libsqlite3-dev \
-    libssl-dev \
-    libffi-dev \
     unzip \
+    zlib-devel \
+    libffi-devel \
+    openssl-devel \
     pciutils \
     net-tools \
-    libblas-dev \
-    gfortran \
-    patchelf \
-    libblas3 && \
-    rm -rf /var/lib/apt/lists/*
+    sqlite-devel \
+    lapack-devel \
+    gcc-gfortran \
+    python3-devel \
+    util-linux \
+    patchelf && \
+    rm -rf /var/cache/yum
 
 # Install Python 3.8.11
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh -O ~/miniconda.sh && \
