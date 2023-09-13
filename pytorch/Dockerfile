@@ -17,7 +17,7 @@ RUN git clone https://github.com/pytorch/pytorch.git && \
     python3 setup.py develop
 
 # Replace below commands with `pip install torch_npu` after PyTorch 2.1.0 release.
-RUN git clone https://gitee.com/ascend/pytorch.git ascend-pytorch && \
+RUN git clone https://github.com/ascend/pytorch.git ascend-pytorch && \
     cd ascend-pytorch && \
     git reset 81ece7b664adc28e698044d0e9091d39a1a6dfa6 --hard && \
     pip install --no-cache-dir pyyaml wheel decorator snippy && \
