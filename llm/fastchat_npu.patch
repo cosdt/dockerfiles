@@ -1,159 +1,39 @@
-From 70a61173eacc40e44c7b0adfba9c4bb2197c3a12 Mon Sep 17 00:00:00 2001
-From: admin <admin@example.com>
-Date: Fri, 8 Sep 2023 08:23:16 +0000
-Subject: [PATCH] Add NPU support
-
----
- fastchat/model/model_adapter.py | 13 +++++++------
- fastchat/serve/inference.py     | 12 +++++++-----
- fastchat/serve/model_worker.py  |  2 ++
- fastchat/train/train_mem.py     | 14 +++++++++-----
- 4 files changed, 25 insertions(+), 16 deletions(-)
-
 diff --git a/fastchat/model/model_adapter.py b/fastchat/model/model_adapter.py
-index afe79a6..55db362 100644
+index d2ac56f..d799cbc 100644
 --- a/fastchat/model/model_adapter.py
 +++ b/fastchat/model/model_adapter.py
-@@ -24,6 +24,7 @@ from transformers import (
-     LlamaForCausalLM,
-     T5Tokenizer,
- )
-+import torch_npu
- 
- from fastchat.constants import CPU_ISA
- from fastchat.modules.gptq import GptqConfig, load_gptq_quantized
-@@ -161,7 +162,6 @@ def load_model(
-     """Load a model from Hugging Face."""
-     # get model adapter
-     adapter = get_model_adapter(model_path)
--
-     # Handle device mapping
-     cpu_offloading = raise_warning_for_incompatible_cpu_offloading_configuration(
-         device, load_8bit, cpu_offloading
-@@ -177,7 +177,7 @@ def load_model(
-                 warnings.warn(
-                     "Intel Extension for PyTorch is not installed, it can be installed to accelerate cpu inference"
-                 )
--    elif device == "cuda":
-+    elif device == "npu":
-         kwargs = {"torch_dtype": torch.float16}
-         if num_gpus != 1:
-             kwargs["device_map"] = "auto"
-@@ -284,7 +284,7 @@ def load_model(
-     ):
-         model = ipex.optimize(model, dtype=kwargs["torch_dtype"])
- 
--    if (device == "cuda" and num_gpus == 1 and not cpu_offloading) or device in (
-+    if (device == "npu" and num_gpus == 1 and not cpu_offloading) or device in (
-         "mps",
-         "xpu",
-     ):
-@@ -325,7 +325,8 @@ def get_generate_stream_function(model: torch.nn.Module, model_path: str):
+@@ -336,7 +336,7 @@ def get_generate_stream_function(model: torch.nn.Module, model_path: str):
          # Return a curried stream function that loads the right adapter
          # according to the model_name available in this context.  This ensures
          # the right weights are available.
 -        @torch.inference_mode()
-+        # @torch.inference_mode()
-+        @ torch.no_grad()
++        @torch.no_grad()
          def generate_stream_peft(
              model,
              tokenizer,
-@@ -368,8 +369,8 @@ def add_model_args(parser):
-     parser.add_argument(
-         "--device",
-         type=str,
--        choices=["cpu", "cuda", "mps", "xpu"],
--        default="cuda",
-+        choices=["cpu", "npu", "mps", "xpu"],
-+        default="npu",
-         help="The device type",
-     )
-     parser.add_argument(
 diff --git a/fastchat/serve/inference.py b/fastchat/serve/inference.py
-index c97fd1c..14a5f60 100644
+index 169f086..daa1e63 100644
 --- a/fastchat/serve/inference.py
 +++ b/fastchat/serve/inference.py
-@@ -56,7 +56,8 @@ def prepare_logits_processor(
+@@ -56,7 +56,7 @@ def prepare_logits_processor(
      return processor_list
  
  
 -@torch.inference_mode()
-+# @torch.inference_mode()
 +@torch.no_grad()
  def generate_stream(
      model,
      tokenizer,
-@@ -108,6 +109,7 @@ def generate_stream(
- 
-     past_key_values = out = None
-     sent_interrupt = False
-+    finish_reason = None
-     for i in range(max_new_tokens):
-         if i == 0:  # prefill
-             if model.config.is_encoder_decoder:
-@@ -168,6 +170,7 @@ def generate_stream(
-             probs = torch.softmax(last_token_logits, dim=-1)
-             indices = torch.multinomial(probs, num_samples=2)
-             tokens = [int(token) for token in indices.tolist()]
-+
-         token = tokens[0]
-         output_ids.append(token)
- 
-@@ -240,12 +243,11 @@ def generate_stream(
-             break
- 
-     # Finish stream event, which contains finish reason
--    if i == max_new_tokens - 1:
-+    else:
-         finish_reason = "length"
--    elif stopped:
-+
-+    if stopped:
-         finish_reason = "stop"
--    else:
--        finish_reason = None
- 
-     yield {
-         "text": output,
 diff --git a/fastchat/serve/model_worker.py b/fastchat/serve/model_worker.py
-index dac3764..4a448eb 100644
+index 54d51cf..646c076 100644
 --- a/fastchat/serve/model_worker.py
 +++ b/fastchat/serve/model_worker.py
-@@ -232,6 +232,8 @@ class ModelWorker(BaseModelWorker):
+@@ -242,6 +242,8 @@ class ModelWorker(BaseModelWorker):
              self.init_heart_beat()
  
      def generate_stream_gate(self, params):
 +        import torch_npu
-+        torch_npu.npu.set_device('npu:0')
++        torch_npu.npu.set_device("npu:0")
          self.call_ct += 1
  
          try:
-diff --git a/fastchat/train/train_mem.py b/fastchat/train/train_mem.py
-index e4b3352..36b8844 100644
---- a/fastchat/train/train_mem.py
-+++ b/fastchat/train/train_mem.py
-@@ -1,13 +1,17 @@
- # Make it more memory efficient by monkey patching the LLaMA model with FlashAttn.
- 
- # Need to call this before importing transformers.
--from fastchat.train.llama_flash_attn_monkey_patch import (
--    replace_llama_attn_with_flash_attn,
--)
--
--replace_llama_attn_with_flash_attn()
-+#from fastchat.train.llama_flash_attn_monkey_patch import (
-+#    replace_llama_attn_with_flash_attn,
-+#)
- 
-+#replace_llama_attn_with_flash_attn()
-+import os
- from fastchat.train.train import train
- 
-+os.environ["WANDB_MODE"] = "offline"
-+os.environ["WANDB_DISABLED"] = "TRUE"
-+os.environ["HCCL_CONNECT_TIMEOUT"] = "3200"
-+
- if __name__ == "__main__":
-     train()
--- 
-2.25.1
