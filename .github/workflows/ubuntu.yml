@@ -6,6 +6,7 @@ permissions:
 on:
   pull_request:
     paths:
+      - .github/workflows/ubuntu.yml
       - 'cann/Dockerfile.ubuntu'
       - 'llm/**'
       - 'pytorch/**'
@@ -28,14 +29,14 @@ jobs:
 
       - name: Build
         run: |
-          docker build -t ascendai/cann:910b-ubuntu2004 -f ./cann/Dockerfile.ubuntu .
-          docker build -t ascendai/pytorch:910b-ubuntu2004 -f ./pytorch/Dockerfile .
+          docker build -t ascendai/cann:7.0.RC1.alpha002-910b-ubuntu2004 -f ./cann/Dockerfile.ubuntu .
+          docker build -t ascendai/pytorch:7.0.RC1.alpha002-910b-ubuntu2004 -f ./pytorch/Dockerfile --build-arg BASE_IMAGE=ascendai/cann:7.0.RC1.alpha002-910b-ubuntu2004 .
           cd llm
-          docker build -t ascendai/llm:910b-ubuntu2004 -f ./Dockerfile .
+          docker build -t ascendai/llm:7.0.RC1.alpha002-910b-ubuntu2004 -f ./Dockerfile --build-arg BASE_IMAGE=ascendai/cann:7.0.RC1.alpha002-910b-ubuntu2004 .
  
       - name: Push
         if: github.event_name == 'push'
         run: |
-          docker push ascendai/cann:910b-ubuntu2004
-          docker push ascendai/pytorch:910b-ubuntu2004
-          docker push ascendai/llm:910b-ubuntu2004
+          docker push ascendai/cann:7.0.RC1.alpha002-910b-ubuntu2004
+          docker push ascendai/pytorch:7.0.RC1.alpha002-910b-ubuntu2004
+          docker push ascendai/llm:7.0.RC1.alpha002-910b-ubuntu2004
