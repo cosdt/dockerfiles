@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ascendai/cann:910b-ubuntu2004
+ARG BASE_IMAGE=ascendai/cann:ubuntu2004
 FROM ${BASE_IMAGE}
 
 RUN pip install --no-cache-dir cmake ninja -i https://repo.huaweicloud.com/repository/pypi/simple

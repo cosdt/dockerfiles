@@ -28,14 +28,14 @@ jobs:
 
       - name: Build
         run: |
-          docker build -t ascendai/cann:910b-ubuntu2004 -f ./cann/Dockerfile.ubuntu .
-          docker build -t ascendai/pytorch:910b-ubuntu2004 -f ./pytorch/Dockerfile .
+          docker build -t ascendai/cann:ubuntu2004 -f ./cann/Dockerfile.ubuntu .
+          docker build -t ascendai/pytorch:ubuntu2004 -f ./pytorch/Dockerfile .
           cd llm
-          docker build -t ascendai/llm:910b-ubuntu2004 -f ./Dockerfile .
+          docker build -t ascendai/llm:ubuntu2004 -f ./Dockerfile .
  
       - name: Push
         if: github.event_name == 'push'
         run: |
-          docker push ascendai/cann:910b-ubuntu2004
-          docker push ascendai/pytorch:910b-ubuntu2004
-          docker push ascendai/llm:910b-ubuntu2004
+          docker push ascendai/cann:ubuntu2004
+          docker push ascendai/pytorch:ubuntu2004
+          docker push ascendai/llm:ubuntu2004
