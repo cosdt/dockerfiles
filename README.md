@@ -14,7 +14,7 @@ $ docker run --rm --network host --name cann-on-ascend \
             -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
             -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
             -v /data/:/data/ 
-            -ti ascendai/cann:910b-ubuntu2004 bash
+            -ti ascendai/cann:ubuntu2004 bash
 $ npu-smi info
 ```
 
@@ -30,7 +30,7 @@ $ docker run --rm --network host --name pytorch-on-ascend \
             -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
             -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
             -v /data/:/data/ 
-            -ti ascendai/pytorch:910b-ubuntu2004 bash
+            -ti ascendai/pytorch:ubuntu2004 bash
 $ python3 -c "import torch;import torch_npu; a = torch.randn(3, 4).npu(); print(a + a);"
 tensor([[-2.5684, -1.0355,  2.1467, -1.9409],
         [-0.8765, -2.1909,  1.6815,  2.1013],
@@ -50,7 +50,7 @@ $ docker run --rm --network host --name llm-on-ascend \
             -v /usr/local/dcmi:/usr/local/dcmi -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
             -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
             -v /data/:/data/ 
-            -ti ascendai/llm:910b-ubuntu2004 bash
+            -ti ascendai/llm:ubuntu2004 bash
 $ python -m fastchat.serve.cli --model-path /opt/vicuna-13b-v1.5 --device npu --temperature 1e-6
 ```
 
@@ -60,20 +60,20 @@ $ python -m fastchat.serve.cli --model-path /opt/vicuna-13b-v1.5 --device npu --
 ### ascendai/cann
 
 ```
-docker build -t ascendai/cann:910b-ubuntu2004 -f ./cann/Dockerfile.ubuntu .
+docker build -t ascendai/cann:ubuntu2004 -f ./cann/Dockerfile.ubuntu .
 ```
 
 ### ascendai/pytorch
 
 ```
-docker build -t ascendai/pytorch:910b-ubuntu2004 -f ./pytorch/Dockerfile .
+docker build -t ascendai/pytorch:ubuntu2004 -f ./pytorch/Dockerfile .
 ```
 
 ### ascendai/llm
 
 ```
 cd llm
-docker build -t ascendai/llm:910b-ubuntu2004 -f ./Dockerfile .
+docker build -t ascendai/llm:ubuntu2004 -f ./Dockerfile .
 ```
 
 ### 2. For openEuler based images
@@ -81,18 +81,18 @@ docker build -t ascendai/llm:910b-ubuntu2004 -f ./Dockerfile .
 ### ascendai/cann
 
 ```
-docker build -t ascendai/cann:910b-openeuler2203sp2 -f ./cann/Dockerfile.openeuler .
+docker build -t ascendai/cann:openeuler2203sp2 -f ./cann/Dockerfile.openeuler .
 ```
 
 ### ascendai/pytorch
 
 ```
-docker build -t ascendai/pytorch:910b-openeuler2203sp2 -f ./pytorch/Dockerfile --build-arg BASE_IMAGE=ascendai/cann:910b-openeuler2203sp2 .
+docker build -t ascendai/pytorch:openeuler2203sp2 -f ./pytorch/Dockerfile --build-arg BASE_IMAGE=ascendai/cann:openeuler2203sp2 .
 ```
 
 ### ascendai/llm
 
 ```
 cd llm
-docker build -t ascendai/llm:910b-openeuler2203sp2 -f ./Dockerfile --build-arg BASE_IMAGE=ascendai/pytorch:910b-openeuler2203sp2 .
+docker build -t ascendai/llm:openeuler2203sp2 -f ./Dockerfile --build-arg BASE_IMAGE=ascendai/pytorch:openeuler2203sp2 .
 ```
