@@ -12,9 +12,12 @@ on:
       - main
   push:
     paths:
+      - '.github/workflows/openeuler-cann.yaml'
       - 'cann/Dockerfile.openeuler'
     branches:
       - main
+  issue_comment:
+    types: [created]
 
 jobs:
   build-cann:
