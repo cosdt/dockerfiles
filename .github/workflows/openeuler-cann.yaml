@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         version: [
-            "7.1|https://ascend-cann.obs.cn-north-4.myhuaweicloud.com|CANN/20231213_newest/Ascend-cann-toolkit_CANN-7.1_linux-aarch64.run|CANN/20231213_newest/Ascend-cann-kernels-910b_CANN-7.1_linux.run"
+            "7.1|https://ascend-cann.obs.cn-north-4.myhuaweicloud.com|CANN/20231213_newest/Ascend-cann-toolkit_CANN-7.1_linux-aarch64.run|CANN/20231213_newest/Ascend-cann-kernels-910b_CANN-7.1_linux.run",
             "7.0.RC1.alpha005|https://ascend-repo.obs.cn-east-2.myhuaweicloud.com|CANN/CANN%207.0.RC1/Ascend-cann-toolkit_7.0.RC1_linux-aarch64.run|CANN/CANN%207.0.RC1/Ascend-cann-kernels-910b_7.0.RC1_linux.run"
         ]
     steps:
