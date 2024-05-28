@@ -31,7 +31,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
-    && ln -sf /bin/bash /bin/sh \
     && sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
