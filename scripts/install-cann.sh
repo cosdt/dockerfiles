@@ -33,7 +33,7 @@ wget ${CANN_TOOLKIT_URL} -O /tmp/${CANN_TOOLKIT_FILE}
 # Install CANN Toolkit
 echo "Installing $CANN_TOOLKIT_FILE"
 chmod +x /tmp/${CANN_TOOLKIT_FILE}
-bash +x /tmp/${CANN_TOOLKIT_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
+printf "Y\n" | bash +x /tmp/${CANN_TOOLKIT_FILE} --check --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_TOOLKIT_FILE}
 
 # Init
@@ -47,7 +47,7 @@ wget ${CANN_KERNELS_URL} -O /tmp/${CANN_KERNELS_FILE}
 # Install CANN Kernels
 echo "Installing $CANN_KERNELS_FILE"
 chmod +x /tmp/${CANN_KERNELS_FILE}
-bash +x /tmp/${CANN_KERNELS_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
+printf "Y\n" | bash +x /tmp/${CANN_KERNELS_FILE} --check --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_KERNELS_FILE}
 
 echo "CANN installation successful."
