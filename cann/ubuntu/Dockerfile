@@ -1,21 +1,21 @@
 # Phase 1
-FROM alpine AS prepare
+FROM alpine AS builder
 
 # install dependencies
 RUN apk add --no-cache wget && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/scripts/install-cann.sh && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/scripts/install-miniconda.sh && \
-    rm -rf /var/cache/apk/*
+    rm -rf /tmp/* && \
+    rm -rf /var/cache/apk/* && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh
 
 # Phase 2
-FROM $BASE_IMAGE:$BASE_VERSION
+ARG BASE_VERSION=latest
+FROM ubuntu:$BASE_VERSION
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
-ARG BASE_IMAGE=ubuntu
-ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
 ARG CANN_HOME=/usr/local/Ascend
 ARG CANN_CHIP=910b
@@ -59,9 +59,9 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
      && rm -rf /tmp/*
 
 # install pkages
-RUN --mount=type=cache,from=prepare,target=/tmp,source=/tmp \
-    umask 0022 && \
-    # install miniconda && \
+COPY --from=builder /tmp /tmp
+
+RUN # install miniconda && \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     bash +x /tmp/scripts/install-miniconda.sh && \
