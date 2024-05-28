@@ -33,7 +33,7 @@ bash /tmp/$INSTALLER -b -u -p $CONDA_HOME
 rm -f /tmp/$INSTALLER
 
 # Init
-$CONDA_HOME/bin/activate
+source $CONDA_HOME/bin/activate
 conda init
 source ~/.bashrc
 

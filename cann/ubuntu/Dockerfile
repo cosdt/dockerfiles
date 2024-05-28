@@ -70,7 +70,6 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
-    source ~/.bashrc && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
