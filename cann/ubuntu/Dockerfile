@@ -2,7 +2,8 @@
 FROM alpine AS builder
 
 # install dependencies
-RUN apk add --no-cache wget && \
+RUN apk update && \
+    apk add --no-cache wget && \
     rm -rf /tmp/* && \
     rm -rf /var/cache/apk/* && \
     wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh && \
@@ -18,7 +19,6 @@ LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
 # arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
-ARG CANN_HOME=/usr/local/Ascend
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
 
@@ -31,11 +31,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
+    && ln -sf /bin/bash /bin/sh \
     && sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
+        bash \
         git \
         wget \
         gcc \
@@ -72,7 +74,6 @@ RUN \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
-    CANN_HOME="$CANN_HOME" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
