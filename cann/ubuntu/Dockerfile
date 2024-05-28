@@ -72,7 +72,13 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
-    conda --version && \
+    # clean up \
+    rm -f /tmp/install-miniconda.sh
+
+RUN conda --version && \
+    python -c "print('Hello')"
+
+RUN \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
@@ -80,6 +86,6 @@ RUN \
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
     # clean up \
-    rm -rf /tmp/*
+    rm -f /tmp/install-cann.sh
 
 WORKDIR /home
