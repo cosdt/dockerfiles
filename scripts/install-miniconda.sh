@@ -36,5 +36,5 @@ rm -f /tmp/$INSTALLER
 $CONDA_HOME/bin/activate
 conda init
 
-echo "Miniconda installation successful. Please restart your terminal or run 'source ~/.bashrc' to apply the changes."
+echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' to apply the changes."
 conda --version
