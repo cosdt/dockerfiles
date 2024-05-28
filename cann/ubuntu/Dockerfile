@@ -1,3 +1,15 @@
+# Phase 1
+FROM alpine AS builder
+
+# install dependencies
+RUN apk update && \
+    apk add --no-cache wget && \
+    rm -rf /tmp/* && \
+    rm -rf /var/cache/apk/* && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh
+
+# Phase 2
 # todo arg
 FROM ubuntu:22.04
 
@@ -19,6 +31,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
+    && ln -sf /bin/bash /bin/sh \
     && sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y \
@@ -48,14 +61,17 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
      && rm -rf /var/tmp/* \
      && rm -rf /tmp/*
 
+# install pkages
+COPY --from=builder /tmp /tmp
+
 RUN bash -c '\
     # install miniconda \
-    wget -O- https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh | \
+    chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
     # install cann \
-    wget -O- https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh | \
+    chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
