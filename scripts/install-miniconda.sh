@@ -27,25 +27,14 @@ CONDA_URL="$CONDA_BASE_URL/$INSTALLER"
 echo "Downloading $INSTALLER"
 wget $CONDA_URL -q -O /tmp/$INSTALLER
 
-if [ ! $? -eq 0 ]; then
-  echo "Miniconda download failed."
-  exit 1
-fi
-
 # Run installation
 echo "Installing $INSTALLER"
 bash /tmp/$INSTALLER -b -u -p $CONDA_HOME
-
-if [ $? -eq 0 ]; then
-  echo "Miniconda installation successful."
-  rm /tmp/$INSTALLER
-else
-  echo "Miniconda installation failed."
-  rm /tmp/$INSTALLER
-  exit 1
-fi
+rm -f /tmp/$INSTALLER
 
 # Init
-$CONDA_HOME/bin/conda init
-source ~/.bashrc
+$CONDA_HOME/bin/activate
+conda init
+
+echo "Miniconda installation successful. Please restart your terminal or run 'source ~/.bashrc' to apply the changes."
 conda --version
