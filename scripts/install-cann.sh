@@ -26,16 +26,27 @@ CANN_KERNELS_FILE=Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run
 CANN_TOOLKIT_URL="${CANN_URL_PREFIX}/${CANN_TOOLKIT_FILE}?response-content-type=application/octet-stream"
 CANN_KERNELS_URL="${CANN_URL_PREFIX}/${CANN_KERNELS_FILE}?response-content-type=application/octet-stream"
 
+# Download CANN Toolkit
+echo "Downloading $CANN_TOOLKIT_FILE"
+wget ${CANN_TOOLKIT_URL} -O /tmp/${CANN_TOOLKIT_FILE}
+
 # Install CANN Toolkit
-wget ${CANN_TOOLKIT_URL} -q -O /tmp/${CANN_TOOLKIT_FILE}
+echo "Installing $CANN_TOOLKIT_FILE"
 bash +x /tmp/${CANN_TOOLKIT_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
+cat ${CANN_HOME}/driver/version.info
 rm -f /tmp/${CANN_TOOLKIT_FILE}
 
 # Init
 # echo "source $CANN_HOME/set_env.sh " >> /etc/profile
 # source /etc/profile
 
+# Download CANN Kernels
+echo "Downloading $CANN_KERNELS_FILE"
+wget ${CANN_KERNELS_URL} -O /tmp/${CANN_KERNELS_FILE}
+
 # Install CANN Kernels
-wget ${CANN_KERNELS_URL} -q -O /tmp/${CANN_KERNELS_FILE}
+echo "Installing $CANN_KERNELS_FILE"
 bash +x /tmp/${CANN_KERNELS_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_KERNELS_FILE}
+
+# Environment variables
