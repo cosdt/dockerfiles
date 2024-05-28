@@ -23,8 +23,8 @@ esac
 CANN_URL_PREFIX="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}/"
 CANN_TOOLKIT_FILE=Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run
 CANN_KERNELS_FILE=Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run
-CANN_TOOLKIT_URL="${CANN_URL_PREFIX}/${CANN_TOOLKIT_FILE}"
-CANN_KERNELS_URL="${CANN_URL_PREFIX}/${CANN_KERNELS_FILE}"
+CANN_TOOLKIT_URL="${CANN_URL_PREFIX}/${CANN_TOOLKIT_FILE}?response-content-type=application/octet-stream"
+CANN_KERNELS_URL="${CANN_URL_PREFIX}/${CANN_KERNELS_FILE}?response-content-type=application/octet-stream"
 
 # Install CANN Toolkit
 wget ${CANN_TOOLKIT_URL} -q -O /tmp/${CANN_TOOLKIT_FILE}

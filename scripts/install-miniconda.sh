@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 PLATFORM=${PLATFORM:-"linux/arm64"}
 CONDA_HOME=${CONDA_HOME:-"/opt/miniconda"}
