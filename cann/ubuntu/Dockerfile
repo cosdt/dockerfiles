@@ -1,13 +1,25 @@
-FROM $BASE:$BASE_VERSION
+# Phase 1
+FROM alpine AS prepare
 
-ARG BASE_IMAGE
-ARG BASE_VERSION
+# install dependencies
+RUN apk add --no-cache wget && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/scripts/install-cann.sh && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/scripts/install-miniconda.sh && \
+    rm -rf /var/cache/apk/*
+
+# Phase 2
+FROM $BASE_IMAGE:$BASE_VERSION
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
+ARG BASE_IMAGE=ubuntu
+ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
+ARG CANN_HOME=/usr/local/Ascend
+ARG CANN_CHIP=910b
+ARG CANN_VERSION=8.0.RC1
 
 # timezone
 ENV TIME_ZONE=Asia/Shanghai
@@ -15,34 +27,52 @@ ENV TIME_ZONE=Asia/Shanghai
 # avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# copy files
-COPY scripts /root/scripts
-
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
     && apt-get update \
     && apt-get install -y \
-        wget \
-        curl \
-        bzip2 \
-        sudo \
-        openssh-server \
         apt-transport-https \
         ca-certificates \
         git \
-        g++ \
+        wget \
         gcc \
+        g++ \
+        make \
         cmake \
-        vim \
-        jq \
+        zlib1g \
+        zlib1g-dev \
+        openssl \
+        libsqlite3-dev \
+        libssl-dev \
+        libffi-dev \
+        unzip \
+        pciutils \
+        net-tools \
+        libblas-dev \
+        gfortran \
+        patchelf \
+        libblas3 \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
-     && rm -rf /tmp/* \
-     && rm -rf /var/tmp/*
+     && rm -rf /var/tmp/* \
+     && rm -rf /tmp/*
 
-# install miniconda to /opt/miniconda
-RUN PLATFORM="$PLATFORM" CONDA_HOME="/opt/miniconda" bash /root/scripts/install-miniconda.sh
+# install pkages
+RUN --mount=type=cache,from=prepare,target=/tmp,source=/tmp \
+    umask 0022 && \
+    # install miniconda && \
+    PLATFORM="$PLATFORM" \
+    CONDA_HOME="/opt/miniconda" \
+    bash +x /tmp/scripts/install-miniconda.sh && \
+    # install cann && \
+    PLATFORM="$PLATFORM" \
+    CANN_HOME="$CANN_HOME" \
+    CANN_CHIP="$CANN_CHIP" \
+    CANN_VERSION="$CANN_VERSION" \
+    bash +x /tmp/scripts/install-cann.sh && \
+    # clean
+    rm -rf /tmp/*
 
 WORKDIR /home
 

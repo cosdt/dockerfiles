@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eux
+
 PLATFORM=${PLATFORM:-"linux/arm64"}
 CONDA_HOME=${CONDA_HOME:-"/opt/miniconda"}
 
@@ -26,7 +28,7 @@ echo "Downloading $INSTALLER"
 wget $CONDA_URL -q -O /tmp/$INSTALLER
 
 if [ ! $? -eq 0 ]; then
-  echo "Miniconda download fail."
+  echo "Miniconda download failed."
   exit 1
 fi
 
