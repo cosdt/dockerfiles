@@ -28,6 +28,9 @@ ENV TIME_ZONE=Asia/Shanghai
 # avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
+# change the default shell
+SHELL ["/bin/bash", "-c"]
+
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
@@ -64,7 +67,6 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
 COPY --from=builder /tmp /tmp
 
 RUN \
-    #!/bin/bash \
     # install miniconda \
     chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
