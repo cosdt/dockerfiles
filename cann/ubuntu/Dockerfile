@@ -74,6 +74,7 @@ RUN \
     source /tmp/install-miniconda.sh && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
+    conda --version && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
