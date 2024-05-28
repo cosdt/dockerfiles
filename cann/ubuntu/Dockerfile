@@ -63,7 +63,8 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
 # install pkages
 COPY --from=builder /tmp /tmp
 
-RUN # install miniconda \
+RUN \
+    # install miniconda \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     bash +x /tmp/install-miniconda.sh && \
