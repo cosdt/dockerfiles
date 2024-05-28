@@ -36,7 +36,6 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
-        bash \
         git \
         wget \
         gcc \
@@ -56,7 +55,6 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
         gfortran \
         patchelf \
         libblas3 \
-     && ln -sf /bin/bash /bin/sh \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
      && rm -rf /var/tmp/* \
@@ -71,6 +69,7 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
+    source ~/.bashrc && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
