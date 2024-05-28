@@ -33,9 +33,8 @@ bash /tmp/$INSTALLER -b -u -p $CONDA_HOME
 rm -f /tmp/$INSTALLER
 
 # Init
-source $CONDA_HOME/bin/activate
 $CONDA_HOME/bin/conda init
 source ~/.bashrc
 
 echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' to apply the changes."
-$CONDA_HOME/bin/conda --version
+conda --version
