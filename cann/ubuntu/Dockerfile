@@ -75,7 +75,9 @@ RUN \
     # clean up \
     rm -f /tmp/install-miniconda.sh
 
-RUN source ~/.bashrc && \
+RUN source /root/.bashrc && \
+    echo "$HOME" && \
+    cat /root/.bashrc && \
     conda --version && \
     python -c "print(__version__)"
 
