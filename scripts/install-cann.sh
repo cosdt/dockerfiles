@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -e
 
 PLATFORM=${PLATFORM:-"linux/arm64"}
 CANN_HOME=${CANN_HOME:-"/usr/local/Ascend"}
@@ -32,13 +32,13 @@ wget ${CANN_TOOLKIT_URL} -O /tmp/${CANN_TOOLKIT_FILE}
 
 # Install CANN Toolkit
 echo "Installing $CANN_TOOLKIT_FILE"
+chmod +x /tmp/${CANN_TOOLKIT_FILE}
 bash +x /tmp/${CANN_TOOLKIT_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
-cat ${CANN_HOME}/driver/version.info
 rm -f /tmp/${CANN_TOOLKIT_FILE}
 
 # Init
-# echo "source $CANN_HOME/set_env.sh " >> /etc/profile
-# source /etc/profile
+echo "source $CANN_HOME/ascend-toolkit/set_env.sh " >> ~/.bashrc
+source ~/.bashrc
 
 # Download CANN Kernels
 echo "Downloading $CANN_KERNELS_FILE"
@@ -46,7 +46,8 @@ wget ${CANN_KERNELS_URL} -O /tmp/${CANN_KERNELS_FILE}
 
 # Install CANN Kernels
 echo "Installing $CANN_KERNELS_FILE"
+chmod +x /tmp/${CANN_KERNELS_FILE}
 bash +x /tmp/${CANN_KERNELS_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_KERNELS_FILE}
 
-# Environment variables
+echo "CANN installation successful."

@@ -65,15 +65,17 @@ COPY --from=builder /tmp /tmp
 
 RUN \
     # install miniconda \
+    chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
-    bash +x /tmp/install-miniconda.sh && \
+    source /tmp/install-miniconda.sh && \
     # install cann \
+    chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
     CANN_HOME="$CANN_HOME" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
-    bash +x /tmp/install-cann.sh && \
+    source /tmp/install-cann.sh && \
     # clean up
     rm -rf /tmp/*
 
