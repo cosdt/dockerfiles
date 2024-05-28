@@ -35,5 +35,5 @@ echo "Miniconda installation successful. Please restart your terminal or run 'so
 
 # Init
 $CONDA_HOME/bin/conda init bash
+$CONDA_HOME/bin/conda --version
 source /root/.bashrc
-conda --version

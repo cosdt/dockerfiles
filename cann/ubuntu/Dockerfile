@@ -76,7 +76,7 @@ RUN \
     rm -f /tmp/install-miniconda.sh
 
 RUN conda --version && \
-    python -c "print('Hello')"
+    python -c "print(__version__)"
 
 RUN \
     # install cann \
