@@ -10,7 +10,7 @@ RUN apk add --no-cache wget && \
 
 # Phase 2
 ARG BASE_VERSION=latest
-FROM ubuntu:$BASE_VERSION
+FROM openeuler:$BASE_VERSION
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
@@ -24,39 +24,30 @@ ARG CANN_VERSION=8.0.RC1
 # timezone
 ENV TIME_ZONE=Asia/Shanghai
 
-# avoid interactive prompts during installation
-ENV DEBIAN_FRONTEND=noninteractive
-
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
-    && apt-get update \
-    && apt-get install -y \
-        apt-transport-https \
-        ca-certificates \
-        git \
-        wget \
-        gcc \
-        g++ \
-        make \
-        cmake \
-        zlib1g \
-        zlib1g-dev \
-        openssl \
-        libsqlite3-dev \
-        libssl-dev \
-        libffi-dev \
-        unzip \
-        pciutils \
-        net-tools \
-        libblas-dev \
-        gfortran \
-        patchelf \
-        libblas3 \
-     && apt-get clean \
-     && rm -rf /var/lib/apt/lists/* \
-     && rm -rf /var/tmp/* \
-     && rm -rf /tmp/*
+    && yum install -y \
+         git \
+         wget \
+         gcc \
+         gcc-c++ \
+         make \
+         cmake \
+         unzip \
+         zlib-devel \
+         libffi-devel \
+         openssl-devel \
+         pciutils \
+         net-tools \
+         sqlite-devel \
+         lapack-devel \
+         gcc-gfortran \
+         python3-devel \
+         util-linux \
+         patchelf \
+    && yum clean all \
+    && rm -rf /var/cache/yum
 
 # install pkages
 COPY --from=builder /tmp /tmp
