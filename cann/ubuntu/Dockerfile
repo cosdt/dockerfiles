@@ -48,7 +48,7 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
      && rm -rf /var/tmp/* \
      && rm -rf /tmp/*
 
-RUN \
+RUN bash -c '\
     # install miniconda \
     wget -O- https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh | \
     PLATFORM="$PLATFORM" \
@@ -60,7 +60,7 @@ RUN \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
-    # clean up
-    rm -rf /tmp/*
+    # clean up \
+    rm -rf /tmp/*'
 
 WORKDIR /home
