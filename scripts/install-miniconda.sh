@@ -23,7 +23,7 @@ esac
 INSTALLER="Miniconda3-latest-Linux-$ARCH.sh"
 CONDA_URL="$CONDA_BASE_URL/$INSTALLER"
 
-# Download script
+# Download installer
 echo "Downloading $INSTALLER"
 wget $CONDA_URL -q -O /tmp/$INSTALLER
 
@@ -46,6 +46,6 @@ else
 fi
 
 # Init
-source $CONDA_HOME/bin/activate
-conda init
+$CONDA_HOME/bin/conda init
+source ~/.bashrc
 conda --version
