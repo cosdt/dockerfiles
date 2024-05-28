@@ -72,9 +72,9 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
+    conda --version && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
-    conda --version && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
