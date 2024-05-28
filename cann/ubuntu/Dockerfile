@@ -10,7 +10,7 @@ RUN apk add --no-cache wget && \
 
 # Phase 2
 # todo arg
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
