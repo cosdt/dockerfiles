@@ -9,13 +9,14 @@ RUN apk add --no-cache wget && \
     wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh
 
 # Phase 2
-ARG BASE_VERSION=latest
-FROM ubuntu:$BASE_VERSION
+# todo arg
+FROM ubuntu:latest
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
+ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
 ARG CANN_HOME=/usr/local/Ascend
 ARG CANN_CHIP=910b
