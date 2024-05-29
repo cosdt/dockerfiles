@@ -40,11 +40,6 @@ jobs:
           - name: GHCR
             url: ghcr.io
             owner: ${{ github.repository_owner }}
-        platform:
-          - linux/amd64
-          - linux/arm64
-        image:
-          - 'cann/ubuntu'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
