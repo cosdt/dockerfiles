@@ -1,15 +1,3 @@
-# Phase 1
-FROM alpine AS builder
-
-# install dependencies
-RUN apk update && \
-    apk add --no-cache wget && \
-    rm -rf /tmp/* && \
-    rm -rf /var/cache/apk/* && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh
-
-# Phase 2
 # todo arg
 FROM ubuntu:22.04
 
@@ -19,16 +7,20 @@ LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
 # arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
+ARG PY_VERSION=3.8.0
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
 
 # change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
+# set non-interactive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
 # install dependies
 RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    && apt-get install --no-install-recommends -y \
         apt-transport-https \
         ca-certificates \
         bash \
@@ -56,21 +48,16 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
      && rm -rf /var/tmp/* \
      && rm -rf /tmp/*
 
-# install pkages
-COPY --from=builder /tmp /tmp
+# copy files
+COPY . /tmp
 
+# install python
+RUN bash +x PY_VERSION=${PY_VERSION} /tmp/install-py.sh
+
+RUN python -c "import sys; print(sys.version)"
+
+# install cann toolkit and kernel
 RUN \
-    # install miniconda \
-    chmod +x /tmp/install-miniconda.sh && \
-    PLATFORM="$PLATFORM" \
-    CONDA_HOME="/opt/miniconda" \
-    source /tmp/install-miniconda.sh && \
-    conda init && \
-    conda create -y -n test1 python=3.7 && \
-    conda activate test1 && \
-    conda --version && \
-    python -c "import sys; print(sys.version)" && \
-    # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
