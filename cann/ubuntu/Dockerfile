@@ -60,16 +60,19 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
 # install pkages
 COPY --from=builder /tmp /tmp
 
-RUN \
-    # install miniconda \
-    chmod +x /tmp/install-miniconda.sh && \
+# install miniconda
+RUN chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
-    source /tmp/install-miniconda.sh && \
-    # config conda \
-    source /tmp/config-conda.sh && \
-    # install cann \
-    chmod +x /tmp/install-cann.sh && \
+    source /tmp/install-miniconda.sh
+
+ENV PATH="$CONDA_HOME/bin:$PATH"
+
+# config conda
+RUN source /tmp/config-conda.sh \
+
+# install cann
+RUN chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
