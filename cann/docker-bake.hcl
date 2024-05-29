@@ -1,8 +1,8 @@
 group "default" {
-  targets = ["cann"]
+  targets = ["cann1"]
 }
 
-target "cann" {
+target "cann1" {
   context = "."
   dockerfile = "ubuntu/Dockerfile"
   matrix = {
@@ -12,5 +12,4 @@ target "cann" {
     BASE_VERSION = "${UBUNTU_VERSION}"
   }
   platforms = ["linux/amd64", "linux/arm64"]
-  tags = ["cann:ubuntu${UBUNTU_VERSION}"]
 }
