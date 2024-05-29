@@ -3,7 +3,7 @@ group "default" {
 }
 
 target "cann" {
-  name = "cann:${cann_version}-ubuntu${ubuntu_version}-py${py_version}"
+  name = "cann-${cann_version}-ubuntu${ubuntu_version}-py${py_version}"
   context = "cann"
   dockerfile = "ubuntu/Dockerfile"
   platforms = ["linux/amd64", "linux/arm64"]
