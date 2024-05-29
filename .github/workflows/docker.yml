@@ -49,31 +49,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ matrix.registry.url }}/${{ matrix.registry.owner }}/${{ matrix.image }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-          labels: |
-            org.opencontainers.image.title=${{ matrix.image }}
-            org.opencontainers.image.description=${{ matrix.image }} built by ${{ matrix.registry.url }}/${{ matrix.registry.owner }}
-            org.opencontainers.image.vendor=${{ matrix.registry.owner }}
-
-      - name: Show image metadata
-        run: |
-          echo "version: ${{ steps.meta.outputs.version }}"
-          echo "tags: ${{ steps.meta.outputs.tags }}"
-          echo "labels: ${{ steps.meta.outputs.labels }}"
-          echo "annotations: ${{ steps.meta.outputs.annotations }}"
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
