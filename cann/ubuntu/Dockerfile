@@ -29,7 +29,7 @@ ENV TIME_ZONE=Asia/Shanghai
 ENV DEBIAN_FRONTEND=noninteractive
 
 # change the default shell
-SHELL ["/bin/bash", "-c"]
+SHELL [ "/bin/bash", "-c" ]
 
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
@@ -72,16 +72,6 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
-    # clean up \
-    rm -f /tmp/install-miniconda.sh
-
-RUN source /root/.bashrc && \
-    echo "$HOME" && \
-    cat /root/.bashrc && \
-    conda --version && \
-    python -c "print(__version__)"
-
-RUN \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
@@ -89,6 +79,6 @@ RUN \
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
     # clean up \
-    rm -f /tmp/install-cann.sh
+    rm -rf /tmp/*
 
 WORKDIR /home
