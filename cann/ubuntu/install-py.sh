@@ -3,6 +3,9 @@
 set -e
 
 PY_VERSION=${PY_VERSION:-"3.8.0"}
+PY_MAJOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f1)
+PY_MINOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f2)
+PY_SHORT_VERSION="${PY_MAJOR_VERSION}.${PY_MINOR_VERSION}"
 
 PY_HOME="/usr/local/python${PY_VERSION}"
 PY_INSTALLER_TAR="Python-${PY_VERSION}.tar.xz"
@@ -22,10 +25,10 @@ make -j$(nproc)
 make altinstall
 
 # create links
-ln -sf ${PY_HOME}/bin/python3 /usr/bin/python3
-ln -sf ${PY_HOME}/bin/python3 /usr/bin/python
-ln -sf ${PY_HOME}/bin/pip3 /usr/bin/pip3
-ln -sf ${PY_HOME}/bin/pip3 /usr/bin/pip
+ln -sf ${PY_HOME}/bin/python${PY_SHORT_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
+ln -sf ${PY_HOME}/bin/pip${PY_SHORT_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
+ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
 
 # clean up
 rm -rf /tmp/${PY_INSTALLER_TAR} /tmp/${PY_INSTALLER_DIR}

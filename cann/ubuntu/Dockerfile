@@ -43,6 +43,7 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
         gfortran \
         patchelf \
         libblas3 \
+        xz-utils \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
      && rm -rf /var/tmp/* \
@@ -52,7 +53,7 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
 COPY . /tmp
 
 # install python
-RUN bash +x /tmp/install-py.sh
+RUN bash /tmp/install-py.sh
 
 RUN python -c "import sys; print(sys.version)"
 
