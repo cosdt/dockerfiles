@@ -7,7 +7,7 @@ LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
 # arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=linux/arm64
-ARG PY_VERSION=3.9.0
+ARG PY_VERSION=3.8.0
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
 
@@ -44,6 +44,7 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
         patchelf \
         libblas3 \
         xz-utils \
+        vim \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
      && rm -rf /var/tmp/* \
@@ -54,8 +55,6 @@ COPY . /tmp
 
 # install python
 RUN bash /tmp/install-py.sh
-
-RUN python -c "import sys; print(sys.version)"
 
 # install cann toolkit and kernel
 RUN \

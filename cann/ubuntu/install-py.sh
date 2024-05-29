@@ -21,14 +21,14 @@ tar -xf /tmp/$PY_INSTALLER_TAR -C /tmp
 echo "Installing ${PY_INSTALLER_DIR}"
 cd /tmp/${PY_INSTALLER_DIR}
 ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
-make -j$(nproc)
-make altinstall
+make -s -j$(nproc)
+make -s altinstall
 
 # create links
 ln -sf ${PY_HOME}/bin/python${PY_SHORT_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
 ln -sf ${PY_HOME}/bin/pip${PY_SHORT_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
-ln -sf /usr/bin/python3 /usr/bin/python
-ln -sf /usr/bin/pip3 /usr/bin/pip
+ln -sf /usr/bin/python${PY_MAJOR_VERSION} /usr/bin/python
+ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
 
 # clean up
 rm -rf /tmp/${PY_INSTALLER_TAR} /tmp/${PY_INSTALLER_DIR}
