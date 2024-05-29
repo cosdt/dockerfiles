@@ -1,12 +1,11 @@
-# todo arg
-FROM ubuntu:22.04
+ARG BASE_VERSION=latest
+FROM ubuntu:${BASE_VERSION}
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
-ARG BASE_VERSION=latest
-ARG PLATFORM=linux/arm64
+ARG TARGETPLATFORM=linux/arm64
 ARG PY_VERSION=3.8.0
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
@@ -60,7 +59,7 @@ RUN chmod +x /root/install-py.sh && \
 
 # install cann toolkit and kernel
 RUN chmod +x /root/install-cann.sh && \
-    bash /root/install-cann.sh && \
+    PLATFORM=${TARGETPLATFORM} bash /root/install-cann.sh && \
     rm -rf /root/install-cann.sh /tmp/*
 
 WORKDIR /home
