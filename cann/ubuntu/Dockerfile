@@ -65,6 +65,8 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
+    conda init && \
+    conda create -y -n test1 python=3.7 && \
     conda --version && \
     python -c "import sys; print(sys.version)" && \
     # install cann \
