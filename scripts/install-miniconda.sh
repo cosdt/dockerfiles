@@ -29,13 +29,11 @@ wget $CONDA_URL -q -O /tmp/$INSTALLER
 
 # Run installation
 echo "Installing $INSTALLER"
-bash /tmp/$INSTALLER -b -u -p $CONDA_HOME
+bash +x /tmp/$INSTALLER -b -u -p $CONDA_HOME
 rm -f /tmp/$INSTALLER
 echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' to apply the changes."
 
 # Init
 $CONDA_HOME/bin/conda init --all
 $CONDA_HOME/bin/conda --version
-source /root/.bashrc
-
-conda --version
+source ~/.bashrc
