@@ -6,8 +6,9 @@ RUN apk update && \
     apk add --no-cache wget && \
     rm -rf /tmp/* && \
     rm -rf /var/cache/apk/* && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/config-conda.sh -q -O /tmp/config-conda.sh && \
+    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh
 
 # Phase 2
 # todo arg
@@ -65,8 +66,8 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
-    conda --version && \
-    python -c "import sys; print(sys.version)" && \
+    # config conda \
+    source /tmp/config-conda.sh && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
