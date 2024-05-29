@@ -49,5 +49,5 @@ conda activate ascend
 pip install pip --no-cache-dir --upgrade
 pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
-echo "conda activate ${CONDA_ENV_NAME}" >> ~/.bashrc
+echo "conda activate ascend" >> ~/.bashrc
 source ~/.bashrc
