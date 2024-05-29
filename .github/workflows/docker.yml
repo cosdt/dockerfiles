@@ -29,7 +29,7 @@ concurrency:
 jobs:
   prepare:
     name: prepare
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       targets: ${{ steps.generate.outputs.targets }}
     steps:
@@ -44,7 +44,7 @@ jobs:
 
   docker:
     name: build-and-push-image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs:
       - prepare
     strategy:
