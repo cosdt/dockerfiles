@@ -13,9 +13,9 @@ target "cann" {
     cann_version = ["8.0.RC1"]
   }
   args = {
-    BASE_VERSION = "$ubuntu_version"
-    PY_VERSION = "$py_version"
-    CANN_VERSION = "$cann_version"
+    BASE_VERSION = "${ubuntu_version}"
+    PY_VERSION = "${py_version}"
+    CANN_VERSION = "${cann_version}"
   }
   tags = ["cann:${cann_version}-ubuntu${ubuntu_version}-py${py_version}"]
 }
