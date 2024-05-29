@@ -67,6 +67,7 @@ RUN \
     source /tmp/install-miniconda.sh && \
     conda init && \
     conda create -y -n test1 python=3.7 && \
+    conda activate test1 && \
     conda --version && \
     python -c "import sys; print(sys.version)" && \
     # install cann \
