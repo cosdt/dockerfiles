@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 PLATFORM=${PLATFORM:-"linux/arm64"}
 CONDA_HOME=${CONDA_HOME:-"/opt/miniconda"}
@@ -37,3 +37,5 @@ echo "Miniconda installation successful. Please restart your terminal or run 'so
 $CONDA_HOME/bin/conda init --all
 $CONDA_HOME/bin/conda --version
 source ~/.bashrc
+
+conda --version
