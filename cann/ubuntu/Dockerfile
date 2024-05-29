@@ -50,7 +50,7 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
      && rm -rf /tmp/*
 
 # copy files
-COPY ../scripts /root
+COPY ../scripts /root/scripts
 
 # install python
 RUN chmod +x /root/scripts/install-py.sh && \
