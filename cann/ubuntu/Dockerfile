@@ -66,7 +66,7 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
 # install pkages
 COPY --from=builder /tmp /tmp
 
-RUN \
+RUN bash -c '\
     # install miniconda \
     chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
@@ -82,6 +82,6 @@ RUN \
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
     # clean up \
-    rm -rf /tmp/*
+    rm -rf /tmp/*'
 
 WORKDIR /home
