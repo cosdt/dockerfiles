@@ -1,8 +1,8 @@
 group "default" {
-  targets = ["cann-ubuntu"]
+  targets = ["cann"]
 }
 
-target "cann-ubuntu" {
+target "cann" {
   context = "."
   dockerfile = "ubuntu/Dockerfile"
   matrix = {
