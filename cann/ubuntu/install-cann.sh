@@ -20,6 +20,10 @@ case "$PLATFORM" in
         ;;
 esac
 
+# install dependencies
+pip install --no-cache-dir --upgrade pip
+pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+
 CANN_URL_PREFIX="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
 CANN_TOOLKIT_FILE=Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run
 CANN_KERNELS_FILE=Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run

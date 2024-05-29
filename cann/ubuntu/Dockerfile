@@ -17,7 +17,7 @@ SHELL [ "/bin/bash", "-c" ]
 # set non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
 
-# install dependies
+# install dependencies
 RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -51,19 +51,16 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
      && rm -rf /tmp/*
 
 # copy files
-COPY . /tmp
+COPY . /root
 
 # install python
-RUN bash /tmp/install-py.sh
+RUN chmod +x /root/install-py.sh && \
+    bash /root/install-py.sh && \
+    rm -rf /root/install-py.sh /tmp/*
 
 # install cann toolkit and kernel
-RUN \
-    chmod +x /tmp/install-cann.sh && \
-    PLATFORM="$PLATFORM" \
-    CANN_CHIP="$CANN_CHIP" \
-    CANN_VERSION="$CANN_VERSION" \
-    source /tmp/install-cann.sh && \
-    # clean up \
-    rm -rf /tmp/*
+RUN chmod +x /root/install-cann.sh && \
+    bash /root/install-cann.sh && \
+    rm -rf /root/install-cann.sh /tmp/*
 
 WORKDIR /home
