@@ -65,9 +65,14 @@ RUN \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
-    # aaa \
-    source ~/.bashrc && \
-    conda --version && \
+    # clean up \
+    rm -f /tmp/install-miniconda.sh
+
+RUN source ~/.bashrc && \
+    conda --version \
+
+RUN \
+    conda --version \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
