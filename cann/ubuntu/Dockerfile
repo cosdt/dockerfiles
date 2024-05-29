@@ -5,7 +5,7 @@ LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
-ARG TARGETPLATFORM=linux/arm64
+ARG TARGETPLATFORM
 ARG PY_VERSION=3.8.0
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
