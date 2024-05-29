@@ -22,23 +22,16 @@ ARG PLATFORM=linux/arm64
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
 
-# timezone
-ENV TIME_ZONE=Asia/Shanghai
-
-# avoid interactive prompts during installation
-ENV DEBIAN_FRONTEND=noninteractive
-
 # change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
 # install dependies
-RUN echo "${TIME_ZONE}" > /etc/timezone \
-    && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
-    && sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
+RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
     && apt-get update \
-    && apt-get install -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         apt-transport-https \
         ca-certificates \
+        bash \
         git \
         wget \
         gcc \
@@ -66,7 +59,7 @@ RUN echo "${TIME_ZONE}" > /etc/timezone \
 # install pkages
 COPY --from=builder /tmp /tmp
 
-RUN bash -c '\
+RUN \
     # install miniconda \
     chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
@@ -82,6 +75,6 @@ RUN bash -c '\
     CANN_VERSION="$CANN_VERSION" \
     source /tmp/install-cann.sh && \
     # clean up \
-    rm -rf /tmp/*'
+    rm -rf /tmp/*
 
 WORKDIR /home
