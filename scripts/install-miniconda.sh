@@ -34,8 +34,20 @@ rm -f /tmp/$INSTALLER
 
 # Init
 $CONDA_HOME/bin/conda init --all
-$CONDA_HOME/bin/conda --version
 
 echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' manually to apply the changes."
 
+source ~/.bashrc
+export PATH="$CONDA_HOME/bin:$PATH"
+conda --version
+
+# create an virtual environment
+conda create -n ascend python=3.8
+conda activate ascend
+
+# install dependencies
+pip install pip --no-cache-dir --upgrade
+pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+
+echo "conda activate ${CONDA_ENV_NAME}" >> ~/.bashrc
 source ~/.bashrc

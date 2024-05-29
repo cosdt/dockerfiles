@@ -7,7 +7,6 @@ RUN apk update && \
     rm -rf /tmp/* && \
     rm -rf /var/cache/apk/* && \
     wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/config-conda.sh -q -O /tmp/config-conda.sh && \
     wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh
 
 # Phase 2
@@ -60,20 +59,16 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
 # install pkages
 COPY --from=builder /tmp /tmp
 
-# install miniconda
-RUN chmod +x /tmp/install-miniconda.sh && \
+RUN \
+    # install miniconda \
+    chmod +x /tmp/install-miniconda.sh && \
     PLATFORM="$PLATFORM" \
     CONDA_HOME="/opt/miniconda" \
-    source /tmp/install-miniconda.sh
-
-# Add conda to PATH
-ENV PATH="$CONDA_HOME/bin:$PATH"
-
-# config conda
-RUN source /tmp/config-conda.sh \
-
-# install cann
-RUN chmod +x /tmp/install-cann.sh && \
+    source /tmp/install-miniconda.sh && \
+    conda --version && \
+    python -c "import sys; print(sys.version)" && \
+    # install cann \
+    chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
     CANN_CHIP="$CANN_CHIP" \
     CANN_VERSION="$CANN_VERSION" \
