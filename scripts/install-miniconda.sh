@@ -42,7 +42,7 @@ export PATH="$CONDA_HOME/bin:$PATH"
 conda --version
 
 # create an virtual environment
-conda create -n ascend python=3.8
+conda create -y -n ascend python=3.8
 conda activate ascend
 
 # install dependencies
