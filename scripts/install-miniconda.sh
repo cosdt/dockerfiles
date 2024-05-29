@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 PLATFORM=${PLATFORM:-"linux/arm64"}
 CONDA_HOME=${CONDA_HOME:-"/opt/miniconda"}
@@ -35,7 +35,7 @@ rm -f /tmp/$INSTALLER
 # Init
 $CONDA_HOME/bin/conda init --all
 
-echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' to apply the changes."
+echo "Miniconda installation successful. Please restart your terminal or run 'source ${HOME}/.bashrc' manually to apply the changes."
 
 source ~/.bashrc
 export PATH="$CONDA_HOME/bin:$PATH"

@@ -66,6 +66,7 @@ RUN \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh && \
     conda --version && \
+    python -c "print(__version__)" && \
     # install cann \
     chmod +x /tmp/install-cann.sh && \
     PLATFORM="$PLATFORM" \
