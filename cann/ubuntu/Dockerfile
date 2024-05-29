@@ -66,6 +66,7 @@ RUN chmod +x /tmp/install-miniconda.sh && \
     CONDA_HOME="/opt/miniconda" \
     source /tmp/install-miniconda.sh
 
+# Add conda to PATH
 ENV PATH="$CONDA_HOME/bin:$PATH"
 
 # config conda
