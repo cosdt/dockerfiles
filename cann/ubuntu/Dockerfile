@@ -29,7 +29,7 @@ ENV TIME_ZONE=Asia/Shanghai
 ENV DEBIAN_FRONTEND=noninteractive
 
 # change the default shell
-SHELL [ "/bin/bash", "-c" ]
+SHELL [ "/bin/bash" ]
 
 # install dependies
 RUN echo "${TIME_ZONE}" > /etc/timezone \
