@@ -50,16 +50,16 @@ RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc
      && rm -rf /tmp/*
 
 # copy files
-COPY . /root
+COPY scripts /root
 
 # install python
-RUN chmod +x /root/install-py.sh && \
-    bash /root/install-py.sh && \
-    rm -rf /root/install-py.sh /tmp/*
+RUN chmod +x /root/scripts/install-py.sh && \
+    bash /root/scripts/install-py.sh && \
+    rm -rf /root/scripts/install-py.sh /tmp/*
 
 # install cann toolkit and kernel
-RUN chmod +x /root/install-cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /root/install-cann.sh && \
-    rm -rf /root/install-cann.sh /tmp/*
+RUN chmod +x /root/scripts/install-cann.sh && \
+    PLATFORM=${TARGETPLATFORM} bash /root/scripts/install-cann.sh && \
+    rm -rf /root/scripts/install-cann.sh /tmp/*
 
 WORKDIR /home
