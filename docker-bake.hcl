@@ -1,3 +1,11 @@
+variable "registry" {
+  default = "docker.io"
+}
+
+variable "owner" {
+  default = "ascend"
+}
+
 group "default" {
   targets = ["cann"]
 }
@@ -17,5 +25,5 @@ target "cann" {
     PY_VERSION = "${py_version}"
     CANN_VERSION = "${cann_version}"
   }
-  tags = ["cann:${cann_version}-ubuntu${ubuntu_version}-py${py_version}"]
+  tags = ["${registry}/${owner}/cann:${cann_version}-ubuntu${ubuntu_version}-py${py_version}"]
 }

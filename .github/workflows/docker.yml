@@ -97,18 +97,21 @@ jobs:
           targets: ${{ matrix.target }}
           provenance: true
           sbom: true
+          set:
+            registry=${{ matrix.registry.url }}
+            owner=${{ matrix.registry.owner }}
           push: ${{ github.event_name != 'pull_request' }}
 
-      - name: Export digest
+      - name: Export metadata
         run: |
-          mkdir -p /tmp/digests
-          digest="${{ fromJSON(steps.bake.outputs.metadata).image['containerimage.digest'] }}"
-          touch "/tmp/digests/${digest#sha256:}"          
+          metadata="${{ fromJSON(steps.bake.outputs.metadata) }}"
+          echo "${metadata}" > /tmp/metadata
 
-      - name: Upload digest
+      - name: Upload metadata
+        id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
-          path: /tmp/digests/*
+          name: ${{ matrix.registry.url }}/${{ matrix.registry.owner }}/${{ matrix.target }}.metadata
+          path: /tmp/metadata
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
