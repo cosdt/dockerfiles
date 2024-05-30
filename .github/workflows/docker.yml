@@ -51,6 +51,8 @@ jobs:
   build:
     name: build-and-push-image
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     needs:
       - prepare
     strategy:
