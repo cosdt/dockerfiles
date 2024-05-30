@@ -98,8 +98,8 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
-          provenance: true
-          sbom: true
+          provenance: false
+          sbom: false
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=max
@@ -108,6 +108,7 @@ jobs:
           owner: ${{ matrix.registry.owner }}
 
       - name: Export metadata
+        if: ${{ steps.bake.outputs.metadata }}
         run: |
           echo "${{ steps.bake.outputs.metadata }}" > /tmp/${{ env.METADATA_FILE }}
 
