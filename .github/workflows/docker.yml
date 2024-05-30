@@ -101,8 +101,8 @@ jobs:
           provenance: true
           sbom: true
           set: |
-            cache-from=type=gha
-            cache-to=type=gha,mode=max
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}
