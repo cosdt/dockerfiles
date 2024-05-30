@@ -9,15 +9,21 @@ on:
       - 'v*'
     paths:
       - '.github/workflows/docker.yml'
-      - '**/Dockerfile*'
-      - '**/*.sh'
+      - 'docker-bake.hcl'
+      - 'cann/**'
+      - 'pytorch/**'
+      - 'llm/**'
+      - '!**/*.md'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/docker.yml'
-      - '**/Dockerfile*'
-      - '**/*.sh'
+      - 'docker-bake.hcl'
+      - 'cann/**'
+      - 'pytorch/**'
+      - 'llm/**'
+      - '!**/*.md'
   release:
     types:
       - 'published'
@@ -31,18 +37,20 @@ jobs:
     name: prepare
     runs-on: ubuntu-latest
     outputs:
-      targets: ${{ steps.generate.outputs.targets }}
+      targets: ${{ steps.list-target.outputs.targets }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: List targets
-        id: generate
+        id: list-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
+          files: |
+            docker-bake.hcl
           target: default
 
-  docker:
+  build:
     name: build-and-push-image
     runs-on: ubuntu-latest
     needs:
@@ -85,10 +93,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        id: build-push
+        id: bake
         uses: docker/bake-action@v4
         with:
           files: |
             docker-bake.hcl
           targets: ${{ matrix.target }}
+          provenance: true
+          sbom: true
           push: ${{ github.event_name != 'pull_request' }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ fromJSON(steps.bake.outputs.metadata).image['containerimage.digest'] }}"
+          touch "/tmp/digests/${digest#sha256:}"          
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 30
