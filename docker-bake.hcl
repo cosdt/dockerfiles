@@ -10,6 +10,20 @@ group "default" {
   targets = ["cann"]
 }
 
+target "cann-base" {
+  context = "cann"
+}
+
+target "base" {
+  labels = {
+    "org.opencontainers.image.source" = "https://github.com/cosdt/dockerfiles"
+  }
+}
+
+target "release" {
+  platforms = ["linux/amd64", "linux/arm64"]
+}
+
 target "cann" {
   name = replace("cann-${cann_version}-ubuntu${ubuntu_version}-py${py_version}", ".", "_")
   context = "cann"

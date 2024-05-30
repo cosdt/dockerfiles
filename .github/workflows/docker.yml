@@ -98,8 +98,8 @@ jobs:
           provenance: true
           sbom: true
           set:
-            registry=${{ matrix.registry.url }}
-            owner=${{ matrix.registry.owner }}
+            target.registry=${{ matrix.registry.url }}
+            target.owner=${{ matrix.registry.owner }}
           push: ${{ github.event_name != 'pull_request' }}
 
       - name: Export metadata
