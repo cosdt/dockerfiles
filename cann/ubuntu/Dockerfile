@@ -17,8 +17,7 @@ SHELL [ "/bin/bash", "-c" ]
 ENV DEBIAN_FRONTEND=noninteractive
 
 # install dependencies
-RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list \
-    && apt-get update \
+RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         apt-transport-https \
         ca-certificates \

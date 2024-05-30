@@ -1,68 +1,54 @@
-# Phase 1
-FROM alpine AS builder
-
-# install dependencies
-RUN apk add --no-cache wget && \
-    rm -rf /tmp/* && \
-    rm -rf /var/cache/apk/* && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-cann.sh -q -O /tmp/install-cann.sh && \
-    wget https://raw.githubusercontent.com/cosdt/dockerfiles/ascend-1/scripts/install-miniconda.sh -q -O /tmp/install-miniconda.sh
-
-# Phase 2
 ARG BASE_VERSION=latest
-FROM openeuler:$BASE_VERSION
+FROM openeuler/openeuler:${BASE_VERSION}
 
 LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
       description="A Docker image for Ascend CANN"
 
 # arguments
-ARG PLATFORM=linux/arm64
-ARG CANN_HOME=/usr/local/Ascend
+ARG TARGETPLATFORM
+ARG PY_VERSION=3.8.0
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC1
 
-# timezone
-ENV TIME_ZONE=Asia/Shanghai
+# change the default shell
+SHELL [ "/bin/bash", "-c" ]
 
-# install dependies
-RUN echo "${TIME_ZONE}" > /etc/timezone \
-    && ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
-    && yum install -y \
-         git \
-         wget \
-         gcc \
-         gcc-c++ \
-         make \
-         cmake \
-         unzip \
-         zlib-devel \
-         libffi-devel \
-         openssl-devel \
-         pciutils \
-         net-tools \
-         sqlite-devel \
-         lapack-devel \
-         gcc-gfortran \
-         python3-devel \
-         util-linux \
-         patchelf \
+# install dependencies
+RUN yum install -y \
+        git \
+        wget \
+        gcc \
+        gcc-c++ \
+        make \
+        cmake \
+        unzip \
+        zlib-devel \
+        libffi-devel \
+        openssl-devel \
+        pciutils \
+        net-tools \
+        sqlite-devel \
+        lapack-devel \
+        gcc-gfortran \
+        python3-devel \
+        util-linux \
+        patchelf \
+        vim \
     && yum clean all \
-    && rm -rf /var/cache/yum
+    && rm -rf /var/cache/yum \
+    && rm -rf /tmp/*
 
-# install pkages
-COPY --from=builder /tmp /tmp
+# copy files
+COPY ../scripts /root/scripts
 
-RUN # install miniconda && \
-    PLATFORM="$PLATFORM" \
-    CONDA_HOME="/opt/miniconda" \
-    bash +x /tmp/install-miniconda.sh && \
-    # install cann && \
-    PLATFORM="$PLATFORM" \
-    CANN_HOME="$CANN_HOME" \
-    CANN_CHIP="$CANN_CHIP" \
-    CANN_VERSION="$CANN_VERSION" \
-    bash +x /tmp/install-cann.sh && \
-    # clean
-    rm -rf /tmp/*
+# install python
+RUN chmod +x /root/scripts/install-py.sh && \
+    bash /root/scripts/install-py.sh && \
+    rm -rf /root/scripts/install-py.sh /tmp/*
+
+# install cann toolkit and kernel
+RUN chmod +x /root/scripts/install-cann.sh && \
+    PLATFORM=${TARGETPLATFORM} bash /root/scripts/install-cann.sh && \
+    rm -rf /root/scripts/install-cann.sh /tmp/*
 
 WORKDIR /home
