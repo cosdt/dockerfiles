@@ -21,7 +21,7 @@ tar -xf /tmp/$PY_INSTALLER_TAR -C /tmp
 echo "Installing ${PY_INSTALLER_DIR}"
 cd /tmp/${PY_INSTALLER_DIR}
 ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
-make -j$(nproc)
+make -j$($(nproc) + 1)
 make altinstall
 
 # create links
