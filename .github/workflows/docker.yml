@@ -62,6 +62,8 @@ jobs:
             owner: cosdt
           - url: ghcr.io
             owner: ${{ github.repository_owner }}
+    env:
+      METADATA_FILE: ${{ matrix.registry.url }}-${{ matrix.registry.owner }}-${{ matrix.target }}-metadata.json
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,6 +97,8 @@ jobs:
           files: |
             docker-bake.hcl
           targets: ${{ matrix.target }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: true
           sbom: true
           push: ${{ github.event_name != 'pull_request' }}
@@ -104,13 +108,13 @@ jobs:
 
       - name: Export metadata
         run: |
-          echo "${{ steps.bake.outputs.metadata }}" > /tmp/metadata.json
+          echo "${{ steps.bake.outputs.metadata }}" > /tmp/${{ env.METADATA_FILE }}
 
       - name: Upload metadata
         id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.registry.url }}-${{ matrix.registry.owner }}-${{ matrix.target }}-metadata.json
-          path: /tmp/metadata.json
+          name: ${{ env.METADATA_FILE }}
+          path: /tmp/${{ env.METADATA_FILE }}
           if-no-files-found: error
           retention-days: 7
