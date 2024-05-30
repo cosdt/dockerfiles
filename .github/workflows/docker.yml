@@ -104,14 +104,13 @@ jobs:
 
       - name: Export metadata
         run: |
-          metadata="${{ fromJSON(steps.bake.outputs.metadata) }}"
-          echo "${metadata}" > /tmp/metadata
+          echo "${{ steps.bake.outputs.metadata }}" > /tmp/metadata.json
 
       - name: Upload metadata
         id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.registry.url }}-${{ matrix.registry.owner }}-${{ matrix.target }}.metadata
-          path: /tmp/metadata
+          name: ${{ matrix.registry.url }}-${{ matrix.registry.owner }}-${{ matrix.target }}-metadata.json
+          path: /tmp/metadata.json
           if-no-files-found: error
           retention-days: 7

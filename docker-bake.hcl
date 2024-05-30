@@ -30,7 +30,7 @@ target "cann" {
   dockerfile = "ubuntu/Dockerfile"
   platforms = ["linux/amd64", "linux/arm64"]
   matrix = {
-    ubuntu_version = ["22.04", "24.04"]
+    ubuntu_version = ["22.04"]
     py_version = ["3.10.0"]
     cann_version = ["8.0.RC1"]
   }
