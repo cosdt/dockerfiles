@@ -8,7 +8,7 @@ PY_MINOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f2)
 PY_SHORT_VERSION="${PY_MAJOR_VERSION}.${PY_MINOR_VERSION}"
 
 PY_HOME="/usr/local/python${PY_VERSION}"
-PY_INSTALLER_TAR="Python-${PY_VERSION}.tar.xz"
+PY_INSTALLER_TAR="Python-${PY_VERSION}.tgz"
 PY_INSTALLER_DIR="Python-${PY_VERSION}"
 PY_INSTALLER_URL="https://repo.huaweicloud.com/python/${PY_VERSION}/${PY_INSTALLER_TAR}"
 

@@ -33,7 +33,6 @@ RUN yum install -y \
         python3-devel \
         util-linux \
         patchelf \
-        xz-devel \
         vim \
     && yum clean all \
     && rm -rf /var/cache/yum \

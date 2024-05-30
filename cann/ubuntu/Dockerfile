@@ -41,7 +41,6 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
-        xz-utils \
         vim \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
