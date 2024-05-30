@@ -7,7 +7,7 @@ variable "owner" {
 }
 
 group "default" {
-  targets = ["cann-ubuntu", "cann-openeuler"]
+  targets = ["cann-ubuntu"]
 }
 
 target "base" {
