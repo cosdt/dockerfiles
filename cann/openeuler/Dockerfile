@@ -15,25 +15,30 @@ SHELL [ "/bin/bash", "-c" ]
 
 # install dependencies
 RUN yum install -y \
-        git \
+        bc \
         wget \
         gcc \
         gcc-c++ \
         make \
-        cmake \
-        unzip \
+        libtool \
+        zlib \
         zlib-devel \
+        bzip2 \
+        bzip2-devel \
+        pcre \
+        sudo \
         libffi-devel \
+        mesa-libGL \
+        pcre-devel \
+        pcre2-devel \
+        perl-devel \
+        perl-ExtUtils-Embed \
+        openssl \
         openssl-devel \
-        pciutils \
-        net-tools \
+        which \
+        lzma \
+        xz-devel \
         sqlite-devel \
-        lapack-devel \
-        gcc-gfortran \
-        python3-devel \
-        util-linux \
-        patchelf \
-        vim \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*

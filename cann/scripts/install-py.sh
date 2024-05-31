@@ -15,18 +15,24 @@ PY_INSTALLER_URL="https://repo.huaweicloud.com/python/${PY_VERSION}/${PY_INSTALL
 # download python
 echo "Downloading ${PY_INSTALLER_TAR}"
 wget ${PY_INSTALLER_URL} -q -O /tmp/${PY_INSTALLER_TAR}
-tar -xf /tmp/$PY_INSTALLER_TAR -C /tmp
+if [ ! $? -eq 0]; then
+  echo "Python ${PY_VERSION} download failed."
+  exit 1
+fi
 
 # install python
 echo "Installing ${PY_INSTALLER_DIR}"
+tar -xf /tmp/${PY_INSTALLER_TAR} -C /tmp
 cd /tmp/${PY_INSTALLER_DIR}
 ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
 make -j$($(nproc) + 1)
 make altinstall
 
 # create links
-ln -sf ${PY_HOME}/bin/python${PY_SHORT_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
-ln -sf ${PY_HOME}/bin/pip${PY_SHORT_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
+ln -sf ${PY_HOME}/bin/python${PY_SHORT_VERSION} /usr/bin/python${PY_SHORT_VERSION}
+ln -sf ${PY_HOME}/bin/pip${PY_SHORT_VERSION} /usr/bin/pip${PY_SHORT_VERSION}
+ln -sf /usr/bin/python${PY_SHORT_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
+ln -sf /usr/bin/pip${PY_SHORT_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
 ln -sf /usr/bin/python${PY_MAJOR_VERSION} /usr/bin/python
 ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
 

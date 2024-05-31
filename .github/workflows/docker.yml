@@ -51,6 +51,8 @@ jobs:
   build:
     name: build-and-push-image
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     needs:
       - prepare
     strategy:
@@ -98,16 +100,14 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
-          provenance: true
-          sbom: true
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+          provenance: false
+          sbom: false
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}
 
       - name: Export metadata
+        if: ${{ steps.bake.outputs.metadata }}
         run: |
           echo "${{ steps.bake.outputs.metadata }}" > /tmp/${{ env.METADATA_FILE }}
 

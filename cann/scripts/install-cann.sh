@@ -37,11 +37,17 @@ wget ${CANN_TOOLKIT_URL} -q -O /tmp/${CANN_TOOLKIT_FILE}
 # Install CANN Toolkit
 echo "Installing $CANN_TOOLKIT_FILE"
 chmod +x /tmp/${CANN_TOOLKIT_FILE}
-bash /tmp/${CANN_TOOLKIT_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
+bash /tmp/${CANN_TOOLKIT_FILE} --quiet --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_TOOLKIT_FILE}
 
 # Init
-echo "source $CANN_HOME/ascend-toolkit/set_env.sh " >> ~/.bashrc
+CANN_TOOLKIT_ENV_FILE="${CANN_HOME}/ascend-toolkit/set_env.sh"
+if [ ! -e ${CANN_TOOLKIT_ENV_FILE} ]; then
+  echo "CANN Toolkit ${CANN_VERSION} installation failed."
+  exit 1
+fi
+
+echo "source ${CANN_TOOLKIT_ENV_FILE} " >> ~/.bashrc
 source ~/.bashrc
 
 # Download CANN Kernels
@@ -51,7 +57,7 @@ wget ${CANN_KERNELS_URL} -q -O /tmp/${CANN_KERNELS_FILE}
 # Install CANN Kernels
 echo "Installing $CANN_KERNELS_FILE"
 chmod +x /tmp/${CANN_KERNELS_FILE}
-bash /tmp/${CANN_KERNELS_FILE} --check --quiet --install --install-for-all --install-path=${CANN_HOME}
+bash /tmp/${CANN_KERNELS_FILE} --quiet --install --install-for-all --install-path=${CANN_HOME}
 rm -f /tmp/${CANN_KERNELS_FILE}
 
-echo "CANN installation successful."
+echo "CANN ${CANN_VERSION} installation successful."
