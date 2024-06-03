@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -e
 
 get_architecture() {
     # not case sensitive
@@ -8,7 +8,7 @@ get_architecture() {
 
     case "${PLATFORM}" in
         "linux/x86_64"|"linux/amd64")
-            Arch="x86_64"
+            ARCH="x86_64"
             ;;
         "linux/aarch64"|"linux/arm64")
             ARCH="aarch64"
