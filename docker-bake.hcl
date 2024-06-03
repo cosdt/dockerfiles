@@ -42,7 +42,7 @@ target "cann-ubuntu" {
   platforms = ["linux/amd64", "linux/arm64"]
   matrix = {
     base_version = ["22.04"]
-    py_version = ["3.10.0"]
+    py_version = ["3.8"]
     cann_version = ["8.0.RC1"]
   }
   args = {
