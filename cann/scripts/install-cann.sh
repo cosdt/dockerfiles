@@ -21,7 +21,9 @@ case "$PLATFORM" in
 esac
 
 # install dependencies
-pip install --no-cache-dir --upgrade pip
+HW_MIRROR=https://repo.huaweicloud.com/repository/pypi/simple
+pip install --no-cache-dir --upgrade pip -i ${HW_MIRROR}
+pip config set global.index-url ${HW_MIRROR}
 pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
 CANN_URL_PREFIX="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
