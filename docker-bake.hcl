@@ -7,66 +7,40 @@ variable "owner" {
 }
 
 group "default" {
-  targets = ["cann-ubuntu"]
+  targets = ["cann"]
 }
 
-target "base" {
+target "base-target" {
   labels = {
-    "org.opencontainers.image.source" = "https://github.com/cosdt/dockerfiles"
+    "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>"
+    "org.opencontainers.image.description" = "A Docker image built by Ascend"
   }
 }
 
-target "release" {
-  platforms = ["linux/amd64", "linux/arm64"]
-}
-
-target "cann-base" {
-  inherits = ["base"]
-  name = "cann"
+target "cann" {
+  inherits = ["base-target"]
+  name = replace("cann-${cann_version}-${os.name}${os.version}-py${py_version}", ".", "_")
   context = "cann"
-  dockerfile = "Dockerfile"
+  dockerfile = "${os.name}/Dockerfile"
+  platforms = ["linux/amd64", "linux/arm64"]
   matrix = {
-    py_version = ["3.10.0"]
+    os = [
+      {
+        name = "ubuntu"
+        version = "20.04"
+      },
+      {
+        name = "ubuntu"
+        version = "22.04"
+      }
+    ]
+    py_version = ["3.8", "3.9"]
     cann_version = ["8.0.RC1"]
   }
   args = {
+    BASE_VERSION = "${os.version}"
     PY_VERSION = "${py_version}"
     CANN_VERSION = "${cann_version}"
   }
-}
-
-target "cann-ubuntu" {
-  name = replace("cann-${cann_version}-ubuntu${base_version}-py${py_version}", ".", "_")
-  context = "cann"
-  dockerfile = "ubuntu/Dockerfile"
-  platforms = ["linux/amd64", "linux/arm64"]
-  matrix = {
-    base_version = ["22.04"]
-    py_version = ["3.8"]
-    cann_version = ["8.0.RC1"]
-  }
-  args = {
-    BASE_VERSION = "${base_version}"
-    PY_VERSION = "${py_version}"
-    CANN_VERSION = "${cann_version}"
-  }
-  tags = ["${registry}/${owner}/cann:${cann_version}-ubuntu${base_version}-py${py_version}"]
-}
-
-target "cann-openeuler" {
-  name = replace("cann-${cann_version}-openeuler${base_version}-py${py_version}", ".", "_")
-  context = "cann"
-  dockerfile = "openeuler/Dockerfile"
-  platforms = ["linux/amd64", "linux/arm64"]
-  matrix = {
-    base_version = ["22.03"]
-    py_version = ["3.10.0"]
-    cann_version = ["8.0.RC1"]
-  }
-  args = {
-    BASE_VERSION = "${base_version}"
-    PY_VERSION = "${py_version}"
-    CANN_VERSION = "${cann_version}"
-  }
-  tags = ["${registry}/${owner}/cann:${cann_version}-openeuler${base_version}-py${py_version}"]
+  tags = ["${registry}/${owner}/cann:${cann_version}-${os.name}${os.version}-py${py_version}"]
 }

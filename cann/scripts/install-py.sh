@@ -3,6 +3,7 @@
 set -e
 
 PY_VERSION=${PY_VERSION:-"3.8"}
+PY_MAJOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f1)
 
 # find the latest version
 PY_LATEST_VERSION=$(curl -s https://www.python.org/ftp/python/ | grep -oE "${PY_VERSION}\.[0-9]+" | sort -V | tail -n 1)
@@ -37,8 +38,10 @@ make altinstall
 # create links
 ln -sf ${PY_HOME}/bin/python${PY_VERSION} /usr/bin/python${PY_VERSION}
 ln -sf ${PY_HOME}/bin/pip${PY_VERSION} /usr/bin/pip${PY_VERSION}
-ln -sf /usr/bin/python${PY_VERSION} /usr/bin/python
-ln -sf /usr/bin/pip${PY_VERSION} /usr/bin/pip
+ln -sf /usr/bin/python${PY_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
+ln -sf /usr/bin/pip${PY_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
+ln -sf /usr/bin/python${PY_MAJOR_VERSION} /usr/bin/python
+ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
 
 # clean up
 rm -rf /tmp/${PY_INSTALLER_TGZ} /tmp/${PY_INSTALLER_DIR}

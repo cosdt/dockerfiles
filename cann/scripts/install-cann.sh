@@ -1,24 +1,32 @@
 #!/bin/bash
 
-set -e
+set -eux
 
-PLATFORM=${PLATFORM:-"linux/arm64"}
-CANN_HOME=${CANN_HOME:-"/usr/local/Ascend"}
-CANN_CHIP=${CANN_CHIP:-"all"}
-CANN_VERSION=${CANN_VERSION:-"8.0.RC1"}
+get_architecture() {
+    # not case sensitive
+    shopt -s nocasematch
 
-case "$PLATFORM" in
-    "linux/x86_64"|"linux/amd64")
-        ARCH="x86_64"
-        ;;
-    "linux/aarch64"|"linux/arm64")
-        ARCH="aarch64"
-        ;;
-    *)
-        echo "Error: Unsupported architecture $PLATFORM."
-        exit 1
-        ;;
-esac
+    case "${PLATFORM}" in
+        "linux/x86_64"|"linux/amd64")
+            Arch="x86_64"
+            ;;
+        "linux/aarch64"|"linux/arm64")
+            ARCH="aarch64"
+            ;;
+        *)
+            echo "Error: Unsupported architecture ${PLATFORM}."
+            exit 1
+            ;;
+    esac
+
+    echo "${ARCH}"
+}
+
+PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
+ARCH=$(get_architecture)
+CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
+CANN_CHIP=${CANN_CHIP:="all"}
+CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
 
 # install dependencies
 HW_MIRROR=https://repo.huaweicloud.com/repository/pypi/simple
