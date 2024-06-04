@@ -35,7 +35,7 @@ concurrency:
 jobs:
   prepare:
     name: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       targets: ${{ steps.list-target.outputs.targets }}
     steps:
@@ -50,7 +50,7 @@ jobs:
 
   build:
     name: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       packages: write
     needs:
