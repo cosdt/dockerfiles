@@ -35,7 +35,7 @@ concurrency:
 jobs:
   prepare:
     name: prepare
-    runs-on: self-hosted
+    runs-on: jyh-gpu
     outputs:
       targets: ${{ steps.list-target.outputs.targets }}
     steps:
@@ -50,7 +50,7 @@ jobs:
 
   build:
     name: build
-    runs-on: self-hosted
+    runs-on: jyh-gpu
     permissions:
       packages: write
     needs:
