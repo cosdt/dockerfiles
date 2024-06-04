@@ -62,8 +62,6 @@ jobs:
         registry:
           - url: docker.io
             owner: cosdt
-          - url: ghcr.io
-            owner: ${{ github.repository_owner }}
     env:
       METADATA_FILE: ${{ matrix.registry.url }}-${{ matrix.registry.owner }}-${{ matrix.target }}-metadata.json
     steps:
