@@ -49,7 +49,7 @@ jobs:
           target: default
 
   build:
-    name: build-and-push-image
+    name: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -92,6 +92,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract metadata for Docker
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          bake-target: ${{ matrix.target }}
+
       - name: Build and push Docker image
         id: bake
         uses: docker/bake-action@v4
@@ -100,6 +106,7 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
+          no-cache: true
           provenance: false
           sbom: false
         env:

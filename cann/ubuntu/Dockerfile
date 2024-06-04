@@ -1,9 +1,6 @@
 ARG BASE_VERSION=latest
 FROM ubuntu:${BASE_VERSION}
 
-LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
-      description="A Docker image for Ascend CANN"
-
 # arguments
 ARG TARGETPLATFORM
 ARG PY_VERSION=3.8
