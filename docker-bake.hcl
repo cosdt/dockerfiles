@@ -20,7 +20,7 @@ target "base-target" {
 
 target "cann" {
   inherits = ["base-target"]
-  name = replace("cann-${cann_version}-${os.name}${os.version}-py${py_version}", ".", "_")
+  name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}-py${py_version}", ".", "_")
   context = "cann"
   dockerfile = "${os.name}/Dockerfile"
   matrix = {
@@ -30,13 +30,17 @@ target "cann" {
         version = "22.04"
       }
     ]
-    py_version = ["3.8", "3.9", "3.10"]
-    cann_version = ["8.0.RC1"]
+    py_version = ["3.10"]
+    cann_chip = ["310p", "910b"]
+    cann_version = ["7.0.0", "8.0.RC1"]
   }
   args = {
     BASE_VERSION = "${os.version}"
     PY_VERSION = "${py_version}"
+    CANN_CHIP = "${cann_chip}"
     CANN_VERSION = "${cann_version}"
   }
-  tags = ["${registry}/${owner}/cann:${cann_version}-${os.name}${os.version}-py${py_version}"]
+  tags = [
+    lower("${registry}/${owner}/cann:${cann_version}-${cann_chip}-${os.name}${os.version}-py${py_version}")
+  ]
 }

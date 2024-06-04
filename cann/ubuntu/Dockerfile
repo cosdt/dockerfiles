@@ -3,9 +3,9 @@ FROM ubuntu:${BASE_VERSION}
 
 # arguments
 ARG TARGETPLATFORM
-ARG PY_VERSION=3.8
-ARG CANN_CHIP=910b
-ARG CANN_VERSION=8.0.RC1
+ARG PY_VERSION
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # change the default shell
 SHELL [ "/bin/bash", "-c" ]
