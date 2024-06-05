@@ -26,6 +26,14 @@ target "cann" {
   matrix = {
     os = [
       {
+        name = "ubuntu"
+        version = "20.04"
+      },
+      {
+        name = "ubuntu"
+        version = "22.04"
+      },
+      {
         name = "openeuler"
         version = "20.03"
       }
