@@ -3,7 +3,6 @@ FROM ubuntu:${BASE_VERSION}
 
 # arguments
 ARG TARGETPLATFORM
-ARG PY_VERSION
 ARG CANN_CHIP
 ARG CANN_VERSION
 
@@ -38,7 +37,9 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
-        curl \
+        python3 \
+        python3-pip \
+        python3-dev \
         vim \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
@@ -47,11 +48,6 @@ RUN apt-get update \
 
 # copy files
 COPY ../scripts /root/scripts
-
-# install python
-RUN chmod +x /root/scripts/install-py.sh && \
-    bash /root/scripts/install-py.sh && \
-    rm -rf /root/scripts/install-py.sh /tmp/*
 
 # install cann toolkit and kernel
 RUN chmod +x /root/scripts/install-cann.sh && \

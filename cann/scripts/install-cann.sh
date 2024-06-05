@@ -29,10 +29,8 @@ CANN_CHIP=${CANN_CHIP:="910b"}
 CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
 
 # install dependencies
-HW_MIRROR=https://repo.huaweicloud.com/repository/pypi/simple
-pip install --no-cache-dir --upgrade pip -i ${HW_MIRROR}
-pip config set global.index-url ${HW_MIRROR}
-pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+pip3 config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
+pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
 CANN_URL_PREFIX="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
 CANN_TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
