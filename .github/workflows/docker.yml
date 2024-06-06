@@ -46,18 +46,19 @@ jobs:
         id: list-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
-          target: cann-prefer
+          target: default
 
   build:
     name: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    needs:
+      - prepare
     strategy:
       fail-fast: false
       matrix:
-        target: 
-          - "cann-prefer"
+        target: ${{ fromJson(needs.prepare.outputs.targets) }}
         registry:
           - name: DockerHub
             url: docker.io
@@ -110,9 +111,6 @@ jobs:
           no-cache: false
           provenance: false
           sbom: false
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}

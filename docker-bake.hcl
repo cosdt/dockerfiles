@@ -68,7 +68,21 @@ target "cann-prefer" {
         os_version = "22.04"
         cann_chip = "910b"
         cann_version = "8.0.RC1"
-      }
+      },
+      {
+        tag = "8.0"
+        os = "ubuntu"
+        os_version = "22.04"
+        cann_chip = "910b"
+        cann_version = "8.0.RC1"
+      },
+      {
+        tag = "7.0"
+        os = "ubuntu"
+        os_version = "22.04"
+        cann_chip = "910b"
+        cann_version = "7.0.0"
+      },
     ]
   }
   args = {
