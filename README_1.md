@@ -56,4 +56,4 @@ docker buildx bake -f docker-bake.hcl
 
 ## License
 
-This repository is licensed under the [Apache 2.0 License](./LICENSE).
+This repository is licensed under the [Apache License 2.0](./LICENSE).

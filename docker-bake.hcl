@@ -43,7 +43,7 @@ target "cann-all" {
       }
     ]
     cann_chip = ["910b"]
-    cann_version = ["7.0.0", "8.0.RC1"]
+    cann_version = ["7.0.1", "8.0.RC1"]
   }
   args = {
     BASE_VERSION = "${os.version}"
