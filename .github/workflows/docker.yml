@@ -46,7 +46,7 @@ jobs:
         id: list-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
-          target: default
+          target: cann-prefer
 
   build:
     name: build
