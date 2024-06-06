@@ -10,21 +10,21 @@ ARG CANN_VERSION
 SHELL [ "/bin/bash", "-c" ]
 
 RUN yum install -y \
-    gcc \
-    gcc-c++ \
-    make \
-    cmake \
-    unzip \
-    zlib-devel \
-    libffi-devel \
-    openssl-devel \
-    pciutils \
-    net-tools \
-    sqlite-devel \
-    lapack-devel gcc-gfortran \
-    python3-devel \
-    python3-pip \
-    wget \
+        gcc \
+        gcc-c++ \
+        make \
+        cmake \
+        unzip \
+        zlib-devel \
+        libffi-devel \
+        openssl-devel \
+        pciutils \
+        net-tools \
+        sqlite-devel \
+        lapack-devel gcc-gfortran \
+        python3-devel \
+        python3-pip \
+        wget \
     && yum clean all \
     && rm -rf /var/cache/yum
 

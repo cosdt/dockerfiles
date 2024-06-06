@@ -7,7 +7,11 @@ variable "owner" {
 }
 
 group "default" {
-  targets = ["cann", "cann-prefer"]
+  targets = ["cann-all", "cann-prefer"]
+}
+
+group "cann" {
+  targets = ["cann-all", "cann-prefer"]
 }
 
 target "base-target" {
@@ -18,7 +22,7 @@ target "base-target" {
   }
 }
 
-target "cann" {
+target "cann-all" {
   inherits = ["base-target"]
   name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}", ".", "_")
   context = "cann"
