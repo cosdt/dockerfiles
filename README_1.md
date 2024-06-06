@@ -20,13 +20,15 @@
     </a> •
     <a href="https://github.com/orgs/cosdt/packages?ecosystem=docker">
         <b>GitHub Container</b>
-    </a>
+    </a> •
     <a href="https://quay.io/organization/cosdt">
         <b>Red Hat Quay</b>
     </a>
 </p>
 
 ## Build
+
+See: https://ascend.github.io/docs/sources/ascend/quick_install.html
 
 In order to build Ascend Docker images, ensure you have the following.
 

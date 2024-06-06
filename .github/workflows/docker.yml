@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix:
         target: 
-          - "default"
+          - "cann-prefer"
         registry:
           - name: DockerHub
             url: docker.io
