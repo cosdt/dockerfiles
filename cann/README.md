@@ -42,3 +42,9 @@ registry=ghcr.io \
 owner=your_gh_username \
 docker buildx bake -f docker-bake.hcl cann
 ```
+
+Don't have Bake? You can use `docker build` instead:
+
+```docker
+docker build -t cann:<TAG> -f cann/ubuntu/Dockerfile cann/
+```
