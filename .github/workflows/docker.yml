@@ -35,7 +35,7 @@ concurrency:
 jobs:
   prepare:
     name: prepare
-    runs-on: sg-runner
+    runs-on: ubuntu-latest
     outputs:
       targets: ${{ steps.list-target.outputs.targets }}
     steps:
@@ -50,15 +50,14 @@ jobs:
 
   build:
     name: build
-    runs-on: sg-runner
+    runs-on: ubuntu-latest
     permissions:
       packages: write
-    needs:
-      - prepare
     strategy:
       fail-fast: false
       matrix:
-        target: ${{ fromJson(needs.prepare.outputs.targets) }}
+        target: 
+          - "default"
         registry:
           - name: DockerHub
             url: docker.io
