@@ -2,31 +2,39 @@
 
 set -e
 
-PLATFORM=${PLATFORM:-"linux/arm64"}
-CANN_HOME=${CANN_HOME:-"/usr/local/Ascend"}
-CANN_CHIP=${CANN_CHIP:-"all"}
-CANN_VERSION=${CANN_VERSION:-"8.0.RC1"}
+get_architecture() {
+    # not case sensitive
+    shopt -s nocasematch
 
-case "$PLATFORM" in
-    "linux/x86_64"|"linux/amd64")
-        ARCH="x86_64"
-        ;;
-    "linux/aarch64"|"linux/arm64")
-        ARCH="aarch64"
-        ;;
-    *)
-        echo "Error: Unsupported architecture $PLATFORM."
-        exit 1
-        ;;
-esac
+    case "${PLATFORM}" in
+        "linux/x86_64"|"linux/amd64")
+            ARCH="x86_64"
+            ;;
+        "linux/aarch64"|"linux/arm64")
+            ARCH="aarch64"
+            ;;
+        *)
+            echo "Error: Unsupported architecture ${PLATFORM}."
+            exit 1
+            ;;
+    esac
+
+    echo "${ARCH}"
+}
+
+PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
+ARCH=$(get_architecture)
+CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
+CANN_CHIP=${CANN_CHIP:="910b"}
+CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
 
 # install dependencies
-pip install --no-cache-dir --upgrade pip
-pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+pip3 config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
+pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
 CANN_URL_PREFIX="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
-CANN_TOOLKIT_FILE=Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run
-CANN_KERNELS_FILE=Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run
+CANN_TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
+CANN_KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
 CANN_TOOLKIT_URL="${CANN_URL_PREFIX}/${CANN_TOOLKIT_FILE}?response-content-type=application/octet-stream"
 CANN_KERNELS_URL="${CANN_URL_PREFIX}/${CANN_KERNELS_FILE}?response-content-type=application/octet-stream"
 

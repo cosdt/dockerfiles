@@ -1,14 +1,10 @@
 ARG BASE_VERSION=latest
 FROM ubuntu:${BASE_VERSION}
 
-LABEL maintainer="Ascend Open Source <ascend@huawei.com>" \
-      description="A Docker image for Ascend CANN"
-
 # arguments
 ARG TARGETPLATFORM
-ARG PY_VERSION=3.8.0
-ARG CANN_CHIP=910b
-ARG CANN_VERSION=8.0.RC1
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # change the default shell
 SHELL [ "/bin/bash", "-c" ]
@@ -41,6 +37,9 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
+        python3 \
+        python3-pip \
+        python3-dev \
         vim \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/* \
@@ -50,14 +49,12 @@ RUN apt-get update \
 # copy files
 COPY ../scripts /root/scripts
 
-# install python
-RUN chmod +x /root/scripts/install-py.sh && \
-    bash /root/scripts/install-py.sh && \
-    rm -rf /root/scripts/install-py.sh /tmp/*
-
 # install cann toolkit and kernel
 RUN chmod +x /root/scripts/install-cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /root/scripts/install-cann.sh && \
     rm -rf /root/scripts/install-cann.sh /tmp/*
+
+# driver environment variable
+ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
 
 WORKDIR /home
