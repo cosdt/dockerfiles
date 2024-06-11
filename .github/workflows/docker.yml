@@ -111,6 +111,8 @@ jobs:
           no-cache: true
           provenance: false
           sbom: false
+            *.cache-from=
+            *.cache-to=
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}
