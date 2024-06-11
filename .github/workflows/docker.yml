@@ -111,6 +111,7 @@ jobs:
           no-cache: true
           provenance: false
           sbom: false
+          set: |
             *.cache-from=
             *.cache-to=
         env:
