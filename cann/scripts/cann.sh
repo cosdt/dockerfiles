@@ -30,12 +30,12 @@ download_cann() {
 
     if [ ! -e ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      wget ${toolkit_url} -q -O ${TOOLKIT_PATH}
+      wget ${toolkit_url} -O ${TOOLKIT_PATH}
     fi
 
     if [ ! -e ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
-      wget ${kernels_url} -q -O ${KERNELS_PATH}
+      wget ${kernels_url} -O ${KERNELS_PATH}
     fi
 }
 
