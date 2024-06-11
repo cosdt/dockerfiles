@@ -20,6 +20,8 @@ target "base-target" {
     "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>"
     "org.opencontainers.image.description" = "A Docker image built by Ascend"
   }
+  cache-from = ["type=local,src=/tmp/.buildx-cache"]
+  cache-to = ["type=local,dest=/tmp/.buildx-cache,mode=min"]
 }
 
 target "cann-all" {
@@ -42,7 +44,7 @@ target "cann-all" {
         version = "20.03"
       }
     ]
-    cann_chip = ["910b"]
+    cann_chip = ["310p", "910b"]
     cann_version = ["7.0.1", "8.0.RC1"]
   }
   args = {

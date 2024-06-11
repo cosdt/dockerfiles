@@ -111,6 +111,9 @@ jobs:
           no-cache: false
           provenance: false
           sbom: false
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=min
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}
