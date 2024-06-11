@@ -85,9 +85,9 @@ KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
 TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
 KERNELS_PATH="/tmp/${KERNELS_FILE}"
 
-if [[ "$1" == "--download" ]]; then
+if [ "$1" == "--download" ]; then
     download_cann
-elif [[ "$1" == "--install" ]]; then
+elif [ "$1" == "--install" ]; then
     install_cann
 else
     echo "Unexpected arguments, use '--download' or '--install' instead"
