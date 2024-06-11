@@ -20,8 +20,6 @@ target "base-target" {
     "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>"
     "org.opencontainers.image.description" = "A Docker image built by Ascend"
   }
-  cache-from = ["type=local,src=/tmp/.buildx-cache"]
-  cache-to = ["type=local,dest=/tmp/.buildx-cache,mode=min"]
 }
 
 target "cann-all" {
