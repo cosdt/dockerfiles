@@ -74,6 +74,11 @@ jobs:
           sudo rm -rf /root/.cache
           sudo rm -rf /tmp/*
 
+      - name: Show space
+        run: |
+          sudo df -h
+          sudo du -h -d 2 /root | sort -hr
+
       - name: Checkout
         uses: actions/checkout@v4
 
