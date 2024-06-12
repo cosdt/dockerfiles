@@ -26,25 +26,37 @@ In order to build CANN Docker images, ensure you have the following.
 Run in the root directory of the repository:
 
 ```docker
-docker buildx bake -f docker-bake.hcl cann
+docker buildx bake -f docker-bake.hcl cann-prefer
 ```
 
 To build single-arch images only:
 
 ```docker
-docker buildx bake -f docker-bake.hcl --set '*.platform=linux/arm64' cann
+docker buildx bake -f docker-bake.hcl --set '*.platform=linux/arm64' cann-prefer
 ```
 
-To customize the registry and owner:
+To customize the registry and owner using JSON format:
 
-```docker
-registry=ghcr.io \
-owner=your_gh_username \
-docker buildx bake -f docker-bake.hcl cann
+```bash
+custom_registries='
+[
+  {
+    "registry": "quay.io",
+    "owner": "ascend"
+  }
+]'
+registries="${custom_registries}" \
+docker buildx bake -f docker-bake.hcl cann-prefer
 ```
 
-Don't have Bake? Use `docker build` instead:
+Don't have Bake? Use `docker buildx build` instead:
 
 ```docker
-docker build -t cann:<TAG> -f cann/ubuntu/Dockerfile cann/
+docker buildx build \
+    -t ascend/cann:latest \
+    -f cann/ubuntu/Dockerfile \
+    --build-arg BASE_VERSION=22.04 \
+    --build-arg CANN_CHIP=910b \
+    --build-arg CANN_VERSION=8.0.RC2 \
+    cann/
 ```
