@@ -68,8 +68,8 @@ RUN apt-get update \
 # Copy files
 COPY --from=downloader /tmp /tmp
 
-RUN df -h && \
-    du -h -d 2 /root | sort -hr
+RUN df -h > /root/df.txt && \
+    du -h -d 2 /root | sort -hr > du.txt
 
 # Install CANN
 RUN chmod +x /tmp/cann.sh && \
