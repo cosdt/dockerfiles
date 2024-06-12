@@ -68,6 +68,9 @@ RUN apt-get update \
 # Copy files
 COPY --from=downloader /tmp /tmp
 
+RUN sudo df -h && \
+    sudo du -h -d 2 /root | sort -hr
+
 # Install CANN
 RUN chmod +x /tmp/cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
