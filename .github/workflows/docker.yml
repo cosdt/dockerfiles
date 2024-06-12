@@ -70,8 +70,9 @@ jobs:
           yarn cache clean
           pip cache purge
           docker system prune -a -f
-          rm -rf /root/.cache
-          rm -rf /tmp/*
+          rm -rf ~/.cache
+          sudo rm -rf /root/.cache
+          sudo rm -rf /tmp/*
 
       - name: Checkout
         uses: actions/checkout@v4

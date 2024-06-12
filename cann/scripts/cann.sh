@@ -30,12 +30,12 @@ download_cann() {
 
     if [ ! -e ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      wget ${toolkit_url} -q -t 2 -O ${TOOLKIT_PATH}
+      wget ${toolkit_url} -q -t 5 -O ${TOOLKIT_PATH}
     fi
 
     if [ ! -e ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
-      wget ${kernels_url} -q -t 2 -O ${KERNELS_PATH}
+      wget ${kernels_url} -q -t 5 -O ${KERNELS_PATH}
     fi
 }
 
@@ -46,6 +46,7 @@ install_cann() {
 
     # Download installers
     if [ ! -e ${TOOLKIT_PATH} ] || [ ! -e ${KERNELS_PATH} ]; then
+        echo "[WARNING] Installers do not exist, re-download them."
         download_cann
     fi
 
