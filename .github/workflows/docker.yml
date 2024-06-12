@@ -57,15 +57,13 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
         registry:
           - name: DockerHub
             url: docker.io
             owner: cosdt
-          - name: GHCR
-            url: ghcr.io
-            owner: ${{ github.repository_owner }}
     env:
       METADATA_FILE: ${{ matrix.registry.name }}-${{ matrix.target }}-metadata.json
     steps:
@@ -108,12 +106,12 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
-          no-cache: true
+          no-cache: false
           provenance: false
           sbom: false
           set: |
-            *.cache-from=
-            *.cache-to=
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=min
         env:
           registry: ${{ matrix.registry.url }}
           owner: ${{ matrix.registry.owner }}
