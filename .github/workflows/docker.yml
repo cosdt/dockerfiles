@@ -50,7 +50,7 @@ jobs:
 
   build:
     name: build
-    runs-on: ubuntu-latest
+    runs-on: sg-runner
     permissions:
       packages: write
     needs:
@@ -64,6 +64,9 @@ jobs:
           - name: DockerHub
             url: docker.io
             owner: cosdt
+          - name: GHCR
+            url: ghcr.io
+            owner: ${{ github.repository_owner }}
     env:
       METADATA_FILE: ${{ matrix.registry.name }}-${{ matrix.target }}-metadata.json
     steps:
