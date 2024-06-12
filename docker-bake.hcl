@@ -1,20 +1,22 @@
 variable "registries" {
-  default = [
-    {
-      registry = "docker.io"
-      owner = "ascend"
-    },
-    {
-      registry = "ghcr.io"
-      owner = "ascend"
-    }
-  ]
+  default = <<EOT
+[
+  {
+    "registry": "docker.io",
+    "owner": "ascend"
+  },
+  {
+    "registry": "ghcr.io",
+    "owner": "ascend"
+  }
+]
+EOT
 }
 
 function "generate_tags" {
   params = [repo, tag]
   result = [
-    for reg in registries : lower("${reg.registry}/${reg.owner}/${repo}:${tag}")
+    for reg in jsondecode(registries) : lower("${reg.registry}/${reg.owner}/${repo}:${tag}")
   ]
 }
 

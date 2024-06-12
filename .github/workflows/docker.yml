@@ -112,12 +112,12 @@ jobs:
           registries: |
             [
               {
-                registry = "docker.io"
-                owner = "${{ secrets.DOCKERHUB_OWNER }}"
+                "registry": "docker.io",
+                "owner": "${{ secrets.DOCKERHUB_OWNER }}"
               },
               {
-                registry = "ghcr.io"
-                owner = "${{ github.repository_owner }}"
+                "registry": "ghcr.io",
+                "owner": "${{ github.repository_owner }}"
               }
             ]
 
