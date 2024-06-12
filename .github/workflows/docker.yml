@@ -63,6 +63,16 @@ jobs:
     env:
       METADATA_FILE: ${{ matrix.target }}-metadata.json
     steps:
+      - name: Clean up
+        continue-on-error: true
+        run: |
+          npm cache clean --force
+          yarn cache clean
+          pip cache purge
+          docker system prune -a -f
+          rm -rf /root/.cache
+          rm -rf /tmp/*
+
       - name: Checkout
         uses: actions/checkout@v4
 
