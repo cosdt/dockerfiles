@@ -48,11 +48,10 @@ RUN yum install -y \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
 
-# Copy files
-COPY --from=downloader /tmp /tmp
-
 # Install CANN
-RUN chmod +x /tmp/cann.sh && \
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    chmod +x /tmp/cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 

@@ -57,7 +57,7 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: ${{ env.MAX_PARALLEL }}
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     env:
@@ -122,12 +122,11 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
-          no-cache: true
           provenance: false
           sbom: false
           set: |
-            *.cache-from=
-            *.cache-to=
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
         env:
           registries: |
             [
@@ -162,6 +161,7 @@ jobs:
       - name: Clean up
         continue-on-error: true
         run: |
+          sudo df -h
           npm cache clean --force
           yarn cache clean
           pip cache purge

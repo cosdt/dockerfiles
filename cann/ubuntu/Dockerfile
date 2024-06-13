@@ -65,14 +65,10 @@ RUN apt-get update \
      && rm -rf /var/tmp/* \
      && rm -rf /tmp/*
 
-# Copy files
-COPY --from=downloader /tmp /tmp
-
-RUN df -h > /root/df.txt && \
-    du -h -d 2 /root | sort -hr > du.txt
-
 # Install CANN
-RUN chmod +x /tmp/cann.sh && \
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    chmod +x /tmp/cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
