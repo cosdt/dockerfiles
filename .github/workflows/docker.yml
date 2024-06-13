@@ -66,12 +66,14 @@ jobs:
       - name: Clean up
         continue-on-error: true
         run: |
+          sudo df -h
           npm cache clean --force
           yarn cache clean
           pip cache purge
           docker system prune -a -f
           rm -rf ~/.cache
           sudo rm -rf /root/.cache
+          sudo rm -rf /opt/hostedtoolcache
           sudo rm -rf /tmp/*
 
       - name: Show space
