@@ -28,12 +28,12 @@ download_cann() {
     local toolkit_url="${url_prefix}/${TOOLKIT_FILE}?${url_suffix}"
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
 
-    if [ ! -e ${TOOLKIT_PATH} ]; then
+    if [ ! -f ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
       wget ${toolkit_url} -q -t 5 -O ${TOOLKIT_PATH}
     fi
 
-    if [ ! -e ${KERNELS_PATH} ]; then
+    if [ ! -f ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
       wget ${kernels_url} -q -t 5 -O ${KERNELS_PATH}
     fi
@@ -45,7 +45,7 @@ install_cann() {
     pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Download installers
-    if [ ! -e ${TOOLKIT_PATH} ] || [ ! -e ${KERNELS_PATH} ]; then
+    if [ ! -f ${TOOLKIT_PATH} ] || [ ! -f ${KERNELS_PATH} ]; then
         echo "[WARNING] Installers do not exist, re-download them."
         download_cann
     fi
@@ -58,7 +58,7 @@ install_cann() {
 
     # Set environment variables
     CANN_TOOLKIT_ENV_FILE="${CANN_HOME}/ascend-toolkit/set_env.sh"
-    if [ ! -e ${CANN_TOOLKIT_ENV_FILE} ]; then
+    if [ ! -f ${CANN_TOOLKIT_ENV_FILE} ]; then
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
