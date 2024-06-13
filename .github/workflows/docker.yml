@@ -80,10 +80,6 @@ jobs:
       - name: Show space
         run: |
           sudo df -h
-          sudo du -h -d 1 /root | sort -hr
-          sudo du -h -d 1 /usr | sort -hr
-          sudo du -h -d 1 /opt | sort -hr
-          sudo du -h -d 1 /tmp | sort -hr
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,6 +105,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to the RedHat Quay
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
 
       - name: Extract metadata for Docker
         id: metadata
@@ -140,6 +144,10 @@ jobs:
               {
                 "registry": "ghcr.io",
                 "owner": "${{ github.repository_owner }}"
+              },
+              {
+                "registry": "quay.io",
+                "owner": "${{ secrets.QUAY_OWNER }}"
               }
             ]
 
@@ -166,5 +174,4 @@ jobs:
         if: ${{ always() }}
         run: |
           sudo df -h
-          sudo du -h -d 0 /root /usr /opt /tmp
           docker images
