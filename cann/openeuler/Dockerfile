@@ -1,23 +1,4 @@
 ARG BASE_VERSION=latest
-
-# Phase 1: download CANN installers
-FROM alpine as downloader
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache \
-        bash \
-        wget \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /tmp/*
-
-# Copy files
-COPY ../scripts/cann.sh /tmp/cann.sh
-
-# Download CANN
-RUN chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --download
-
-# Phase 2: install CANN toolkit and kernels
 FROM openeuler/openeuler:${BASE_VERSION} as builder
 
 # Arguments
@@ -48,10 +29,11 @@ RUN yum install -y \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
 
+# Copy files
+COPY ../scripts/cann.sh /tmp/cann.sh
+
 # Install CANN
-RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
-    umask 0022 && \
-    chmod +x /tmp/cann.sh && \
+RUN chmod +x /tmp/cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 

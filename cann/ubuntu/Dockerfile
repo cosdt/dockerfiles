@@ -1,23 +1,4 @@
 ARG BASE_VERSION=latest
-
-# Phase 1: download CANN installers
-FROM alpine as downloader
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache \
-        bash \
-        wget \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /tmp/*
-
-# Copy files
-COPY ../scripts/cann.sh /tmp/cann.sh
-
-# Download CANN
-RUN chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --download
-
-# Phase 2: install CANN toolkit and kernels
 FROM ubuntu:${BASE_VERSION} as builder
 
 # Arguments
@@ -66,7 +47,7 @@ RUN apt-get update \
      && rm -rf /tmp/*
 
 # Copy files
-COPY --from=downloader /tmp /tmp
+COPY ../scripts/cann.sh /tmp/cann.sh
 
 # Install CANN
 RUN chmod +x /tmp/cann.sh && \
