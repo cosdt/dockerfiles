@@ -78,6 +78,8 @@ jobs:
         run: |
           sudo df -h
           sudo du -h -d 2 /root | sort -hr
+          sudo du -h -d 2 /opt | sort -hr
+          sudo du -h -d 2 /tmp | sort -hr
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -155,6 +157,24 @@ jobs:
     name: ubuntu
     runs-on: ubuntu-latest
     steps:
+      - name: Clean up
+        continue-on-error: true
+        run: |
+          npm cache clean --force
+          yarn cache clean
+          pip cache purge
+          docker system prune -a -f
+          rm -rf ~/.cache
+          sudo rm -rf /root/.cache
+          sudo rm -rf /tmp/*
+
+      - name: Show space
+        run: |
+          sudo df -h
+          sudo du -h -d 2 /root | sort -hr
+          sudo du -h -d 2 /opt | sort -hr
+          sudo du -h -d 2 /tmp | sort -hr
+
       - name: Checkout
         uses: actions/checkout@v4
 
