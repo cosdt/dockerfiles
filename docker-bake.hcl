@@ -1,24 +1,38 @@
-variable "registry" {
-  default = "docker.io"
+variable "registries" {
+  default = <<EOT
+[
+  {
+    "registry": "docker.io",
+    "owner": "ascend"
+  },
+  {
+    "registry": "ghcr.io",
+    "owner": "ascend"
+  }
+]
+EOT
 }
 
-variable "owner" {
-  default = "ascend"
+function "generate_tags" {
+  params = [repo, tag]
+  result = [
+    for reg in jsondecode(registries) : lower("${reg.registry}/${reg.owner}/${repo}:${tag}")
+  ]
 }
 
 group "default" {
-  targets = ["cann", "cann-prefer"]
+  targets = ["cann-all", "cann-prefer"]
+}
+
+group "cann" {
+  targets = ["cann-all", "cann-prefer"]
 }
 
 target "base-target" {
   platforms = ["linux/amd64", "linux/arm64"]
-  labels = {
-    "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>"
-    "org.opencontainers.image.description" = "A Docker image built by Ascend"
-  }
 }
 
-target "cann" {
+target "cann-all" {
   inherits = ["base-target"]
   name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}", ".", "_")
   context = "cann"
@@ -38,17 +52,15 @@ target "cann" {
         version = "20.03"
       }
     ]
-    cann_chip = ["910b"]
-    cann_version = ["7.0.0", "8.0.RC1"]
+    cann_chip = ["310p", "910b"]
+    cann_version = ["7.0.1", "8.0.RC1"]
   }
   args = {
     BASE_VERSION = "${os.version}"
     CANN_CHIP = "${cann_chip}"
     CANN_VERSION = "${cann_version}"
   }
-  tags = [
-    lower("${registry}/${owner}/cann:${cann_version}-${cann_chip}-${os.name}${os.version}")
-  ]
+  tags = generate_tags("cann", "${cann_version}-${cann_chip}-${os.name}${os.version}")
 }
 
 target "cann-prefer" {
@@ -86,7 +98,5 @@ target "cann-prefer" {
     CANN_CHIP = "${item.cann_chip}"
     CANN_VERSION = "${item.cann_version}"
   }
-  tags = [
-    "${registry}/${owner}/cann:${item.tag}"
-  ]
+  tags = generate_tags("cann", "${item.tag}")
 }

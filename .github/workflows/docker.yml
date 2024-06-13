@@ -57,18 +57,30 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
-        registry:
-          - name: DockerHub
-            url: docker.io
-            owner: cosdt
-          - name: GHCR
-            url: ghcr.io
-            owner: ${{ github.repository_owner }}
-    env:
-      METADATA_FILE: ${{ matrix.registry.name }}-${{ matrix.target }}-metadata.json
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
+      - name: Clean up
+        continue-on-error: true
+        run: |
+          sudo df -h
+          npm cache clean --force
+          yarn cache clean
+          pip cache purge
+          docker system prune -a -f
+          rm -rf ~/.cache
+          sudo rm -rf /root/.cache
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /tmp/*
+
+      - name: Show space
+        run: |
+          sudo df -h
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -79,20 +91,28 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to the Docker Hub
-        if: ${{ github.event_name != 'pull_request' && matrix.registry.name == 'DockerHub' }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.registry.url }}
+          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to the GitHub Container
-        if: ${{ github.event_name != 'pull_request' && matrix.registry.name == 'GHCR' }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.registry.url }}
+          registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to the RedHat Quay
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
 
       - name: Extract metadata for Docker
         id: metadata
@@ -108,26 +128,50 @@ jobs:
             docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
-          no-cache: false
           provenance: false
           sbom: false
           set: |
+            *.platform=${{ matrix.platform }}
             *.cache-from=type=gha
-            *.cache-to=type=gha
+            *.cache-to=type=gha,mode=min
         env:
-          registry: ${{ matrix.registry.url }}
-          owner: ${{ matrix.registry.owner }}
+          registries: |
+            [
+              {
+                "registry": "docker.io",
+                "owner": "${{ secrets.DOCKERHUB_OWNER }}"
+              },
+              {
+                "registry": "ghcr.io",
+                "owner": "${{ github.repository_owner }}"
+              },
+              {
+                "registry": "quay.io",
+                "owner": "${{ secrets.QUAY_OWNER }}"
+              }
+            ]
 
       - name: Export metadata
+        id: export
         if: ${{ steps.bake.outputs.metadata }}
         run: |
-          echo "${{ steps.bake.outputs.metadata }}" > /tmp/${{ env.METADATA_FILE }}
+          PLATFORM=${{ matrix.platform }}
+          PLATFORM=${PLATFORM/\//-}
+          METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
+          echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
+          echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
       - name: Upload metadata
         id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.METADATA_FILE }}
-          path: /tmp/${{ env.METADATA_FILE }}
+          name: ${{ steps.export.outputs.metadata_file_name }}
+          path: /tmp/${{ steps.export.outputs.metadata_file_name }}
           if-no-files-found: error
           retention-days: 7
+
+      - name: Show space
+        if: ${{ always() }}
+        run: |
+          sudo df -h
+          docker images
