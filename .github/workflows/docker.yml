@@ -164,3 +164,4 @@ jobs:
         run: |
           sudo df -h
           sudo du -h -d 0 /root /usr /opt /tmp
+          docker images
