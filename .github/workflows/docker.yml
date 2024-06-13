@@ -148,7 +148,7 @@ jobs:
         if: ${{ steps.bake.outputs.metadata }}
         run: |
           PLATFORM=${{ matrix.platform }}
-          PLATFORM=${PLATFORM//\//-}
+          PLATFORM=${PLATFORM/\//-}
           METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
           echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
           printf '%s' "${{ steps.bake.outputs.metadata }}" | jq '.' > /tmp/${METADATA_FILE_NAME}
