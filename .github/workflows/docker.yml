@@ -192,7 +192,10 @@ jobs:
         with:
           context: cann/
           file: cann/ubuntu/Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
           push: false
           tags: user/app:latest
           build-args: |
             BASE_VERSION=22.04
+          platforms: linux/amd64,linux/arm64

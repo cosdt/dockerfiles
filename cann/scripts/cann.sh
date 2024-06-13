@@ -37,6 +37,8 @@ download_cann() {
       echo "Downloading ${KERNELS_FILE}"
       wget ${kernels_url} --quiet --tries=20 --wait=5 -O ${KERNELS_PATH}
     fi
+
+    echo "CANN ${CANN_VERSION} download successful."
 }
 
 install_cann() {
