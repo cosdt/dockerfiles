@@ -57,7 +57,7 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 1
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     env:
@@ -166,6 +166,7 @@ jobs:
           docker system prune -a -f
           rm -rf ~/.cache
           sudo rm -rf /root/.cache
+          sudo rm -rf /opt/hostedtoolcache
           sudo rm -rf /tmp/*
 
       - name: Show space
