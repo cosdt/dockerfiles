@@ -63,8 +63,6 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-    env:
-      METADATA_FILE: ${{ matrix.target }}-metadata.json
     steps:
       - name: Clean up
         continue-on-error: true
@@ -146,16 +144,21 @@ jobs:
             ]
 
       - name: Export metadata
+        id: export
         if: ${{ steps.bake.outputs.metadata }}
         run: |
-          echo "${{ steps.bake.outputs.metadata }}" > /tmp/${{ env.METADATA_FILE }}
+          PLATFORM=${{ matrix.platform }}
+          PLATFORM=${PLATFORM//\//-}
+          METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
+          echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
+          printf '%s' "${{ steps.bake.outputs.metadata }}" | jq '.' > /tmp/${METADATA_FILE_NAME}
 
       - name: Upload metadata
         id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.METADATA_FILE }}
-          path: /tmp/${{ env.METADATA_FILE }}
+          name: ${{ steps.export.outputs.metadata_file_name }}
+          path: /tmp/${{ steps.export.outputs.metadata_file_name }}
           if-no-files-found: error
           retention-days: 7
 

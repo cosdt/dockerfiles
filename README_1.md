@@ -28,13 +28,11 @@
 
 ## Build
 
-See: https://ascend.github.io/docs/sources/ascend/quick_install.html
-
 In order to build Ascend Docker images, ensure you have the following.
 
 - Docker Engine 20.10+
 
-In the root repository, run:
+Run in the root directory of the repository:
 
 ```docker
 docker buildx bake -f docker-bake.hcl
@@ -46,11 +44,17 @@ To build single-arch images only:
 docker buildx bake -f docker-bake.hcl --set '*.platform=linux/arm64'
 ```
 
-To customize the registry and owner:
+To customize the registry and owner using JSON format:
 
-```docker
-registry=ghcr.io \
-owner=your_gh_username \
+```bash
+custom_registries='
+[
+  {
+    "registry": "quay.io",
+    "owner": "ascend"
+  }
+]'
+registries="${custom_registries}" \
 docker buildx bake -f docker-bake.hcl
 ```
 

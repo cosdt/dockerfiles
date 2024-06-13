@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 get_architecture() {
     # not case sensitive
