@@ -30,12 +30,12 @@ download_cann() {
 
     if [ ! -f ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      wget ${toolkit_url} --quiet --tries=0 --wait=10 -O ${TOOLKIT_PATH}
+      wget ${toolkit_url} --quiet --tries=0 --wait=5 -O ${TOOLKIT_PATH}
     fi
 
     if [ ! -f ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
-      wget ${kernels_url} --quiet --tries=0 --wait=10 -O ${KERNELS_PATH}
+      wget ${kernels_url} --quiet --tries=0 --wait=5 -O ${KERNELS_PATH}
     fi
 
     echo "CANN ${CANN_VERSION} download successful."
