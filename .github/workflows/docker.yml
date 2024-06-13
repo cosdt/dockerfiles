@@ -151,7 +151,7 @@ jobs:
           PLATFORM=${PLATFORM/\//-}
           METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
           echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
-          printf '%s' "${{ steps.bake.outputs.metadata }}" > /tmp/${METADATA_FILE_NAME}
+          echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
       - name: Upload metadata
         id: upload-artifact
