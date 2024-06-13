@@ -150,3 +150,24 @@ jobs:
           path: /tmp/${{ env.METADATA_FILE }}
           if-no-files-found: error
           retention-days: 7
+
+  ubuntu:
+    name: ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: cann/
+          file: cann/ubuntu/Dockerfile
+          push: false
+          tags: user/app:latest
