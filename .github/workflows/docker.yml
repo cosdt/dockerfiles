@@ -57,7 +57,7 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
-      max-parallel: ${{ env.MAX_PARALLEL }}
+      max-parallel: 3
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     env:
