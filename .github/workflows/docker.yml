@@ -171,3 +171,5 @@ jobs:
           file: cann/ubuntu/Dockerfile
           push: false
           tags: user/app:latest
+          build-args: |
+            BASE_VERSION=22.04
