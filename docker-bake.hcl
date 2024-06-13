@@ -31,7 +31,7 @@ group "cann" {
 target "base-target" {
   platforms = ["linux/amd64", "linux/arm64"]
   labels = {
-    "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>"
+    "org.opencontainers.image.authors" = "Ascend Open Source <ascend@huawei.com>",
     "org.opencontainers.image.description" = "A Docker image built by Ascend"
   }
 }

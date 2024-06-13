@@ -57,7 +57,7 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
         platform:
@@ -82,9 +82,10 @@ jobs:
       - name: Show space
         run: |
           sudo df -h
-          sudo du -h -d 2 /root | sort -hr
-          sudo du -h -d 2 /opt | sort -hr
-          sudo du -h -d 2 /tmp | sort -hr
+          sudo du -h -d 1 /root | sort -hr
+          sudo du -h -d 1 /usr | sort -hr
+          sudo du -h -d 1 /opt | sort -hr
+          sudo du -h -d 1 /tmp | sort -hr
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -162,50 +163,4 @@ jobs:
         if: ${{ always() }}
         run: |
           sudo df -h
-          sudo du -h -d 0 /root /tmp /opt /usr
-
-  ubuntu:
-    name: ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clean up
-        continue-on-error: true
-        run: |
-          sudo df -h
-          npm cache clean --force
-          yarn cache clean
-          pip cache purge
-          docker system prune -a -f
-          rm -rf ~/.cache
-          sudo rm -rf /root/.cache
-          sudo rm -rf /opt/hostedtoolcache
-          sudo rm -rf /tmp/*
-
-      - name: Show space
-        run: |
-          sudo df -h
-          sudo du -h -d 2 /root | sort -hr
-          sudo du -h -d 2 /opt | sort -hr
-          sudo du -h -d 2 /tmp | sort -hr
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: cann/
-          file: cann/ubuntu/Dockerfile
-          cache-from: type=gha
-          cache-to: type=gha,mode=min
-          push: false
-          tags: user/app:latest
-          build-args: |
-            BASE_VERSION=22.04
-          platforms: linux/amd64,linux/arm64
+          sudo du -h -d 0 /root /usr /opt /tmp
