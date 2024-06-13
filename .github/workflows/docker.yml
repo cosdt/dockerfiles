@@ -60,6 +60,9 @@ jobs:
       max-parallel: 3
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
+        platform:
+          - linux/amd64
+          - linux/arm64
     env:
       METADATA_FILE: ${{ matrix.target }}-metadata.json
     steps:
@@ -125,8 +128,9 @@ jobs:
           provenance: false
           sbom: false
           set: |
+            *.platform=${{ matrix.platform }}
             *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+            *.cache-to=type=gha,mode=min
         env:
           registries: |
             [
@@ -153,6 +157,12 @@ jobs:
           path: /tmp/${{ env.METADATA_FILE }}
           if-no-files-found: error
           retention-days: 7
+
+      - name: Show space
+        if: ${{ always() }}
+        run: |
+          sudo df -h
+          sudo du -h -d 0 /root /tmp /opt /usr
 
   ubuntu:
     name: ubuntu
