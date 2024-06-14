@@ -124,8 +124,8 @@ jobs:
         with:
           files: |
             docker-bake.hcl
-            ${{ steps.meta.outputs.bake-file-labels }}
-            ${{ steps.meta.outputs.bake-file-annotations }}
+            ${{ steps.metadata.outputs.bake-file-labels }}
+            ${{ steps.metadata.outputs.bake-file-annotations }}
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
           provenance: false
