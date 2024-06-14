@@ -1,0 +1,122 @@
+name: 'Init Docker Environment'
+description: 'Init Docker Environment'
+inputs:
+  target:
+    description: 'bake target'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Clean up
+      continue-on-error: true
+      run: |
+        sudo df -h
+        npm cache clean --force
+        yarn cache clean
+        pip cache purge
+        docker system prune -a -f
+        rm -rf ~/.cache
+        sudo rm -rf /root/.cache
+        sudo rm -rf /tmp/*
+        sudo rm -rf /opt/hostedtoolcache
+        sudo rm -rf /opt/az
+        sudo rm -rf /opt/microsoft
+        sudo rm -rf /opt/google
+
+    - name: Show space
+      run: |
+        sudo df -h
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to the Docker Hub
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: docker/login-action@v3
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Login to the GitHub Container
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Login to the RedHat Quay
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: docker/login-action@v3
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_TOKEN }}
+
+    - name: Extract metadata for Docker
+      id: metadata
+      uses: docker/metadata-action@v5
+      with:
+        bake-target: "docker-metadata-action"
+
+    - name: Build and push Docker image
+      id: bake
+      uses: docker/bake-action@v4
+      with:
+        files: |
+          docker-bake.hcl
+          ${{ steps.metadata.outputs.bake-file-labels }}
+          ${{ steps.metadata.outputs.bake-file-annotations }}
+        push: ${{ github.event_name != 'pull_request' }}
+        targets: ${{ inputs.target }}
+        provenance: false
+        sbom: false
+        set: |
+          *.cache-from=type=gha
+          *.cache-to=type=gha,mode=min
+      env:
+        registries: |
+          [
+            {
+              "registry": "docker.io",
+              "owner": "${{ secrets.DOCKERHUB_OWNER }}"
+            },
+            {
+              "registry": "ghcr.io",
+              "owner": "${{ github.repository_owner }}"
+            },
+            {
+              "registry": "quay.io",
+              "owner": "${{ secrets.QUAY_OWNER }}"
+            }
+          ]
+
+    - name: Export metadata
+      id: export
+      if: ${{ steps.bake.outputs.metadata }}
+      run: |
+        METADATA_FILE_NAME="${{ inputs.target }}-metadata.json"
+        echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
+        echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
+
+    - name: Upload metadata
+      id: upload-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.export.outputs.metadata_file_name }}
+        path: /tmp/${{ steps.export.outputs.metadata_file_name }}
+        if-no-files-found: error
+        retention-days: 7
+
+    - name: Show space
+      if: ${{ always() }}
+      run: |
+        sudo df -h
+        docker images

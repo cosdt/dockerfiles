@@ -2,11 +2,11 @@ variable "registries" {
   default = <<EOT
 [
   {
-    "registry": "docker.io",
+    "url": "docker.io",
     "owner": "ascend"
   },
   {
-    "registry": "ghcr.io",
+    "url": "ghcr.io",
     "owner": "ascend"
   }
 ]
@@ -16,12 +16,12 @@ EOT
 function "generate_tags" {
   params = [repo, tag]
   result = [
-    for reg in jsondecode(registries) : lower("${reg.registry}/${reg.owner}/${repo}:${tag}")
+    for reg in jsondecode(registries) : lower("${reg.url}/${reg.owner}/${repo}:${tag}")
   ]
 }
 
 group "default" {
-  targets = ["cann-all", "cann-prefer"]
+  targets = ["cann-all", "cann-prefer", "pytorch"]
 }
 
 group "cann" {
@@ -104,4 +104,40 @@ target "cann-prefer" {
     CANN_VERSION = "${item.cann_version}"
   }
   tags = generate_tags("cann", "${item.tag}")
+}
+
+target "pytorch" {
+  inherits = ["base-target"]
+  name = replace("${registry.url}-pytorch-${item.torch_npu_version}", ".", "_")
+  context = "pytorch"
+  dockerfile = "pytorch/new.Dockerfile"
+  matrix = {
+    registry = jsondecode(registries)
+    item = [
+      {
+        cann_version = "7.0"
+        pytorch_version = "2.0.1"
+        torch_npu_version = "2.0.1.post1"
+      },
+      {
+        cann_version = "8.0"
+        pytorch_version = "2.1.0"
+        torch_npu_version = "2.1.0.post3"
+      },
+      {
+        cann_version = "8.0"
+        pytorch_version = "2.2.0"
+        torch_npu_version = "2.2.0"
+      }
+    ]
+  }
+  args = {
+    BASE_NAME = "${registry.url}/${registry.owner}/cann"
+    BASE_VERSION = "${item.cann_version}"
+    PYTORCH_VERSION = "${item.pytorch_version}"
+    TORCH_NPU_VERSION = "${item.torch_npu_version}"
+  }
+  tags = [
+    "${registry.url}/${registry.owner}/pytorch:${item.torch_npu_version}"
+  ]
 }
