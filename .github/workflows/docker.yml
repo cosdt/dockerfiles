@@ -68,6 +68,9 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Build and push Docker
         uses: ./.github/actions/build-and-push-docker
         with:
@@ -86,6 +89,9 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.pth-targets) }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Build and push Docker
         uses: ./.github/actions/build-and-push-docker
         with:
