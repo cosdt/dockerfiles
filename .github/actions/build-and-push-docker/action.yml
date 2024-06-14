@@ -36,6 +36,7 @@ runs:
         sudo rm -rf /opt/az
         sudo rm -rf /opt/microsoft
         sudo rm -rf /opt/google
+        echo "${{ toJSON(github) }}"
 
     - name: Show space
       shell: bash
@@ -80,6 +81,7 @@ runs:
 
     - name: Build and push Docker image
       id: bake
+      working-directory: ${{ github.workspace }}
       uses: docker/bake-action@v4
       with:
         files: |
