@@ -34,7 +34,6 @@ runs:
         sudo rm -rf /opt/az
         sudo rm -rf /opt/microsoft
         sudo rm -rf /opt/google
-        echo "${{ toJSON(github) }}"
 
     - name: Show space
       shell: bash
@@ -79,11 +78,10 @@ runs:
 
     - name: Build and push Docker image
       id: bake
-      working-directory: ${{ github.workspace }}
       uses: docker/bake-action@v4
       with:
         files: |
-          docker-bake.hcl
+          ${{ github.workspace }}/docker-bake.hcl
           ${{ steps.metadata.outputs.bake-file-labels }}
           ${{ steps.metadata.outputs.bake-file-annotations }}
         push: ${{ github.event_name != 'pull_request' }}
