@@ -91,22 +91,6 @@ runs:
         set: |
           *.cache-from=type=gha
           *.cache-to=type=gha,mode=min
-      env:
-        registries: |
-          [
-            {
-              "url": "docker.io",
-              "owner": "${{ inputs.dockerhub_owner }}"
-            },
-            {
-              "url": "ghcr.io",
-              "owner": "${{ github.repository_owner }}"
-            },
-            {
-              "url": "quay.io",
-              "owner": "${{ inputs.quay_owner }}"
-            }
-          ]
 
     - name: Export metadata
       id: export

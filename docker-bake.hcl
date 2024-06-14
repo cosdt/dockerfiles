@@ -121,12 +121,12 @@ target "pytorch-all" {
       {
         cann_version = "7.0"
         pytorch_version = "2.0.1"
-        torch_npu_version = "2.0.1.post1"
+        torch_npu_version = "2.0.1"
       },
       {
         cann_version = "8.0"
         pytorch_version = "2.1.0"
-        torch_npu_version = "2.1.0.post3"
+        torch_npu_version = "2.1.0"
       },
       {
         cann_version = "8.0"
