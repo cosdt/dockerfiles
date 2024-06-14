@@ -117,6 +117,8 @@ jobs:
       - name: Extract metadata for Docker
         id: metadata
         uses: docker/metadata-action@v5
+        with:
+          bake-target: ${{ matrix.target }}
 
       - name: Build and push Docker image
         id: bake
