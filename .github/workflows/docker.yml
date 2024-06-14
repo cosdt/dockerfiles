@@ -43,13 +43,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List targets
+      - name: List cann targets
         id: list-cann-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
           target: cann
 
-      - name: List targets
+      - name: List pytorch targets
         id: list-pth-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
@@ -66,7 +66,7 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        target: ${{ fromJson(needs.prepare.outputs.targets) }}
+        target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
     steps:
       - name: Build and push Docker
         uses: ./.github/.actions/build-and-push-docker
