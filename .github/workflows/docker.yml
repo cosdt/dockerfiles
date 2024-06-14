@@ -36,15 +36,15 @@ env:
   registries: |
     [
       {
-        "registry": "docker.io",
+        "url": "docker.io",
         "owner": "${{ secrets.DOCKERHUB_OWNER }}"
       },
       {
-        "registry": "ghcr.io",
+        "url": "ghcr.io",
         "owner": "${{ github.repository_owner }}"
       },
       {
-        "registry": "quay.io",
+        "url": "quay.io",
         "owner": "${{ secrets.QUAY_OWNER }}"
       }
     ]
