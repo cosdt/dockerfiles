@@ -71,8 +71,11 @@ jobs:
           docker system prune -a -f
           rm -rf ~/.cache
           sudo rm -rf /root/.cache
-          sudo rm -rf /opt/hostedtoolcache
           sudo rm -rf /tmp/*
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /opt/az
+          sudo rm -rf /opt/microsoft
+          sudo rm -rf /opt/google
 
       - name: Show space
         run: |
