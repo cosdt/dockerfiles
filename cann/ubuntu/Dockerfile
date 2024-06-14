@@ -1,4 +1,8 @@
+# Arguments
 ARG BASE_VERSION=latest
+ARG TARGETPLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
@@ -19,11 +23,6 @@ RUN chmod +x /tmp/cann.sh && \
 
 # Phase 2: install CANN toolkit and kernels
 FROM ubuntu:${BASE_VERSION} as builder
-
-# Arguments
-ARG TARGETPLATFORM
-ARG CANN_CHIP
-ARG CANN_VERSION
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
@@ -65,11 +64,10 @@ RUN apt-get update \
      && rm -rf /var/tmp/* \
      && rm -rf /tmp/*
 
-# Copy files
-COPY --from=downloader /tmp /tmp
-
 # Install CANN
-RUN chmod +x /tmp/cann.sh && \
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    chmod +x /tmp/cann.sh && \
     PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 

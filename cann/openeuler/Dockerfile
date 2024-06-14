@@ -1,4 +1,8 @@
+# Arguments
 ARG BASE_VERSION=latest
+ARG TARGETPLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
@@ -19,11 +23,6 @@ RUN chmod +x /tmp/cann.sh && \
 
 # Phase 2: install CANN toolkit and kernels
 FROM openeuler/openeuler:${BASE_VERSION} as builder
-
-# Arguments
-ARG TARGETPLATFORM
-ARG CANN_CHIP
-ARG CANN_VERSION
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]

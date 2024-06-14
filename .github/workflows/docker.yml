@@ -60,9 +60,6 @@ jobs:
       max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - name: Clean up
         continue-on-error: true
@@ -74,8 +71,11 @@ jobs:
           docker system prune -a -f
           rm -rf ~/.cache
           sudo rm -rf /root/.cache
-          sudo rm -rf /opt/hostedtoolcache
           sudo rm -rf /tmp/*
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /opt/az
+          sudo rm -rf /opt/microsoft
+          sudo rm -rf /opt/google
 
       - name: Show space
         run: |
@@ -117,8 +117,6 @@ jobs:
       - name: Extract metadata for Docker
         id: metadata
         uses: docker/metadata-action@v5
-        with:
-          bake-target: ${{ matrix.target }}
 
       - name: Build and push Docker image
         id: bake
@@ -126,12 +124,13 @@ jobs:
         with:
           files: |
             docker-bake.hcl
+            ${{ steps.metadata.outputs.bake-file-labels }}
+            ${{ steps.metadata.outputs.bake-file-annotations }}
           push: ${{ github.event_name != 'pull_request' }}
           targets: ${{ matrix.target }}
           provenance: false
           sbom: false
           set: |
-            *.platform=${{ matrix.platform }}
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=min
         env:
@@ -155,9 +154,7 @@ jobs:
         id: export
         if: ${{ steps.bake.outputs.metadata }}
         run: |
-          PLATFORM=${{ matrix.platform }}
-          PLATFORM=${PLATFORM/\//-}
-          METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
+          METADATA_FILE_NAME="${{ matrix.target }}-metadata.json"
           echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
           echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 

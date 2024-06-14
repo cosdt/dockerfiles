@@ -28,7 +28,12 @@ group "cann" {
   targets = ["cann-all", "cann-prefer"]
 }
 
+// Special target: https://github.com/docker/metadata-action#bake-definition
+target "docker-metadata-action" {
+}
+
 target "base-target" {
+  inherits = ["docker-metadata-action"]
   platforms = ["linux/amd64", "linux/arm64"]
 }
 
