@@ -21,11 +21,15 @@ function "generate_tags" {
 }
 
 group "default" {
-  targets = ["cann-all", "cann-prefer", "pytorch"]
+  targets = ["cann-all", "cann-prefer", "pytorch-all"]
 }
 
 group "cann" {
   targets = ["cann-all", "cann-prefer"]
+}
+
+group "pytorch" {
+  targets = ["pytorch-all"]
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition
@@ -106,7 +110,7 @@ target "cann-prefer" {
   tags = generate_tags("cann", "${item.tag}")
 }
 
-target "pytorch" {
+target "pytorch-all" {
   inherits = ["base-target"]
   name = replace("${registry.url}-pytorch-${item.torch_npu_version}", ".", "_")
   context = "pytorch"
