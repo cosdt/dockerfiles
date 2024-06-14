@@ -114,7 +114,7 @@ target "pytorch-all" {
   inherits = ["base-target"]
   name = replace("${registry.url}-pytorch-${item.torch_npu_version}", ".", "_")
   context = "pytorch"
-  dockerfile = "pytorch/new.Dockerfile"
+  dockerfile = "new.Dockerfile"
   matrix = {
     registry = jsondecode(registries)
     item = [
