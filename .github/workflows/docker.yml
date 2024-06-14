@@ -119,6 +119,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           bake-target: ${{ matrix.target }}
+          tags: |
+            type=raw
 
       - name: Build and push Docker image
         id: bake
@@ -131,6 +133,8 @@ jobs:
           provenance: false
           sbom: false
           set: |
+            *.labels=${{ steps.metadata.outputs.labels }}
+            *.annotations=${{ steps.metadata.outputs.annotations }}
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=min
         env:
