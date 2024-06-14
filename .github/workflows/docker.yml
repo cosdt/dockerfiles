@@ -88,7 +88,7 @@ jobs:
     permissions:
       packages: write
     needs:
-      - cann
+      - prepare
     strategy:
       fail-fast: false
       max-parallel: 10
