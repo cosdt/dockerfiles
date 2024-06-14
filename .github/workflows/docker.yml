@@ -60,9 +60,6 @@ jobs:
       max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - name: Clean up
         continue-on-error: true
@@ -131,7 +128,6 @@ jobs:
           provenance: false
           sbom: false
           set: |
-            *.platform=${{ matrix.platform }}
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=min
         env:
@@ -155,9 +151,7 @@ jobs:
         id: export
         if: ${{ steps.bake.outputs.metadata }}
         run: |
-          PLATFORM=${{ matrix.platform }}
-          PLATFORM=${PLATFORM/\//-}
-          METADATA_FILE_NAME="${{ matrix.target }}-${PLATFORM}-metadata.json"
+          METADATA_FILE_NAME="${{ matrix.target }}-metadata.json"
           echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
           echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
