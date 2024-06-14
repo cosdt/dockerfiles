@@ -119,8 +119,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           bake-target: ${{ matrix.target }}
-          tags: |
-            type=raw
 
       - name: Build and push Docker image
         id: bake
