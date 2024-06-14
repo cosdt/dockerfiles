@@ -3,8 +3,6 @@ description: 'Init Docker Environment'
 inputs:
   target:
     required: true
-  github_token:
-    required: true
   dockerhub_owner:
     required: true
   dockerhub_username:
@@ -63,7 +61,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ inputs.github_token }}
+        password: ${{ github.token }}
 
     - name: Login to the RedHat Quay
       if: ${{ github.event_name != 'pull_request' }}
@@ -81,10 +79,11 @@ runs:
 
     - name: Build and push Docker image
       id: bake
+      working-directory: ${{ github.workspace }}
       uses: docker/bake-action@v4
       with:
         files: |
-          ../../docker-bake.hcl
+          docker-bake.hcl
           ${{ steps.metadata.outputs.bake-file-labels }}
           ${{ steps.metadata.outputs.bake-file-annotations }}
         push: ${{ github.event_name != 'pull_request' }}

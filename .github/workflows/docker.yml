@@ -75,6 +75,12 @@ jobs:
         uses: ./.github/actions/build-and-push-docker
         with:
           target: ${{ matrix.target }}
+          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay_owner: ${{ secrets.QUAY_OWNER }}
+          quay_username: ${{ secrets.QUAY_USERNAME }}
+          quay_token: ${{ secrets.QUAY_TOKEN }}
 
   pytorch:
     name: pytorch
@@ -96,3 +102,9 @@ jobs:
         uses: ./.github/actions/build-and-push-docker
         with:
           target: ${{ matrix.target }}
+          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay_owner: ${{ secrets.QUAY_OWNER }}
+          quay_username: ${{ secrets.QUAY_USERNAME }}
+          quay_token: ${{ secrets.QUAY_TOKEN }}
