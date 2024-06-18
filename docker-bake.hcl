@@ -59,6 +59,10 @@ target "cann-all" {
       {
         name = "openeuler"
         version = "20.03"
+      },
+      {
+        name = "openeuler"
+        version = "22.03"
       }
     ]
     cann_chip = ["310p", "910b"]
