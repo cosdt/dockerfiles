@@ -91,8 +91,6 @@ runs:
         set: |
           *.cache-from=type=gha
           *.cache-to=type=gha,mode=min
-        env:
-          DOCKER_BUILD_NO_SUMMARY: false
 
     - name: Export metadata
       id: export
