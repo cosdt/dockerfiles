@@ -11,6 +11,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     && apk add --no-cache \
         bash \
         wget \
+        curl \
     && rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
 
