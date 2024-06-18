@@ -12,4 +12,4 @@ SHELL [ "/bin/bash", "-c" ]
 # Install PyTorch
 RUN pip3 install --no-cache-dir \
         torch==${PYTORCH_VERSION} \
-        torch_npu==${TORCH_NPU_VERSION}
+        torch-npu==${TORCH_NPU_VERSION}

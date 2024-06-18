@@ -126,7 +126,7 @@ target "pytorch-all" {
       {
         cann_version = "8.0"
         pytorch_version = "2.1.0"
-        torch_npu_version = "2.1.0"
+        torch_npu_version = "2.1.0.post3"
       },
       {
         cann_version = "8.0"
@@ -142,6 +142,6 @@ target "pytorch-all" {
     TORCH_NPU_VERSION = "${item.torch_npu_version}"
   }
   tags = [
-    "${registry.url}/${registry.owner}/pytorch:${item.torch_npu_version}"
+    "${registry.url}/${registry.owner}/pytorch:${item.pytorch_version}"
   ]
 }

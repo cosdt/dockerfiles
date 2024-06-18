@@ -78,7 +78,7 @@ runs:
 
     - name: Build and push Docker image
       id: bake
-      uses: docker/bake-action@v4
+      uses: docker/bake-action@v5
       with:
         files: |
           ${{ github.workspace }}/docker-bake.hcl
@@ -91,6 +91,8 @@ runs:
         set: |
           *.cache-from=type=gha
           *.cache-to=type=gha,mode=min
+        env:
+          DOCKER_BUILD_NO_SUMMARY: false
 
     - name: Export metadata
       id: export
@@ -115,4 +117,4 @@ runs:
       shell: bash
       run: |
         sudo df -h
-        docker images
+        docker images -a
