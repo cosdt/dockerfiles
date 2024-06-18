@@ -106,6 +106,7 @@ jobs:
       packages: write
     needs:
       - cann
+    if: ${{ github.event_name == 'pull_request' || success() }}
     strategy:
       fail-fast: false
       max-parallel: 10
