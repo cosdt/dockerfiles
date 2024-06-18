@@ -18,7 +18,7 @@
     <a href="https://hub.docker.com/u/cosdt">
         <b>Docker Hub</b>
     </a> •
-    <a href="https://github.com/orgs/cosdt/packages?ecosystem=docker">
+    <a href="https://github.com/orgs/cosdt/packages?ecosystem=container">
         <b>GitHub Container</b>
     </a> •
     <a href="https://quay.io/organization/cosdt">
@@ -50,8 +50,8 @@ To customize the registry and owner using JSON format:
 custom_registries='
 [
   {
-    "registry": "quay.io",
-    "owner": "ascend"
+    "url": "quay.io",
+    "owner": "cosdt"
   }
 ]'
 registries="${custom_registries}" \
