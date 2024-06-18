@@ -27,15 +27,16 @@ download_cann() {
     local url_suffix="response-content-type=application/octet-stream"
     local toolkit_url="${url_prefix}/${TOOLKIT_FILE}?${url_suffix}"
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
+    local user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
     if [ ! -f ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      wget ${toolkit_url} --quiet --tries=0 --wait=5 -O ${TOOLKIT_PATH}
+      wget ${toolkit_url} --quiet --tries=0 --wait=5 --user-agent ${user_agent} -O ${TOOLKIT_PATH}
     fi
 
     if [ ! -f ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
-      wget ${kernels_url} --quiet --tries=0 --wait=5 -O ${KERNELS_PATH}
+      wget ${kernels_url} --quiet --tries=0 --wait=5 --user-agent ${user_agent} -O ${KERNELS_PATH}
     fi
 
     echo "CANN ${CANN_VERSION} download successful."

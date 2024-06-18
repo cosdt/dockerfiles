@@ -105,7 +105,7 @@ jobs:
     permissions:
       packages: write
     needs:
-      - prepare
+      - ${{ github.event_name == 'pull_request' && 'prepare' || 'cann' }}
     strategy:
       fail-fast: false
       max-parallel: 10
