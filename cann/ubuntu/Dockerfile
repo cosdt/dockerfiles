@@ -7,10 +7,9 @@ ARG CANN_VERSION
 # Phase 1: download CANN installers
 FROM alpine as downloader
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache \
+RUN apk add --no-cache \
         bash \
-        wget \
+        curl \
     && rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
 

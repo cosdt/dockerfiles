@@ -41,8 +41,8 @@ To customize the registry and owner using JSON format:
 custom_registries='
 [
   {
-    "registry": "quay.io",
-    "owner": "ascend"
+    "url": "quay.io",
+    "owner": "cosdt"
   }
 ]'
 registries="${custom_registries}" \
@@ -53,7 +53,7 @@ Don't have Bake? Use `docker buildx build` instead:
 
 ```docker
 docker buildx build \
-    -t ascend/cann:latest \
+    -t cosdt/cann:latest \
     -f cann/ubuntu/Dockerfile \
     --build-arg BASE_VERSION=22.04 \
     --build-arg CANN_CHIP=910b \
