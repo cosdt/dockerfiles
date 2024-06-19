@@ -22,7 +22,7 @@ get_architecture() {
     echo "${ARCH}"
 }
 
-download_files() {
+download_file() {
     set +e
 
     local max_retries=10
@@ -34,7 +34,7 @@ download_files() {
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
 
-        curl -L ${url} --retry 5 --retry-delay 5 -o ${path}
+        curl -L "${url}" --retry 5 --retry-delay 5 -o "${path}"
 
         if [[ $? -eq 0 ]]; then
             return 0
@@ -54,14 +54,14 @@ download_cann() {
     local toolkit_url="${url_prefix}/${TOOLKIT_FILE}?${url_suffix}"
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
 
-    if [ ! -f ${TOOLKIT_PATH} ]; then
+    if [ ! -f "${TOOLKIT_PATH}" ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      download_files "${toolkit_url}" "${TOOLKIT_PATH}"
+      download_file "${toolkit_url}" "${TOOLKIT_PATH}"
     fi
 
-    if [ ! -f ${KERNELS_PATH} ]; then
+    if [ ! -f "${KERNELS_PATH}" ]; then
       echo "Downloading ${KERNELS_FILE}"
-      download_files "${kernels_url}" "${KERNELS_PATH}"
+      download_file "${kernels_url}" "${KERNELS_PATH}"
     fi
 
     echo "CANN ${CANN_VERSION} download successful."
@@ -73,32 +73,32 @@ install_cann() {
     pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Download installers
-    if [ ! -f ${TOOLKIT_PATH} ] || [ ! -f ${KERNELS_PATH} ]; then
+    if [ ! -f "${TOOLKIT_PATH}" ] || [ ! -f "${KERNELS_PATH}" ]; then
         echo "[WARNING] Installers do not exist, re-download them."
         download_cann
     fi
 
     # Install CANN Toolkit
     echo "Installing ${TOOLKIT_FILE}"
-    chmod +x ${TOOLKIT_PATH}
-    bash ${TOOLKIT_PATH} --quiet --install --install-for-all --install-path=${CANN_HOME}
-    rm -f ${TOOLKIT_PATH}
+    chmod +x "${TOOLKIT_PATH}"
+    bash "${TOOLKIT_PATH}" --quiet --install --install-for-all --install-path="${CANN_HOME}"
+    rm -f "${TOOLKIT_PATH}"
 
     # Set environment variables
     CANN_TOOLKIT_ENV_FILE="${CANN_HOME}/ascend-toolkit/set_env.sh"
-    if [ ! -f ${CANN_TOOLKIT_ENV_FILE} ]; then
+    if [ ! -f "${CANN_TOOLKIT_ENV_FILE}" ]; then
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        echo "source ${CANN_TOOLKIT_ENV_FILE} " >> ~/.bashrc
+        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
         source ~/.bashrc
     fi
 
     # Install CANN Kernels
     echo "Installing ${KERNELS_FILE}"
-    chmod +x ${KERNELS_PATH}
-    bash ${KERNELS_PATH} --quiet --install --install-for-all --install-path=${CANN_HOME}
-    rm -f ${KERNELS_PATH}
+    chmod +x "${KERNELS_PATH}"
+    bash "${KERNELS_PATH}" --quiet --install --install-for-all --install-path="${CANN_HOME}"
+    rm -f "${KERNELS_PATH}"
 
     echo "CANN ${CANN_VERSION} installation successful."
 }
