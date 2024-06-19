@@ -1,11 +1,15 @@
 # Arguments
 ARG BASE_VERSION=latest
-ARG TARGETPLATFORM
+ARG PLATFORM=${TARGETPLATFORM}
 ARG CANN_CHIP
 ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
+
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 RUN apk add --no-cache \
         bash \
@@ -18,9 +22,6 @@ COPY ../scripts/cann.sh /tmp/cann.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} \
-    CANN_CHIP=${CANN_CHIP} \
-    CANN_VERSION=${CANN_VERSION} \
     bash /tmp/cann.sh --download
 
 # Phase 2: install CANN toolkit and kernels
@@ -53,9 +54,6 @@ RUN yum install -y \
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} \
-    CANN_CHIP=${CANN_CHIP} \
-    CANN_VERSION=${CANN_VERSION} \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
