@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 get_architecture() {
     # not case sensitive
