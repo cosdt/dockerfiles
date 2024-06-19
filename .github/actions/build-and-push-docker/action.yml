@@ -41,10 +41,6 @@ runs:
       shell: bash
       run: |
         sudo df -h
-        sudo du -h -d 2 /root | sort -hr
-        sudo du -h -d 2 /home | sort -hr
-        sudo du -h -d 3 /usr | sort -hr
-        sudo du -h -d 2 /opt | sort -hr
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
