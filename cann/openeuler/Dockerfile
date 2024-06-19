@@ -27,6 +27,10 @@ RUN chmod +x /tmp/cann.sh && \
 # Phase 2: install CANN toolkit and kernels
 FROM openeuler/openeuler:${BASE_VERSION} as builder
 
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
+
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
