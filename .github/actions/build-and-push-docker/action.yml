@@ -29,6 +29,7 @@ runs:
         docker system prune -a -f
         rm -rf ~/.cache
         sudo rm -rf /root/.cache
+        sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
         sudo rm -rf /opt/hostedtoolcache
         sudo rm -rf /opt/az
@@ -39,6 +40,9 @@ runs:
       shell: bash
       run: |
         sudo df -h
+        sudo du -h -d 1 /root | sort -hr
+        sudo du -h -d 3 /usr | sort -hr
+        sudo du -h -d 1 /opt | sort -hr
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
