@@ -34,7 +34,7 @@ download_file() {
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
 
-        curl -L "${url}" --retry 5 --retry-delay 5 -o "${path}"
+        curl -L "${url}" --retry 5 --retry-delay 5 -sS -o "${path}"
 
         if [[ $? -eq 0 ]]; then
             return 0

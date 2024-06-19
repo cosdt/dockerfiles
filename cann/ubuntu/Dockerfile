@@ -18,7 +18,10 @@ COPY ../scripts/cann.sh /tmp/cann.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --download
+    PLATFORM=${TARGETPLATFORM} \
+    CANN_CHIP=${CANN_CHIP} \
+    CANN_VERSION=${CANN_VERSION} \
+    bash /tmp/cann.sh --download
 
 # Phase 2: install CANN toolkit and kernels
 FROM ubuntu:${BASE_VERSION} as builder
@@ -67,7 +70,10 @@ RUN apt-get update \
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
+    PLATFORM=${TARGETPLATFORM} \
+    CANN_CHIP=${CANN_CHIP} \
+    CANN_VERSION=${CANN_VERSION} \
+    bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
 # Set environment variables
