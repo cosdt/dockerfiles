@@ -22,6 +22,32 @@ get_architecture() {
     echo "${ARCH}"
 }
 
+download_files() {
+    set +e
+
+    local max_retries=10
+    local retry_delay=10
+
+    local url="$1"
+    local path="$2"
+
+    for ((i=1; i<=max_retries; i++)); do
+        echo "Attempt $i of $max_retries..."
+
+        curl -L ${url} --retry 5 --retry-delay 5 -o ${path}
+
+        if [[ $? -eq 0 ]]; then
+            return 0
+        else
+            echo "Download failed with error code $?. Retrying in $retry_delay seconds..."
+            sleep $retry_delay
+        fi
+    done
+
+    echo "All attempts failed. Exiting."
+    return 1
+}
+
 download_cann() {
     local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
     local url_suffix="response-content-type=application/octet-stream"
@@ -30,12 +56,12 @@ download_cann() {
 
     if [ ! -f ${TOOLKIT_PATH} ]; then
       echo "Downloading ${TOOLKIT_FILE}"
-      curl -L ${toolkit_url} --retry 5 --retry-delay 5 -o ${TOOLKIT_PATH}
+      download_files "${toolkit_url}" "${TOOLKIT_PATH}"
     fi
 
     if [ ! -f ${KERNELS_PATH} ]; then
       echo "Downloading ${KERNELS_FILE}"
-      curl -L ${kernels_url} --retry 5 --retry-delay 5 -o ${KERNELS_PATH}
+      download_files "${kernels_url}" "${KERNELS_PATH}"
     fi
 
     echo "CANN ${CANN_VERSION} download successful."
