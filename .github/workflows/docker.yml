@@ -105,6 +105,7 @@ jobs:
     permissions:
       packages: write
     needs:
+      - prepare
       - cann
     strategy:
       fail-fast: false
