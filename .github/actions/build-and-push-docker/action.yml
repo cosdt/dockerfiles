@@ -45,7 +45,6 @@ runs:
         sudo du -h -d 2 /home | sort -hr
         sudo du -h -d 3 /usr | sort -hr
         sudo du -h -d 2 /opt | sort -hr
-        exit 1
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
