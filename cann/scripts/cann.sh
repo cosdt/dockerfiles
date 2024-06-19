@@ -55,13 +55,13 @@ download_cann() {
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
 
     if [ ! -f "${TOOLKIT_PATH}" ]; then
-      echo "Downloading ${TOOLKIT_FILE}"
-      download_file "${toolkit_url}" "${TOOLKIT_PATH}"
+        echo "Downloading ${TOOLKIT_FILE}"
+        download_file "${toolkit_url}" "${TOOLKIT_PATH}"
     fi
 
     if [ ! -f "${KERNELS_PATH}" ]; then
-      echo "Downloading ${KERNELS_FILE}"
-      download_file "${kernels_url}" "${KERNELS_PATH}"
+        echo "Downloading ${KERNELS_FILE}"
+        download_file "${kernels_url}" "${KERNELS_PATH}"
     fi
 
     echo "CANN ${CANN_VERSION} download successful."
