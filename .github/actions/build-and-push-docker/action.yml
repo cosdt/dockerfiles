@@ -31,6 +31,7 @@ runs:
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
+        sudo rm -rf /usr/local/lib/android
         sudo rm -rf /opt/hostedtoolcache
         sudo rm -rf /opt/az
         sudo rm -rf /opt/microsoft
@@ -41,7 +42,7 @@ runs:
       run: |
         sudo df -h
         sudo du -h -d 2 /root | sort -hr
-        sudo du -h -d 1 /home | sort -hr
+        sudo du -h -d 2 /home | sort -hr
         sudo du -h -d 3 /usr | sort -hr
         sudo du -h -d 2 /opt | sort -hr
         exit 1
