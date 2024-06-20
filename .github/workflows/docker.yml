@@ -81,7 +81,6 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
-      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
     steps:
@@ -102,14 +101,14 @@ jobs:
   pytorch:
     name: pytorch
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     permissions:
       packages: write
     needs:
+      - prepare
       - cann
-    if: ${{ github.event_name == 'pull_request' || success() }}
     strategy:
       fail-fast: false
-      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.pth-targets) }}
     steps:

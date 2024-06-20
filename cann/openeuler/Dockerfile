@@ -1,11 +1,15 @@
 # Arguments
 ARG BASE_VERSION=latest
-ARG TARGETPLATFORM
+ARG PLATFORM=${TARGETPLATFORM}
 ARG CANN_CHIP
 ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
+
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 RUN apk add --no-cache \
         bash \
@@ -18,10 +22,14 @@ COPY ../scripts/cann.sh /tmp/cann.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --download
+    bash /tmp/cann.sh --download
 
 # Phase 2: install CANN toolkit and kernels
 FROM openeuler/openeuler:${BASE_VERSION} as builder
+
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
@@ -50,7 +58,7 @@ RUN yum install -y \
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     chmod +x /tmp/cann.sh && \
-    PLATFORM=${TARGETPLATFORM} bash /tmp/cann.sh --install && \
+    bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
 # Set environment variables
