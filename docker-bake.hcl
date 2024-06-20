@@ -116,18 +116,20 @@ target "cann-prefer" {
 
 target "pytorch-all" {
   inherits = ["base-target"]
-  name = replace("${registry.url}-pytorch-${item.torch_npu_version}", ".", "_")
+  name = replace("${registry.url}-pytorch-${item.tag}", ".", "_")
   context = "pytorch"
   dockerfile = "new.Dockerfile"
   matrix = {
     registry = jsondecode(registries)
     item = [
       {
+        tag = "2.1.0"
         cann_version = "8.0"
         pytorch_version = "2.1.0+cpu"
         torch_npu_version = "2.1.0.post3"
       },
       {
+        tag = "2.2.0"
         cann_version = "8.0"
         pytorch_version = "2.2.0"
         torch_npu_version = "2.2.0"
@@ -141,6 +143,6 @@ target "pytorch-all" {
     TORCH_NPU_VERSION = "${item.torch_npu_version}"
   }
   tags = [
-    "${registry.url}/${registry.owner}/pytorch:${item.pytorch_version}"
+    "${registry.url}/${registry.owner}/pytorch:${item.tag}"
   ]
 }
