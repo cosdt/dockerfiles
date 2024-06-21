@@ -57,6 +57,6 @@ docker buildx build \
     -f cann/ubuntu/Dockerfile \
     --build-arg BASE_VERSION=22.04 \
     --build-arg CANN_CHIP=910b \
-    --build-arg CANN_VERSION=8.0.RC2 \
+    --build-arg CANN_VERSION=8.0.RC1 \
     cann/
 ```

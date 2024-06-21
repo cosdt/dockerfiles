@@ -91,7 +91,7 @@ install_cann() {
         exit 1
     else
         echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
-        echo "export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}" >> /etc/profile
+        echo "export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\$\{LD_LIBRARY_PATH\}" >> /etc/profile
         source /etc/profile
     fi
 
