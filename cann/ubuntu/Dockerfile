@@ -78,7 +78,4 @@ RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
-# Set environment variables
-ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
-
 WORKDIR /home
