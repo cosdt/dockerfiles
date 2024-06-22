@@ -61,4 +61,12 @@ RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
-WORKDIR /home
+# Driver path
+ENV DRIVER_PATH=/usr/local/Ascend/driver
+
+# Add the driver path to the library path
+ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
+
+# Add the driver path to /etc/enironment to make sure it can take effect
+# when conntecting the container
+ENTRYPOINT ["/bin/bash", "-c", "printenv | grep DRIVER_PATH >> /etc/environment && exec \"$@\"", "--"]
