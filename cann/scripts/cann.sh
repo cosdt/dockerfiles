@@ -90,8 +90,12 @@ install_cann() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
+        # Add the driver environment variable to path
+        if [ -n ${DRIVER_PATH} ]; then
+            echo "export LD_LIBRARY_PATH=\$\{DRIVER_PATH\}/lib64/common/:\$\{DRIVER_PATH\}/lib64/driver/:\$\{LD_LIBRARY_PATH\}" >> /etc/profile
+        fi
+
         echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
-        echo "export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\$\{LD_LIBRARY_PATH\}" >> /etc/profile
         source /etc/profile
     fi
 
