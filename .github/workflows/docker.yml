@@ -101,7 +101,7 @@ jobs:
   pytorch:
     name: pytorch
     runs-on: ubuntu-latest
-    if: ${{ always() }}
+    if: ${{ success() || failure() }}
     permissions:
       packages: write
     needs:
