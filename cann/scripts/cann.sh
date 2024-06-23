@@ -95,7 +95,6 @@ install_cann() {
         'if [ -n "${DRIVER_PATH}" ]; then
             export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
         fi' >> /etc/profile
-        source /etc/profile
     fi
 
     # Install CANN Kernels
