@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 get_architecture() {
     # not case sensitive
@@ -92,7 +92,7 @@ install_cann() {
     else
         echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
         echo \
-        'if [ -n ${DRIVER_PATH} ]; then
+        'if [ -n "${DRIVER_PATH}" ]; then
             export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
         fi' >> /etc/profile
         source /etc/profile
