@@ -49,7 +49,11 @@ download_file() {
 }
 
 download_cann() {
-    local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
+    if [[ "${CANN_VERSION}" =~ "^8.0.RC2" ]]; then
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18SPC805"
+    else
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
+    fi
     local url_suffix="response-content-type=application/octet-stream"
     local toolkit_url="${url_prefix}/${TOOLKIT_FILE}?${url_suffix}"
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"

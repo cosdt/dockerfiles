@@ -66,7 +66,7 @@ target "cann-all" {
       }
     ]
     cann_chip = ["310p", "910b"]
-    cann_version = ["7.0.1", "8.0.RC1"]
+    cann_version = ["7.0.1", "8.0.RC2.alpha002"]
   }
   args = {
     BASE_VERSION = "${os.version}"
@@ -88,21 +88,21 @@ target "cann-prefer" {
         os = "ubuntu"
         os_version = "22.04"
         cann_chip = "910b"
-        cann_version = "8.0.RC1"
+        cann_version = "8.0.RC2.alpha002"
       },
       {
         tag = "8.0"
         os = "ubuntu"
         os_version = "22.04"
         cann_chip = "910b"
-        cann_version = "8.0.RC1"
+        cann_version = "8.0.RC2.alpha002"
       },
       {
         tag = "7.0"
         os = "ubuntu"
         os_version = "22.04"
         cann_chip = "910b"
-        cann_version = "7.0.0"
+        cann_version = "7.0.1"
       },
     ]
   }
