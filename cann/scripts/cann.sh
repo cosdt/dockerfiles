@@ -39,8 +39,8 @@ download_file() {
         if [[ $? -eq 0 ]]; then
             return 0
         else
-            echo "Download failed with error code $?. Retrying in $retry_delay seconds..."
-            sleep $retry_delay
+            echo "Download failed with error code $?. Retrying in ${retry_delay} seconds..."
+            sleep ${retry_delay}
         fi
     done
 
@@ -59,12 +59,12 @@ download_cann() {
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
 
     if [ ! -f "${TOOLKIT_PATH}" ]; then
-        echo "Downloading ${TOOLKIT_FILE}"
+        echo "Downloading ${TOOLKIT_FILE} from ${toolkit_url}"
         download_file "${toolkit_url}" "${TOOLKIT_PATH}"
     fi
 
     if [ ! -f "${KERNELS_PATH}" ]; then
-        echo "Downloading ${KERNELS_FILE}"
+        echo "Downloading ${KERNELS_FILE} from ${kernels_url}"
         download_file "${kernels_url}" "${KERNELS_PATH}"
     fi
 
@@ -94,10 +94,12 @@ install_cann() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        echo \
-        'if [ -n "${DRIVER_PATH}" ]; then
+        cat >> /etc/profile <<'EOF'
+        if [ -n "${DRIVER_PATH}" ]; then
             export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
-        fi' >> /etc/profile
+        fi
+EOF
+
         echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
         source ${CANN_TOOLKIT_ENV_FILE}
     fi
