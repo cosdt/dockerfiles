@@ -34,7 +34,7 @@ download_file() {
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
 
-        curl -L "${url}" --retry 5 --retry-delay 5 -sS -o "${path}"
+        curl -fsSL "${url}" -o "${path}"
 
         if [[ $? -eq 0 ]]; then
             return 0
@@ -49,7 +49,7 @@ download_file() {
 }
 
 download_cann() {
-    if [[ "${CANN_VERSION}" =~ "^8.0.RC2" ]]; then
+    if [[ ${CANN_VERSION} =~ ^8.0.RC2.alpha ]]; then
         local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18SPC805"
     else
         local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
