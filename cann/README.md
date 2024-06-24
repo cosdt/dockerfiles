@@ -12,8 +12,9 @@ docker run \
     -v /usr/local/dcmi:/usr/local/dcmi \
     -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
     -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
-    -v /etc/ascend_install.info:/etc/ascend_install.info \
     -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
+    -v /etc/ascend_install.info:/etc/ascend_install.info \
+    -e DRIVER_PATH=/usr/local/Ascend/driver \
     -it cosdt/cann:<TAG> bash
 ```
 
@@ -57,6 +58,6 @@ docker buildx build \
     -f cann/ubuntu/Dockerfile \
     --build-arg BASE_VERSION=22.04 \
     --build-arg CANN_CHIP=910b \
-    --build-arg CANN_VERSION=8.0.RC2 \
+    --build-arg CANN_VERSION=8.0.RC1 \
     cann/
 ```

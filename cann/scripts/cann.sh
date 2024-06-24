@@ -34,13 +34,13 @@ download_file() {
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
 
-        curl -L "${url}" --retry 5 --retry-delay 5 -sS -o "${path}"
+        curl -fsSL "${url}" -o "${path}"
 
         if [[ $? -eq 0 ]]; then
             return 0
         else
-            echo "Download failed with error code $?. Retrying in $retry_delay seconds..."
-            sleep $retry_delay
+            echo "Download failed with error code $?. Retrying in ${retry_delay} seconds..."
+            sleep ${retry_delay}
         fi
     done
 
@@ -49,18 +49,22 @@ download_file() {
 }
 
 download_cann() {
-    local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
+    if [[ ${CANN_VERSION} =~ ^8.0.RC2.alpha ]]; then
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18SPC805"
+    else
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
+    fi
     local url_suffix="response-content-type=application/octet-stream"
     local toolkit_url="${url_prefix}/${TOOLKIT_FILE}?${url_suffix}"
     local kernels_url="${url_prefix}/${KERNELS_FILE}?${url_suffix}"
 
     if [ ! -f "${TOOLKIT_PATH}" ]; then
-        echo "Downloading ${TOOLKIT_FILE}"
+        echo "Downloading ${TOOLKIT_FILE} from ${toolkit_url}"
         download_file "${toolkit_url}" "${TOOLKIT_PATH}"
     fi
 
     if [ ! -f "${KERNELS_PATH}" ]; then
-        echo "Downloading ${KERNELS_FILE}"
+        echo "Downloading ${KERNELS_FILE} from ${kernels_url}"
         download_file "${kernels_url}" "${KERNELS_PATH}"
     fi
 
@@ -90,8 +94,14 @@ install_cann() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
-        source ~/.bashrc
+        cat >> /etc/profile <<'EOF'
+        if [ -n "${DRIVER_PATH}" ]; then
+            export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
+        fi
+EOF
+
+        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
+        source ${CANN_TOOLKIT_ENV_FILE}
     fi
 
     # Install CANN Kernels
