@@ -71,7 +71,24 @@ download_cann() {
     echo "CANN ${CANN_VERSION} download successful."
 }
 
+check_python() {
+    if [ ! $(command -v python) ]; then
+        if [ $(command -v python3) ]; then
+            # Create symbolic link from python3 to python
+            ln -sf $(which python3) $(dirname $(which python3))/python
+            ln -sf $(which pip3) $(dirname $(which pip3))/pip
+            echo "Created symbolic link 'python' pointing to 'python3'."
+        else
+            echo "Python not installed."
+            exit 1
+        fi
+    fi
+}
+
 install_cann() {
+    # Check python
+    check_python
+
     # Install dependencies
     pip3 config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
     pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
