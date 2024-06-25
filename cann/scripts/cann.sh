@@ -90,8 +90,8 @@ install_cann() {
     check_python
 
     # Install dependencies
-    pip3 config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
-    pip3 install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+    pip config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
+    pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Download installers
     if [ ! -f "${TOOLKIT_PATH}" ] || [ ! -f "${KERNELS_PATH}" ]; then
