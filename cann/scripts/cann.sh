@@ -72,11 +72,11 @@ download_cann() {
 }
 
 check_python() {
-    if [ ! $(command -v python) ]; then
-        if [ $(command -v python3) ]; then
+    if ! command -v python &> /dev/null; then
+        if command -v python3 &> /dev/null; then
             # Create symbolic link from python3 to python
-            ln -sf $(which python3) $(dirname $(which python3))/python
-            ln -sf $(which pip3) $(dirname $(which pip3))/pip
+            ln -sf "$(command -v python3)" "$(dirname "$(command -v python3)")/python"
+            ln -sf "$(command -v pip3)" "$(dirname "$(command -v pip3)")/pip"
             echo "Created symbolic link 'python' pointing to 'python3'."
         else
             echo "Python not installed."
