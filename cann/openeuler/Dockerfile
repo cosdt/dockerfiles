@@ -70,4 +70,4 @@ ENV DRIVER_PATH=/usr/local/Ascend/driver
 # Add the driver path to the library path
 ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
 
-ENTRYPOINT [ "/bin/bash", "-c", "/root/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/root/docker-entrypoint.sh" ]
