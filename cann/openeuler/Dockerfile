@@ -70,3 +70,6 @@ ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${
 # Add the driver path to /etc/environment to make sure it can take effect
 # when connecting to the container
 ENTRYPOINT ["/bin/bash", "-c", "printenv | grep DRIVER_PATH >> /etc/environment && exec \"$@\"", "--"]
+
+# Set environment variables for the Ascend toolkit
+CMD [ "source /usr/local/Ascend/ascend-toolkit/set_env.sh" ]
