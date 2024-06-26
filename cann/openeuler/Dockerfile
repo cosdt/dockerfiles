@@ -61,15 +61,13 @@ RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
+# Copy files
+COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
+
 # Driver path
 ENV DRIVER_PATH=/usr/local/Ascend/driver
 
 # Add the driver path to the library path
 ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
 
-# Add the driver path to /etc/environment to make sure it can take effect
-# when connecting to the container
-ENTRYPOINT ["/bin/bash", "-c", "printenv | grep DRIVER_PATH >> /etc/environment && exec \"$@\"", "--"]
-
-# Set environment variables for the Ascend toolkit
-CMD [ "source /usr/local/Ascend/ascend-toolkit/set_env.sh" ]
+ENTRYPOINT [ "/bin/bash", "-c", "/root/docker-entrypoint.sh" ]
