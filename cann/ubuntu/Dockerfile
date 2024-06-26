@@ -25,7 +25,7 @@ RUN chmod +x /tmp/cann.sh && \
     bash /tmp/cann.sh --download
 
 # Phase 2: install CANN toolkit and kernels
-FROM ubuntu:${BASE_VERSION} as builder
+FROM ubuntu:${BASE_VERSION} as installer
 
 ARG PLATFORM
 ARG CANN_CHIP
@@ -78,7 +78,31 @@ RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
+# Phase 3:
+FROM ubuntu:${BASE_VERSION} as official
+
+# Change the default shell
+SHELL [ "/bin/bash", "-c" ]
+
+# Set non-interactive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        apt-transport-https \
+        ca-certificates \
+        bash \
+        openssl \
+        libblas3 \
+        python3 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/tmp/* \
+    && rm -rf /tmp/*
+
 # Copy files
+COPY --from=installer /usr/local/Ascend /usr/local/Ascend
 COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
 
 # Driver path
