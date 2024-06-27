@@ -11,7 +11,8 @@ ARG PLATFORM
 ARG CANN_CHIP
 ARG CANN_VERSION
 
-RUN apk add --no-cache \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+    apk add --no-cache \
         bash \
         curl \
     && rm -rf /var/cache/apk/* \
@@ -34,12 +35,9 @@ ARG CANN_VERSION
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
-# Set non-interactive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         apt-transport-https \
         ca-certificates \
         bash \
@@ -84,18 +82,14 @@ FROM ubuntu:${BASE_VERSION} as official
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
-# Set non-interactive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         apt-transport-https \
         ca-certificates \
         bash \
         openssl \
         libblas3 \
-        python3 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -103,6 +97,8 @@ RUN apt-get update \
 
 # Copy files
 COPY --from=installer /usr/local/Ascend /usr/local/Ascend
+COPY --from=installer /etc/Ascend /etc/Ascend
+COPY --from=installer /etc/use_private_python.info /etc/use_private_python.info
 COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
 
 # Driver path
