@@ -19,7 +19,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     && rm -rf /tmp/*
 
 # Copy files
-COPY ../scripts/cann.sh /tmp/cann.sh
+COPY ./cann.sh /tmp/cann.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
@@ -63,7 +63,6 @@ RUN apt-get update \
         python3 \
         python3-pip \
         python3-dev \
-        vim \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -90,6 +89,9 @@ RUN apt-get update \
         bash \
         openssl \
         libblas3 \
+        python3 \
+        python3-pip \
+        python3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -98,8 +100,11 @@ RUN apt-get update \
 # Copy files
 COPY --from=installer /usr/local/Ascend /usr/local/Ascend
 COPY --from=installer /etc/Ascend /etc/Ascend
-COPY --from=installer /etc/use_private_python.info /etc/use_private_python.info
-COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
+COPY ./docker-entrypoint.sh /root/docker-entrypoint.sh
+
+# Install python packages
+RUN pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py \
+    -i https://repo.huaweicloud.com/repository/pypi/simple
 
 # Driver path
 ENV DRIVER_PATH=/usr/local/Ascend/driver

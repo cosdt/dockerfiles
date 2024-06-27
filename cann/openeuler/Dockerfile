@@ -46,7 +46,8 @@ RUN yum install -y \
         pciutils \
         net-tools \
         sqlite-devel \
-        lapack-devel gcc-gfortran \
+        lapack-devel \
+        gcc-gfortran \
         python3-devel \
         python3-pip \
         wget \
