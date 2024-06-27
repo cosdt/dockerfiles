@@ -111,12 +111,15 @@ install_cann() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        cat >> /etc/profile <<'EOF'
+        DRIVER_PATH_ENV=$(cat <<'EOF'
 if [ -n "${DRIVER_PATH}" ]; then
     export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
 fi
-EOF
+EOF)
+        echo "${DRIVER_PATH_ENV}" >> /etc/profile
+        echo "${DRIVER_PATH_ENV}" >> ~/.bashrc
         echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
+        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
         source ${CANN_TOOLKIT_ENV_FILE}
     fi
 
