@@ -69,10 +69,10 @@ RUN apt-get update \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
+COPY --from=downloader /tmp /tmp
+
 # Install CANN
-RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
-    umask 0022 && \
-    chmod +x /tmp/cann.sh && \
+RUN chmod +x /tmp/cann.sh && \
     bash /tmp/cann.sh --install && \
     rm -rf /tmp/*
 
