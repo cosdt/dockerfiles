@@ -20,6 +20,13 @@ RUN apk add --no-cache \
 # Copy files
 COPY ../scripts/cann.sh /tmp/cann.sh
 
+# Download Miniconda
+RUN case ${PLATFORM} in \
+         "linux/arm64")  MINICONDA_ARCH=aarch64  ;; \
+         *)              MINICONDA_ARCH=x86_64   ;; \
+    esac && \
+    curl -fsSL -v -o /tmp/miniconda.sh -O "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${MINICONDA_ARCH}.sh"
+
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
     bash /tmp/cann.sh --download
@@ -62,13 +69,26 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
-        python3 \
-        python3-pip \
-        python3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
+
+# Install Miniconda
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    chmod +x /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm -rf /tmp/* && \
+    # init \
+    /opt/conda/bin/conda init --all --system && \
+    # install python \
+    /opt/conda/bin/conda install -y python=3.8 && \
+    /opt/conda/bin/conda clean -ya && \
+    chmod -R 755 /opt/conda && \
+    chmod 644 /etc/profile.d/conda.sh
+
+ENV PATH=/opt/conda/bin:${PATH}
 
 # Install CANN
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
