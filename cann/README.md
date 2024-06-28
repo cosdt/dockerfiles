@@ -14,7 +14,6 @@ docker run \
     -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
     -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
     -v /etc/ascend_install.info:/etc/ascend_install.info \
-    -e DRIVER_PATH=/usr/local/Ascend/driver \
     -it cosdt/cann:<TAG> bash
 ```
 
@@ -57,6 +56,7 @@ docker buildx build \
     -t cosdt/cann:latest \
     -f cann/ubuntu/Dockerfile \
     --build-arg BASE_VERSION=22.04 \
+    --build-arg PY_VERSION=3.10 \
     --build-arg CANN_CHIP=910b \
     --build-arg CANN_VERSION=8.0.RC1 \
     cann/
