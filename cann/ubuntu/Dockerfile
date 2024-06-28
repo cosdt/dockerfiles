@@ -19,6 +19,7 @@ RUN apk add --no-cache \
 
 # Copy files
 COPY ../scripts/cann.sh /tmp/cann.sh
+COPY ../scripts/install-py.sh /tmp/install-py.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
@@ -62,20 +63,22 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
-        python3 \
-        python3-pip \
-        python3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
+# Install Python
+# Install CANN
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    bash /tmp/install-py.sh
+
 # Install CANN
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     chmod +x /tmp/cann.sh && \
-    bash /tmp/cann.sh --install && \
-    rm -rf /tmp/*
+    bash /tmp/cann.sh --install
 
 # Copy files
 COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
