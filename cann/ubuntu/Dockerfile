@@ -69,7 +69,6 @@ RUN apt-get update \
     && rm -rf /tmp/*
 
 # Install Python
-# Install CANN
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     bash /tmp/install-py.sh
