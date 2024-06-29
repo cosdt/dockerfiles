@@ -63,6 +63,7 @@ RUN apt-get update \
         ca-certificates \
         bash \
         libc6 \
+        curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -71,5 +72,7 @@ RUN apt-get update \
 COPY --from=installer /usr/local/python3.8 /usr/local/python3.8
 COPY ../scripts/cann.sh /tmp/cann.sh
 
-RUN ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python && \
+RUN ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python3.8 && \
+    ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip3.8 && \
+    ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python && \
     ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip
