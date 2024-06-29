@@ -88,7 +88,6 @@ runs:
           ${{ steps.metadata.outputs.bake-file-annotations }}
         push: ${{ github.event_name != 'pull_request' }}
         targets: ${{ inputs.target }}
-        load: true
         provenance: false
         sbom: false
         set: |
