@@ -19,18 +19,6 @@ PY_INSTALLER_TGZ="Python-${PY_LATEST_VERSION}.tgz"
 PY_INSTALLER_DIR="Python-${PY_LATEST_VERSION}"
 PY_INSTALLER_URL="https://repo.huaweicloud.com/python/${PY_LATEST_VERSION}/${PY_INSTALLER_TGZ}"
 
-# Parse arguments
-if [ "$1" == "--download" ]; then
-    download_python
-elif [ "$1" == "--install" ]; then
-    install_python
-elif [ "$1" == "--create_links" ]; then
-    create_links
-else
-    echo "Unexpected arguments, use '--download', '--install' or '--create_links' instead"
-    exit 1
-fi
-
 download_python() {
     # download python
     echo "Downloading ${PY_INSTALLER_TGZ} from ${PY_INSTALLER_URL}"
@@ -75,3 +63,15 @@ create_links() {
     ln -sf /usr/bin/python${PY_MAJOR_VERSION} /usr/bin/python
     ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
 }
+
+# Parse arguments
+if [ "$1" == "--download" ]; then
+    download_python
+elif [ "$1" == "--install" ]; then
+    install_python
+elif [ "$1" == "--create_links" ]; then
+    create_links
+else
+    echo "Unexpected arguments, use '--download', '--install' or '--create_links' instead"
+    exit 1
+fi

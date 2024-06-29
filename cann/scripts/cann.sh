@@ -13,17 +13,6 @@ KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
 TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
 KERNELS_PATH="/tmp/${KERNELS_FILE}"
 
-if [ "$1" == "--download" ]; then
-    download_cann
-elif [ "$1" == "--install" ]; then
-    install_cann
-elif [ "$1" == "--set_env" ]; then
-    set_env
-else
-    echo "Unexpected arguments, use '--download', '--install' or '--set_env' instead"
-    exit 1
-fi
-
 get_architecture() {
     # not case sensitive
     shopt -s nocasematch
@@ -137,3 +126,15 @@ install_cann() {
 
     echo "CANN ${CANN_VERSION} installation successful."
 }
+
+# Parse arguments
+if [ "$1" == "--download" ]; then
+    download_cann
+elif [ "$1" == "--install" ]; then
+    install_cann
+elif [ "$1" == "--set_env" ]; then
+    set_env
+else
+    echo "Unexpected arguments, use '--download', '--install' or '--set_env' instead"
+    exit 1
+fi
