@@ -8,6 +8,9 @@ FROM ubuntu:${BASE_VERSION} as py-installer
 # Install dependencies
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        apt-transport-https \
+        ca-certificates \
+        bash \
         curl \
         build-essential \
         libssl-dev \
@@ -37,9 +40,6 @@ FROM py-installer as cann-installer
 # Install dependencies
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-        apt-transport-https \
-        ca-certificates \
-        bash \
         git \
         wget \
         gcc \
