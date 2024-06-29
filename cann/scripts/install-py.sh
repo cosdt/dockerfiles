@@ -6,7 +6,7 @@ PY_VERSION=${PY_VERSION:-"3.8"}
 PY_MAJOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f1)
 
 # find the latest version
-PY_LATEST_VERSION="3.8.11"
+PY_LATEST_VERSION=$(curl -s https://www.python.org/ftp/python/ | grep -oE "${PY_VERSION}\.[0-9]+" | sort -V | tail -n 1)
 if [ -z "${PY_LATEST_VERSION}" ]; then
     echo "Could not find the latest version for Python ${PY_VERSION}"
     exit 1

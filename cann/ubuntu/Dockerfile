@@ -71,6 +71,7 @@ RUN apt-get update \
 # Install Python
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
+    chmod +x /tmp/install-py.sh && \
     bash /tmp/install-py.sh
 
 # Install CANN
