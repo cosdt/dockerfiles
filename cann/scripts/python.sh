@@ -42,6 +42,12 @@ download_python() {
 }
 
 install_python() {
+    # Download installer
+    if [ ! -f "/tmp/${PY_INSTALLER_TGZ}" ]; then
+        echo "[WARNING] Installer do not exist, re-download it."
+        download_python
+    fi
+
     # install python
     echo "Installing ${PY_INSTALLER_DIR}"
     tar -xf /tmp/${PY_INSTALLER_TGZ} -C /tmp
