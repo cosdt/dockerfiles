@@ -52,6 +52,8 @@ COPY ../scripts/install-py.sh /tmp/install-py.sh
 RUN chmod +x /tmp/install-py.sh && \
     bash /tmp/install-py.sh
 
+RUN pip install pyyaml
+
 FROM ubuntu:${BASE_VERSION} as official
 
 # Install dependencies
@@ -60,7 +62,7 @@ RUN apt-get update \
         apt-transport-https \
         ca-certificates \
         bash \
-        zlib1g \
+        libc6 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -69,5 +71,5 @@ RUN apt-get update \
 COPY --from=installer /usr/local/python3.8 /usr/local/python3.8
 COPY ../scripts/cann.sh /tmp/cann.sh
 
-RUN ln -sf /usr/local/python3.8/bin/python /usr/bin/python && \
-    ln -sf /usr/local/python3.8/bin/pip /usr/bin/pip
+RUN ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python && \
+    ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip
