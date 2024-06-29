@@ -1,6 +1,6 @@
 # Arguments
 ARG BASE_VERSION=latest
-FROM ubuntu:${BASE_VERSION} as builder
+FROM ubuntu:${BASE_VERSION} as installer
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
@@ -52,7 +52,7 @@ COPY ../scripts/install-py.sh /tmp/install-py.sh
 RUN chmod +x /tmp/install-py.sh && \
     bash /tmp/install-py.sh
 
-FROM ubuntu:${BASE_VERSION} as builder
+FROM ubuntu:${BASE_VERSION} as official
 
 # Install dependencies
 RUN apt-get update \
@@ -91,4 +91,4 @@ RUN apt-get update \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
-COPY --from=builder /usr/local/python3.8 /usr/local/python3.8
+COPY --from=installer /usr/local/python3.8 /usr/local/python3.8
