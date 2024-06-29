@@ -8,11 +8,11 @@ PY_MAJOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f1)
 # Find the latest version
 PY_LATEST_VERSION=$(curl -s https://www.python.org/ftp/python/ | grep -oE "${PY_VERSION}\.[0-9]+" | sort -V | tail -n 1)
 if [ -z "${PY_LATEST_VERSION}" ]; then
-    echo "Could not find the latest version for Python ${PY_VERSION}"
-    exit 1
-else
-    echo "Latest Python version found: ${PY_LATEST_VERSION}"
+    echo "[WARNING] Could not find the latest version for Python ${PY_VERSION}"
+    PY_LATEST_VERSION="${PY_VERSION}.0"
 fi
+
+echo "Latest Python version found: ${PY_LATEST_VERSION}"
 
 PY_HOME="/usr/local/python${PY_VERSION}"
 PY_INSTALLER_TGZ="Python-${PY_LATEST_VERSION}.tgz"
