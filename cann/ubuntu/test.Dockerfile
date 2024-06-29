@@ -52,7 +52,7 @@ COPY ../scripts/install-py.sh /tmp/install-py.sh
 RUN chmod +x /tmp/install-py.sh && \
     bash /tmp/install-py.sh
 
-RUN pip install pyyaml
+RUN pip install pyyaml -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 FROM ubuntu:${BASE_VERSION} as official
 
