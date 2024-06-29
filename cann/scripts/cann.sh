@@ -27,15 +27,12 @@ download_file() {
 
     local max_retries=10
     local retry_delay=10
-
     local url="$1"
     local path="$2"
 
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
-
-        curl -fsSL -v -o "${path}" "${url}"
-
+        curl -fsSL -o "${path}" "${url}"
         if [[ $? -eq 0 ]]; then
             return 0
         else
