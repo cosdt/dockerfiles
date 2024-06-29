@@ -93,10 +93,12 @@ COPY --from=cann-installer /etc/Ascend /etc/Ascend
 COPY ../scripts /tmp/scripts
 
 # Create symbollic links
-RUN /tmp/python.sh --create_links
+RUN /tmp/scripts/python.sh --create_links && \
+    rm /tmp/scripts/python.sh
 
 # Set environment variables
-RUN /tmp/cann.sh --set_env
+RUN /tmp/scripts/cann.sh --set_env && \
+    rm /tmp/scripts/cann.sh
 
 # Driver path
 ENV DRIVER_PATH=/usr/local/Ascend/driver
