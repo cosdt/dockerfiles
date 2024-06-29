@@ -19,6 +19,7 @@ RUN apk add --no-cache \
 
 # Copy files
 COPY ../scripts/cann.sh /tmp/cann.sh
+COPY ../scripts/install-py.sh /tmp/install-py.sh
 
 # Download CANN
 RUN chmod +x /tmp/cann.sh && \
@@ -48,19 +49,22 @@ RUN yum install -y \
         sqlite-devel \
         lapack-devel \
         gcc-gfortran \
-        python3-devel \
-        python3-pip \
-        wget \
+        curl \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
+
+# Install Python
+RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
+    umask 0022 && \
+    chmod +x /tmp/install-py.sh && \
+    bash /tmp/install-py.sh
 
 # Install CANN
 RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
     umask 0022 && \
     chmod +x /tmp/cann.sh && \
-    bash /tmp/cann.sh --install && \
-    rm -rf /tmp/*
+    bash /tmp/cann.sh --install
 
 # Copy files
 COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
