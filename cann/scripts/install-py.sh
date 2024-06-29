@@ -48,4 +48,5 @@ ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
 rm -rf /tmp/${PY_INSTALLER_TGZ} /tmp/${PY_INSTALLER_DIR}
 
 echo "Python ${PY_LATEST_VERSION} installation successful."
+python -m pip install --upgrade pip
 python -c "import sys; print(sys.version)"
