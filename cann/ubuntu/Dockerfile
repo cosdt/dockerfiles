@@ -62,6 +62,7 @@ RUN apt-get update \
         patchelf \
         libblas3 \
         curl \
+        build-essential \
         libbz2-dev \
         libncurses5-dev \
         libnss3-dev \

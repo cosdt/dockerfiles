@@ -48,6 +48,7 @@ RUN yum install -y \
         lapack-devel \
         gcc-gfortran \
         curl \
+        build-essential \
         bzip2-devel \
         ncurses-devel \
         gdbm-devel \

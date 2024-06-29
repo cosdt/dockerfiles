@@ -33,15 +33,7 @@ tar -xf /tmp/${PY_INSTALLER_TGZ} -C /tmp
 cd /tmp/${PY_INSTALLER_DIR}
 ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
 make -j$($(nproc) + 1)
-make altinstall
-
-# create links
-ln -sf ${PY_HOME}/bin/python${PY_VERSION} /usr/bin/python${PY_VERSION}
-ln -sf ${PY_HOME}/bin/pip${PY_VERSION} /usr/bin/pip${PY_VERSION}
-ln -sf /usr/bin/python${PY_VERSION} /usr/bin/python${PY_MAJOR_VERSION}
-ln -sf /usr/bin/pip${PY_VERSION} /usr/bin/pip${PY_MAJOR_VERSION}
-ln -sf /usr/bin/python${PY_MAJOR_VERSION} /usr/bin/python
-ln -sf /usr/bin/pip${PY_MAJOR_VERSION} /usr/bin/pip
+make install
 
 # clean up
 rm -rf /tmp/${PY_INSTALLER_TGZ} /tmp/${PY_INSTALLER_DIR}
