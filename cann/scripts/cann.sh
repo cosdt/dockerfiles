@@ -34,7 +34,7 @@ download_file() {
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
 
-        curl -fsSL "${url}" -o "${path}"
+        curl -fsSL -v -o "${path}" "${url}"
 
         if [[ $? -eq 0 ]]; then
             return 0
