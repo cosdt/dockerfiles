@@ -2,6 +2,28 @@
 
 set -e
 
+PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
+ARCH=$(get_architecture)
+CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
+CANN_CHIP=${CANN_CHIP:="910b"}
+CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
+
+TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
+KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
+TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
+KERNELS_PATH="/tmp/${KERNELS_FILE}"
+
+if [ "$1" == "--download" ]; then
+    download_cann
+elif [ "$1" == "--install" ]; then
+    install_cann
+elif [ "$1" == "--set_env" ]; then
+    set_env
+else
+    echo "Unexpected arguments, use '--download', '--install' or '--set_env' instead"
+    exit 1
+fi
+
 get_architecture() {
     # not case sensitive
     shopt -s nocasematch
@@ -68,24 +90,26 @@ download_cann() {
     echo "CANN ${CANN_VERSION} download successful."
 }
 
-check_python() {
-    if ! command -v python &> /dev/null; then
-        if command -v python3 &> /dev/null; then
-            # Create symbolic link from python3 to python
-            ln -sf "$(command -v python3)" "$(dirname "$(command -v python3)")/python"
-            ln -sf "$(command -v pip3)" "$(dirname "$(command -v pip3)")/pip"
-            echo "Created symbolic link 'python' pointing to 'python3'."
-        else
-            echo "Python not installed."
-            exit 1
-        fi
+set_env() {
+    local cann_toolkit_env_file="${CANN_HOME}/ascend-toolkit/set_env.sh"
+    if [ ! -f "${cann_toolkit_env_file}" ]; then
+        echo "CANN Toolkit ${CANN_VERSION} installation failed."
+        exit 1
+    else
+        local driver_path_env=$(cat <<'EOF'
+if [ -n "${DRIVER_PATH}" ]; then
+    export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
+fi
+EOF)
+        echo "${driver_path_env}" >> /etc/profile
+        echo "${driver_path_env}" >> ~/.bashrc
+        echo "source ${cann_toolkit_env_file}" >> /etc/profile
+        echo "source ${cann_toolkit_env_file}" >> ~/.bashrc
+        source ${cann_toolkit_env_file}
     fi
 }
 
 install_cann() {
-    # Check python
-    check_python
-
     # Install dependencies
     pip config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
     pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
@@ -103,22 +127,7 @@ install_cann() {
     rm -f "${TOOLKIT_PATH}"
 
     # Set environment variables
-    CANN_TOOLKIT_ENV_FILE="${CANN_HOME}/ascend-toolkit/set_env.sh"
-    if [ ! -f "${CANN_TOOLKIT_ENV_FILE}" ]; then
-        echo "CANN Toolkit ${CANN_VERSION} installation failed."
-        exit 1
-    else
-        DRIVER_PATH_ENV=$(cat <<'EOF'
-if [ -n "${DRIVER_PATH}" ]; then
-    export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
-fi
-EOF)
-        echo "${DRIVER_PATH_ENV}" >> /etc/profile
-        echo "${DRIVER_PATH_ENV}" >> ~/.bashrc
-        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
-        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
-        source ${CANN_TOOLKIT_ENV_FILE}
-    fi
+    set_env
 
     # Install CANN Kernels
     echo "Installing ${KERNELS_FILE}"
@@ -128,23 +137,3 @@ EOF)
 
     echo "CANN ${CANN_VERSION} installation successful."
 }
-
-PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
-ARCH=$(get_architecture)
-CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
-CANN_CHIP=${CANN_CHIP:="910b"}
-CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
-
-TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
-KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
-TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
-KERNELS_PATH="/tmp/${KERNELS_FILE}"
-
-if [ "$1" == "--download" ]; then
-    download_cann
-elif [ "$1" == "--install" ]; then
-    install_cann
-else
-    echo "Unexpected arguments, use '--download' or '--install' instead"
-    exit 1
-fi
