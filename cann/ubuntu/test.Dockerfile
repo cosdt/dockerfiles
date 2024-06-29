@@ -60,35 +60,14 @@ RUN apt-get update \
         apt-transport-https \
         ca-certificates \
         bash \
-        git \
-        wget \
-        gcc \
-        g++ \
-        make \
-        cmake \
         zlib1g \
-        zlib1g-dev \
-        openssl \
-        libsqlite3-dev \
-        libssl-dev \
-        libffi-dev \
-        unzip \
-        pciutils \
-        net-tools \
-        libblas-dev \
-        gfortran \
-        patchelf \
-        libblas3 \
-        curl \
-        build-essential \
-        libbz2-dev \
-        libncurses5-dev \
-        libnss3-dev \
-        libgdbm-dev \
-        libreadline-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
 COPY --from=installer /usr/local/python3.8 /usr/local/python3.8
+COPY ../scripts/cann.sh /tmp/cann.sh
+
+RUN ln -sf /usr/local/python3.8/bin/python /usr/bin/python && \
+    ln -sf /usr/local/python3.8/bin/pip /usr/bin/pip
