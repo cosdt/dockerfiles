@@ -31,6 +31,7 @@ fi
 echo "Installing ${PY_INSTALLER_DIR}"
 tar -xf /tmp/${PY_INSTALLER_TGZ} -C /tmp
 cd /tmp/${PY_INSTALLER_DIR}
+mkdir -p /${PY_HOME}/lib
 ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
 make -j$($(nproc) + 1)
 make altinstall
