@@ -2,17 +2,6 @@
 
 set -e
 
-PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
-ARCH=$(get_architecture)
-CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
-CANN_CHIP=${CANN_CHIP:="910b"}
-CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
-
-TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
-KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
-TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
-KERNELS_PATH="/tmp/${KERNELS_FILE}"
-
 get_architecture() {
     # not case sensitive
     shopt -s nocasematch
@@ -126,6 +115,17 @@ install_cann() {
 
     echo "CANN ${CANN_VERSION} installation successful."
 }
+
+PLATFORM=${PLATFORM:=$(uname -s)/$(uname -m)}
+ARCH=$(get_architecture)
+CANN_HOME=${CANN_HOME:="/usr/local/Ascend"}
+CANN_CHIP=${CANN_CHIP:="910b"}
+CANN_VERSION=${CANN_VERSION:="8.0.RC1"}
+
+TOOLKIT_FILE="Ascend-cann-toolkit_${CANN_VERSION}_linux-${ARCH}.run"
+KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
+TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
+KERNELS_PATH="/tmp/${KERNELS_FILE}"
 
 # Parse arguments
 if [ "$1" == "--download" ]; then
