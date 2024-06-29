@@ -1,8 +1,6 @@
 # Arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=${TARGETPLATFORM}
-ARG CANN_CHIP
-ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
@@ -50,6 +48,14 @@ RUN yum install -y \
         lapack-devel \
         gcc-gfortran \
         curl \
+        bzip2-devel \
+        ncurses-devel \
+        gdbm-devel \
+        readline-devel \
+        xz-devel \
+        tk-devel \
+        libuuid-devel \
+        libnsl2-devel \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*

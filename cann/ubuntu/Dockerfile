@@ -1,8 +1,6 @@
 # Arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=${TARGETPLATFORM}
-ARG CANN_CHIP
-ARG CANN_VERSION
 
 # Phase 1: download CANN installers
 FROM alpine as downloader
@@ -64,6 +62,11 @@ RUN apt-get update \
         patchelf \
         libblas3 \
         curl \
+        libbz2-dev \
+        libncurses5-dev \
+        libnss3-dev \
+        libgdbm-dev \
+        libreadline-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
