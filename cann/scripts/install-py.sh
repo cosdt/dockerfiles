@@ -21,7 +21,7 @@ PY_INSTALLER_URL="https://repo.huaweicloud.com/python/${PY_LATEST_VERSION}/${PY_
 
 # download python
 echo "Downloading ${PY_INSTALLER_TGZ} from ${PY_INSTALLER_URL}"
-curl -fsSL -v -o "${PY_INSTALLER_TGZ}" "${PY_INSTALLER_URL}"
+curl -fsSL -v -o "/tmp/${PY_INSTALLER_TGZ}" "${PY_INSTALLER_URL}"
 if [ ! $? -eq 0]; then
   echo "Python ${PY_LATEST_VERSION} download failed."
   exit 1
