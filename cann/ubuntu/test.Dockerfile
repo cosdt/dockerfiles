@@ -73,6 +73,8 @@ COPY --from=installer /usr/local/python3.8 /usr/local/python3.8
 COPY ../scripts/cann.sh /tmp/cann.sh
 
 RUN ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python3.8 && \
-    ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip3.8 && \
+    ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python3 && \
     ln -sf /usr/local/python3.8/bin/python3.8 /usr/bin/python && \
+    ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip3.8 &&\
+    ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip3 && \
     ln -sf /usr/local/python3.8/bin/pip3.8 /usr/bin/pip
