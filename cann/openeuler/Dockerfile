@@ -56,6 +56,7 @@ RUN yum install -y \
         tk-devel \
         libuuid-devel \
         libnsl2-devel \
+        findutils \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
