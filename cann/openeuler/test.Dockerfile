@@ -98,7 +98,8 @@ ARG CANN_CHIP
 ARG CANN_VERSION
 
 # Install dependencies
-RUN yum install -y \
+RUN yum update -y && \
+    yum install -y \
         ca-certificates \
         bash \
         glibc \
