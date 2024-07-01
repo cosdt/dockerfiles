@@ -74,10 +74,8 @@ set_env() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        local driver_path_env=$(cat <<'EOF'
-if [ -n "${DRIVER_PATH}" ]; then
-    export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
-fi
+        local driver_path_env=$(cat <<EOF
+export LD_LIBRARY_PATH="${CANN_HOME}/driver/lib64/common/:${CANN_HOME}/driver/lib64/driver/:\${LD_LIBRARY_PATH}"
 EOF)
         echo "${driver_path_env}" >> /etc/profile
         echo "${driver_path_env}" >> ~/.bashrc

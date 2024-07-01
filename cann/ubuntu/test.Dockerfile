@@ -22,6 +22,8 @@ RUN apt-get update \
         libffi-dev \
         libnss3-dev \
         libgdbm-dev \
+        liblzma-dev \
+        libev-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
@@ -100,10 +102,7 @@ RUN /tmp/scripts/python.sh --create_links && \
 RUN /tmp/scripts/cann.sh --set_env && \
     rm /tmp/scripts/cann.sh
 
-# Driver path
-ENV DRIVER_PATH=/usr/local/Ascend/driver
-
 # Add the driver path to the library path
-ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
 
 ENTRYPOINT [ "/tmp/scripts/docker-entrypoint.sh" ]
