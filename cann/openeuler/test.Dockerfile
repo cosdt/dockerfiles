@@ -12,7 +12,9 @@ FROM openeuler/openeuler:${BASE_VERSION} as py-installer
 ARG PY_VERSION
 
 # Install dependencies
-RUN yum install -y \
+RUN yum update -y && \
+    yum groupinstall -y "Development Tools" && \
+    yum install -y \
         zlib-devel \
         bzip2-devel \
         openssl-devel \
@@ -23,6 +25,7 @@ RUN yum install -y \
         gdbm-devel \
         libpcap-devel \
         xz-devel \
+        libev-devel \
         expat-devel \
         libffi-devel \
         systemtap-sdt-devel \
