@@ -1,9 +1,15 @@
 # Arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=${TARGETPLATFORM}
+ARG PY_VERSION=3.8
+ARG CANN_CHIP=910b
+ARG CANN_VERSION=8.0.RC2.alpha002
 
 # Phase 1: Install python
 FROM ubuntu:${BASE_VERSION} as py-installer
+
+# Arguments
+ARG PY_VERSION
 
 # Install dependencies
 RUN apt-get update \
@@ -38,6 +44,11 @@ RUN bash /tmp/python.sh --install && \
 
 # Phase 2: Install CANN
 FROM py-installer as cann-installer
+
+# Arguments
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
 
 # Install dependencies
 RUN apt-get update \
@@ -76,6 +87,12 @@ RUN bash /tmp/cann.sh --install && \
 # Phase 3: Copy results from previous phases
 FROM ubuntu:${BASE_VERSION} as official
 
+# Arguments
+ARG PLATFORM
+ARG PY_VERSION
+ARG CANN_CHIP
+ARG CANN_VERSION
+
 # Install dependencies
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
@@ -89,20 +106,20 @@ RUN apt-get update \
     && rm -rf /tmp/*
 
 # Copy files
-COPY --from=cann-installer /usr/local/python3.8 /usr/local/python3.8
+COPY --from=cann-installer /usr/local/python${PY_VERSION} /usr/local/python${PY_VERSION}
 COPY --from=cann-installer /usr/local/Ascend /usr/local/Ascend
 COPY --from=cann-installer /etc/Ascend /etc/Ascend
-COPY ../scripts /tmp/scripts
+COPY ../scripts /root/scripts
 
-# Create symbollic links
-RUN /tmp/scripts/python.sh --create_links && \
-    rm /tmp/scripts/python.sh
+# Create symbolic links
+RUN /root/scripts/python.sh --create_links && \
+    rm /root/scripts/python.sh
 
 # Set environment variables
-RUN /tmp/scripts/cann.sh --set_env && \
-    rm /tmp/scripts/cann.sh
+RUN /root/scripts/cann.sh --set_env && \
+    rm /root/scripts/cann.sh
 
 # Add the driver path to the library path
 ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
 
-ENTRYPOINT [ "/tmp/scripts/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/root/scripts/docker-entrypoint.sh" ]
