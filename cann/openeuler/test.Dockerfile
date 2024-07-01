@@ -13,8 +13,11 @@ ARG PY_VERSION
 
 # Install dependencies
 RUN yum update -y && \
-    yum groupinstall -y "Development Tools" && \
     yum install -y \
+        gcc \
+        gcc-c++ \
+        make \
+        cmake \
         zlib-devel \
         bzip2-devel \
         openssl-devel \
@@ -49,7 +52,8 @@ ARG CANN_CHIP
 ARG CANN_VERSION
 
 # Install dependencies
-RUN yum install -y \
+RUN yum update -y && \
+    yum install -y \
         gcc \
         gcc-c++ \
         make \
