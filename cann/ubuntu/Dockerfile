@@ -1,47 +1,61 @@
 # Arguments
 ARG BASE_VERSION=latest
 ARG PLATFORM=${TARGETPLATFORM}
+ARG PY_VERSION=3.8
+ARG CANN_CHIP=910b
+ARG CANN_VERSION=8.0.RC2.alpha002
 
-# Phase 1: download CANN installers
-FROM alpine as downloader
+# Phase 1: Install Python
+FROM ubuntu:${BASE_VERSION} as py-installer
 
-ARG PLATFORM
-ARG CANN_CHIP
-ARG CANN_VERSION
+# Arguments
+ARG PY_VERSION
 
-RUN apk add --no-cache \
-        bash \
-        curl \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /tmp/*
-
-# Copy files
-COPY ../scripts/cann.sh /tmp/cann.sh
-COPY ../scripts/install-py.sh /tmp/install-py.sh
-
-# Download CANN
-RUN chmod +x /tmp/cann.sh && \
-    bash /tmp/cann.sh --download
-
-# Phase 2: install CANN toolkit and kernels
-FROM ubuntu:${BASE_VERSION} as builder
-
-ARG PLATFORM
-ARG CANN_CHIP
-ARG CANN_VERSION
-
-# Change the default shell
-SHELL [ "/bin/bash", "-c" ]
-
-# Set non-interactive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
+# Environment variables
+ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         apt-transport-https \
         ca-certificates \
         bash \
+        curl \
+        build-essential \
+        libssl-dev \
+        zlib1g-dev \
+        libncurses5-dev \
+        libbz2-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libffi-dev \
+        libnss3-dev \
+        libgdbm-dev \
+        liblzma-dev \
+        libev-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/tmp/* \
+    && rm -rf /tmp/*
+
+# Copy files
+COPY ../scripts/python.sh /tmp/python.sh
+
+# Install Python
+RUN bash /tmp/python.sh --install && \
+    rm /tmp/python.sh
+
+# Phase 2: Install CANN
+FROM py-installer as cann-installer
+
+# Arguments
+ARG PLATFORM
+ARG CANN_CHIP
+ARG CANN_VERSION
+
+# Install dependencies
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
         git \
         wget \
         gcc \
@@ -61,37 +75,59 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
-        curl \
-        build-essential \
-        libbz2-dev \
-        libncurses5-dev \
-        libnss3-dev \
-        libgdbm-dev \
-        libreadline-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
-# Install Python
-RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
-    umask 0022 && \
-    chmod +x /tmp/install-py.sh && \
-    bash /tmp/install-py.sh
+# Copy files
+COPY ../scripts/cann.sh /tmp/cann.sh
 
 # Install CANN
-RUN --mount=type=cache,from=downloader,target=/tmp,source=/tmp \
-    umask 0022 && \
-    chmod +x /tmp/cann.sh && \
-    bash /tmp/cann.sh --install
+RUN bash /tmp/cann.sh --install && \
+    rm /tmp/cann.sh
+
+# Phase 3: Copy results from previous phases
+FROM ubuntu:${BASE_VERSION} as official
+
+# Arguments
+ARG PLATFORM
+ARG PY_VERSION
+ARG CANN_CHIP
+ARG CANN_VERSION
+
+# Environment variables
+ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
+
+# Install dependencies
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+        apt-transport-https \
+        ca-certificates \
+        bash \
+        libc6 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/tmp/* \
+    && rm -rf /tmp/*
 
 # Copy files
-COPY ../scripts/docker-entrypoint.sh /root/docker-entrypoint.sh
+COPY --from=cann-installer /usr/local/python${PY_VERSION} /usr/local/python${PY_VERSION}
+COPY --from=cann-installer /usr/local/Ascend /usr/local/Ascend
+COPY --from=cann-installer /etc/Ascend /etc/Ascend
 
-# Driver path
-ENV DRIVER_PATH=/usr/local/Ascend/driver
+# Set environment variables for Python
+RUN PY_PATH="PATH=/usr/local/python${PY_VERSION}/bin:\${PATH}" && \
+    echo "export ${PY_PATH}" >> /etc/profile && \
+    echo "export ${PY_PATH}" >> ~/.bashrc
 
-# Add the driver path to the library path
-ENV LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
+# Set environment variables for CANN
+RUN CANN_TOOLKIT_ENV_FILE="/usr/local/Ascend/ascend-toolkit/set_env.sh" && \
+    DRIVER_LIBRARY_PATH="LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
+    echo "export ${DRIVER_LIBRARY_PATH}" >> /etc/profile && \
+    echo "export ${DRIVER_LIBRARY_PATH}" >> ~/.bashrc && \
+    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile && \
+    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
 
-ENTRYPOINT [ "/root/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/bin/bash", "-c", "source /usr/local/Ascend/ascend-toolkit/set_env.sh && exec \"$@\"", "--" ]

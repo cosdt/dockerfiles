@@ -45,13 +45,16 @@ install_python() {
     make -j$($(nproc) + 1)
     make altinstall
 
-    # create symbolic links
-    create_links
+    # create symbolic links at PY_HOME
+    ln -sf ${PY_HOME}/bin/python${PY_VERSION} ${PY_HOME}/bin/python${PY_MAJOR_VERSION}
+    ln -sf ${PY_HOME}/bin/pip${PY_VERSION} ${PY_HOME}/bin/pip${PY_MAJOR_VERSION}
+    ln -sf ${PY_HOME}/bin/python${PY_MAJOR_VERSION} ${PY_HOME}/bin/python
+    ln -sf ${PY_HOME}/bin/pip${PY_MAJOR_VERSION} ${PY_HOME}/bin/pip
 
     # clean up
     rm -rf /tmp/${PY_INSTALLER_TGZ} /tmp/${PY_INSTALLER_DIR}
     echo "Python ${PY_LATEST_VERSION} installation successful."
-    python -c "import sys; print(sys.version)"
+    ${PY_HOME}/bin/python -c "import sys; print(sys.version)"
 }
 
 # create links
