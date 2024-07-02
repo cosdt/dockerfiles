@@ -43,7 +43,7 @@ target "base-target" {
 
 target "cann-all" {
   inherits = ["base-target"]
-  name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}", ".", "_")
+  name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}-py${py_version}", ".", "_")
   context = "cann"
   dockerfile = "${os.name}/Dockerfile"
   matrix = {
@@ -65,15 +65,17 @@ target "cann-all" {
         version = "22.03"
       }
     ]
+    py_version = ["3.8"]
     cann_chip = ["310p", "910", "910b"]
     cann_version = ["7.0.1", "8.0.RC1", "8.0.RC2.alpha002"]
   }
   args = {
     BASE_VERSION = "${os.version}"
+    PY_VERSION = "${py_version}"
     CANN_CHIP = "${cann_chip}"
     CANN_VERSION = "${cann_version}"
   }
-  tags = generate_tags("cann", "${cann_version}-${cann_chip}-${os.name}${os.version}")
+  tags = generate_tags("cann", "${cann_version}-${cann_chip}-${os.name}${os.version}-py${py_version}")
 }
 
 target "cann-prefer" {
@@ -87,6 +89,7 @@ target "cann-prefer" {
         tag = "latest"
         os = "ubuntu"
         os_version = "22.04"
+        py_version = "3.10"
         cann_chip = "910b"
         cann_version = "8.0.RC2.alpha002"
       },
@@ -94,6 +97,7 @@ target "cann-prefer" {
         tag = "8.0"
         os = "ubuntu"
         os_version = "22.04"
+        py_version = "3.10"
         cann_chip = "910b"
         cann_version = "8.0.RC2.alpha002"
       },
@@ -101,6 +105,7 @@ target "cann-prefer" {
         tag = "7.0"
         os = "ubuntu"
         os_version = "22.04"
+        py_version = "3.10"
         cann_chip = "910b"
         cann_version = "7.0.1"
       },
@@ -108,6 +113,7 @@ target "cann-prefer" {
   }
   args = {
     BASE_VERSION = "${item.os_version}"
+    PY_VERSION = "${item.py_version}"
     CANN_CHIP = "${item.cann_chip}"
     CANN_VERSION = "${item.cann_version}"
   }
@@ -124,13 +130,13 @@ target "pytorch-all" {
     item = [
       {
         tag = "2.1.0"
-        cann_version = "8.0"
+        cann_tag = "8.0"
         pytorch_version = "2.1.0"
         torch_npu_version = "2.1.0.post3"
       },
       {
         tag = "2.2.0"
-        cann_version = "8.0"
+        cann_tag = "8.0"
         pytorch_version = "2.2.0"
         torch_npu_version = "2.2.0"
       }
@@ -138,7 +144,7 @@ target "pytorch-all" {
   }
   args = {
     BASE_NAME = "${registry.url}/${registry.owner}/cann"
-    BASE_VERSION = "${item.cann_version}"
+    BASE_VERSION = "${item.cann_tag}"
     PYTORCH_VERSION = "${item.pytorch_version}"
     TORCH_NPU_VERSION = "${item.torch_npu_version}"
   }
