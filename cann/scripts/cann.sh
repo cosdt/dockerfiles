@@ -87,7 +87,6 @@ EOF)
 
 install_cann() {
     # Install dependencies
-    pip config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
     pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Download installers

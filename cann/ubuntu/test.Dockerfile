@@ -5,11 +5,15 @@ ARG PY_VERSION=3.8
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC2.alpha002
 
-# Phase 1: Install python
-FROM ubuntu:${BASE_VERSION} as py-installer
+# Phase 1: Install Miniconda
+FROM ubuntu:${BASE_VERSION} as conda-installer
 
 # Arguments
+ARG PLATFORM
 ARG PY_VERSION
+
+# Environment variables
+ENV PATH=/opt/miniconda/bin:${PATH}
 
 # Install dependencies
 RUN apt-get update \
@@ -19,31 +23,30 @@ RUN apt-get update \
         bash \
         curl \
         build-essential \
-        libssl-dev \
-        zlib1g-dev \
-        libncurses5-dev \
-        libbz2-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        libffi-dev \
-        libnss3-dev \
-        libgdbm-dev \
-        liblzma-dev \
-        libev-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
-# Copy files
-COPY ../scripts/python.sh /tmp/python.sh
+# Download Miniconda
+RUN case ${PLATFORM} in \
+         "linux/amd64")  MINICONDA_ARCH=x86_64  ;; \
+         *)              MINICONDA_ARCH=aarch64   ;; \
+    esac && \
+    MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${MINICONDA_ARCH}.sh" && \
+    # download \
+    echo "Downloading Miniconda from ${MINICONDA_URL}" && \
+    curl -fsSL -o /tmp/miniconda.sh "${MINICONDA_URL}"
 
-# Install Python
-RUN bash /tmp/python.sh --install && \
-    rm /tmp/python.sh
+# Install Miniconda to /opt/miniconda
+RUN chmod +x /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -u -p /opt/miniconda && \
+    rm -rf /tmp/miniconda.sh && \
+    /opt/miniconda/bin/conda install -y python=${PY_VERSION} && \
+    /opt/miniconda/bin/conda clean -ya
 
 # Phase 2: Install CANN
-FROM py-installer as cann-installer
+FROM conda-installer as cann-installer
 
 # Arguments
 ARG PLATFORM
@@ -93,6 +96,10 @@ ARG PY_VERSION
 ARG CANN_CHIP
 ARG CANN_VERSION
 
+# Environment variables
+ENV PATH=/opt/miniconda/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
+
 # Install dependencies
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
@@ -106,20 +113,21 @@ RUN apt-get update \
     && rm -rf /tmp/*
 
 # Copy files
-COPY --from=cann-installer /usr/local/python${PY_VERSION} /usr/local/python${PY_VERSION}
+COPY --from=cann-installer /opt/miniconda /opt/miniconda
 COPY --from=cann-installer /usr/local/Ascend /usr/local/Ascend
 COPY --from=cann-installer /etc/Ascend /etc/Ascend
-COPY ../scripts /root/scripts
 
-# Create symbolic links
-RUN /root/scripts/python.sh --create_links && \
-    rm /root/scripts/python.sh
+# Init conda environment
+RUN /opt/miniconda/bin/conda init --all --system && \
+    chmod 644 /etc/profile.d/conda.sh && \
+    chmod -R 755 /opt/miniconda
 
 # Set environment variables
-RUN /root/scripts/cann.sh --set_env && \
-    rm /root/scripts/cann.sh
+RUN CANN_TOOLKIT_ENV_FILE="/usr/local/Ascend/ascend-toolkit/set_env.sh" && \
+    DRIVER_LIBRARY_PATH="LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
+    echo "export ${DRIVER_LIBRARY_PATH}" >> /etc/profile && \
+    echo "export ${DRIVER_LIBRARY_PATH}" >> ~/.bashrc && \
+    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile && \
+    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
 
-# Add the driver path to the library path
-ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
-
-ENTRYPOINT [ "/root/scripts/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/bin/bash", "-c", "source /usr/local/Ascend/ascend-toolkit/set_env.sh && exec \"$@\"", "--" ]

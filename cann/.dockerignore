@@ -1,2 +1,6 @@
 LICENSE
 README.md
+Dockerfile.openeuler
+Dockerfile.ubuntu
+scripts/docker-entrypoint.sh
+scripts/python.sh
