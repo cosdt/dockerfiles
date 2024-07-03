@@ -41,6 +41,9 @@ RUN apt-get update \
 # Copy files
 COPY ../scripts/python.sh /tmp/python.sh
 
+# Download Python
+RUN bash /tmp/python.sh --download
+
 # Install Python
 RUN bash /tmp/python.sh --install && \
     rm /tmp/python.sh
@@ -85,6 +88,9 @@ RUN apt-get update \
 
 # Copy files
 COPY ../scripts/cann.sh /tmp/cann.sh
+
+# Download CANN
+RUN bash /tmp/cann.sh --download
 
 # Install CANN
 RUN bash /tmp/cann.sh --install && \
