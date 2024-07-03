@@ -129,16 +129,12 @@ target "pytorch-all" {
     registry = jsondecode(registries)
     item = [
       {
-        tag = "2.1.0"
         cann_tag = "8.0"
         pytorch_version = "2.1.0"
-        torch_npu_version = "2.1.0"
       },
       {
-        tag = "2.2.0"
         cann_tag = "8.0"
         pytorch_version = "2.2.0"
-        torch_npu_version = "2.2.0"
       }
     ]
   }
@@ -146,9 +142,8 @@ target "pytorch-all" {
     BASE_NAME = "${registry.url}/${registry.owner}/cann"
     BASE_VERSION = "${item.cann_tag}"
     PYTORCH_VERSION = "${item.pytorch_version}"
-    TORCH_NPU_VERSION = "${item.torch_npu_version}"
   }
   tags = [
-    "${registry.url}/${registry.owner}/pytorch:${item.tag}"
+    "${registry.url}/${registry.owner}/pytorch:${item.pytorch_version}"
   ]
 }

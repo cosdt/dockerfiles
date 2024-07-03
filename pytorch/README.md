@@ -58,6 +58,5 @@ docker buildx build \
     --build-arg BASE_NAME=cosdt/cann \
     --build-arg BASE_VERSION=latest \
     --build-arg PYTORCH_VERSION=2.2.0 \
-    --build-arg TORCH_NPU_VERSION=2.2.0 \
     pytorch/
 ```
