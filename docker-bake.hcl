@@ -122,7 +122,7 @@ target "cann-prefer" {
 
 target "pytorch-all" {
   inherits = ["base-target"]
-  name = replace("${registry.url}-pytorch-${item.tag}", ".", "_")
+  name = replace("${registry.url}-pytorch-${item.pytorch_version}", ".", "_")
   context = "pytorch"
   dockerfile = "new.Dockerfile"
   matrix = {
