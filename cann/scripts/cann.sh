@@ -27,15 +27,12 @@ download_file() {
 
     local max_retries=10
     local retry_delay=10
-
     local url="$1"
     local path="$2"
 
     for ((i=1; i<=max_retries; i++)); do
         echo "Attempt $i of $max_retries..."
-
-        curl -fsSL "${url}" -o "${path}"
-
+        curl -fsSL -o "${path}" "${url}"
         if [[ $? -eq 0 ]]; then
             return 0
         else
@@ -71,33 +68,31 @@ download_cann() {
     echo "CANN ${CANN_VERSION} download successful."
 }
 
-check_python() {
-    if ! command -v python &> /dev/null; then
-        if command -v python3 &> /dev/null; then
-            # Create symbolic link from python3 to python
-            ln -sf "$(command -v python3)" "$(dirname "$(command -v python3)")/python"
-            ln -sf "$(command -v pip3)" "$(dirname "$(command -v pip3)")/pip"
-            echo "Created symbolic link 'python' pointing to 'python3'."
-        else
-            echo "Python not installed."
-            exit 1
-        fi
+set_env() {
+    local cann_toolkit_env_file="${CANN_HOME}/ascend-toolkit/set_env.sh"
+    if [ ! -f "${cann_toolkit_env_file}" ]; then
+        echo "CANN Toolkit ${CANN_VERSION} installation failed."
+        exit 1
+    else
+        local driver_path_env="LD_LIBRARY_PATH=${CANN_HOME}/driver/lib64/common/:${CANN_HOME}/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
+        echo "export ${driver_path_env}" >> /etc/profile
+        echo "export ${driver_path_env}" >> ~/.bashrc
+        echo "source ${cann_toolkit_env_file}" >> /etc/profile
+        echo "source ${cann_toolkit_env_file}" >> ~/.bashrc
+        source ${cann_toolkit_env_file}
     fi
 }
 
 install_cann() {
-    # Check python
-    check_python
-
-    # Install dependencies
-    pip config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
-    pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
-
     # Download installers
     if [ ! -f "${TOOLKIT_PATH}" ] || [ ! -f "${KERNELS_PATH}" ]; then
         echo "[WARNING] Installers do not exist, re-download them."
         download_cann
     fi
+
+    # Install dependencies
+    pip install --no-cache-dir \
+        attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Install CANN Toolkit
     echo "Installing ${TOOLKIT_FILE}"
@@ -106,22 +101,7 @@ install_cann() {
     rm -f "${TOOLKIT_PATH}"
 
     # Set environment variables
-    CANN_TOOLKIT_ENV_FILE="${CANN_HOME}/ascend-toolkit/set_env.sh"
-    if [ ! -f "${CANN_TOOLKIT_ENV_FILE}" ]; then
-        echo "CANN Toolkit ${CANN_VERSION} installation failed."
-        exit 1
-    else
-        DRIVER_PATH_ENV=$(cat <<'EOF'
-if [ -n "${DRIVER_PATH}" ]; then
-    export LD_LIBRARY_PATH=${DRIVER_PATH}/lib64/common/:${DRIVER_PATH}/lib64/driver/:${LD_LIBRARY_PATH}
-fi
-EOF)
-        echo "${DRIVER_PATH_ENV}" >> /etc/profile
-        echo "${DRIVER_PATH_ENV}" >> ~/.bashrc
-        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile
-        echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
-        source ${CANN_TOOLKIT_ENV_FILE}
-    fi
+    set_env
 
     # Install CANN Kernels
     echo "Installing ${KERNELS_FILE}"
@@ -143,11 +123,14 @@ KERNELS_FILE="Ascend-cann-kernels-${CANN_CHIP}_${CANN_VERSION}_linux.run"
 TOOLKIT_PATH="/tmp/${TOOLKIT_FILE}"
 KERNELS_PATH="/tmp/${KERNELS_FILE}"
 
+# Parse arguments
 if [ "$1" == "--download" ]; then
     download_cann
 elif [ "$1" == "--install" ]; then
     install_cann
+elif [ "$1" == "--set_env" ]; then
+    set_env
 else
-    echo "Unexpected arguments, use '--download' or '--install' instead"
+    echo "Unexpected arguments, use '--download', '--install' or '--set_env' instead"
     exit 1
 fi

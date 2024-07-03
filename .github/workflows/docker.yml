@@ -8,20 +8,24 @@ on:
     tags:
       - 'v*'
     paths:
+      - '.github/actions/build-and-push-docker/action.yml'
       - '.github/workflows/docker.yml'
       - 'docker-bake.hcl'
       - 'cann/**'
       - 'pytorch/**'
+      - 'mindspore/**'
       - 'llm/**'
       - '!**/*.md'
   pull_request:
     branches:
       - 'main'
     paths:
+      - '.github/actions/build-and-push-docker/action.yml'
       - '.github/workflows/docker.yml'
       - 'docker-bake.hcl'
       - 'cann/**'
       - 'pytorch/**'
+      - 'mindspore/**'
       - 'llm/**'
       - '!**/*.md'
   release:
@@ -46,6 +50,10 @@ env:
       {
         "url": "quay.io",
         "owner": "${{ secrets.QUAY_OWNER }}"
+      },
+      {
+        "url": "swr.cn-southwest-2.myhuaweicloud.com",
+        "owner": "${{ secrets.HW_OWNER }}"
       }
     ]
 
@@ -56,6 +64,7 @@ jobs:
     outputs:
       cann-targets: ${{ steps.list-cann-target.outputs.targets }}
       pth-targets: ${{ steps.list-pth-target.outputs.targets }}
+      ms-targets: ${{ steps.list-ms-target.outputs.targets }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,6 +80,12 @@ jobs:
         uses: docker/bake-action/subaction/list-targets@v4
         with:
           target: pytorch
+
+      - name: List mindspore targets
+        id: list-ms-target
+        uses: docker/bake-action/subaction/list-targets@v4
+        with:
+          target: mindspore
 
   cann:
     name: cann
@@ -97,6 +112,9 @@ jobs:
           quay_owner: ${{ secrets.QUAY_OWNER }}
           quay_username: ${{ secrets.QUAY_USERNAME }}
           quay_token: ${{ secrets.QUAY_TOKEN }}
+          hw_owner: ${{ secrets.HW_OWNER }}
+          hw_username: ${{ secrets.HW_USERNAME }}
+          hw_token: ${{ secrets.HW_TOKEN }}
 
   pytorch:
     name: pytorch
@@ -125,3 +143,37 @@ jobs:
           quay_owner: ${{ secrets.QUAY_OWNER }}
           quay_username: ${{ secrets.QUAY_USERNAME }}
           quay_token: ${{ secrets.QUAY_TOKEN }}
+          hw_owner: ${{ secrets.HW_OWNER }}
+          hw_username: ${{ secrets.HW_USERNAME }}
+          hw_token: ${{ secrets.HW_TOKEN }}
+
+  mindspore:
+    name: mindspore
+    runs-on: ubuntu-latest
+    if: ${{ success() || failure() }}
+    permissions:
+      packages: write
+    needs:
+      - prepare
+      - cann
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.prepare.outputs.ms-targets) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push Docker
+        uses: ./.github/actions/build-and-push-docker
+        with:
+          target: ${{ matrix.target }}
+          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay_owner: ${{ secrets.QUAY_OWNER }}
+          quay_username: ${{ secrets.QUAY_USERNAME }}
+          quay_token: ${{ secrets.QUAY_TOKEN }}
+          hw_owner: ${{ secrets.HW_OWNER }}
+          hw_username: ${{ secrets.HW_USERNAME }}
+          hw_token: ${{ secrets.HW_TOKEN }}
