@@ -3,7 +3,7 @@ ARG BASE_VERSION=latest
 FROM ${BASE_NAME}:${BASE_VERSION} as official
 
 # Arguments
-ARG MINDSPORE_VERSION=2.2.0
+ARG MINDSPORE_VERSION=2.2.14
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]

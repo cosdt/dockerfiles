@@ -108,7 +108,7 @@ target "cann-prefer" {
         os_version = "22.04"
         py_version = "3.10"
         cann_chip = "910b"
-        cann_version = "8.0.RC2.alpha002"
+        cann_version = "8.0.RC1"
       },
       {
         tag = "7.0"
@@ -131,29 +131,33 @@ target "cann-prefer" {
 
 target "pytorch-all" {
   inherits = ["base-target"]
-  name = replace("${registry.url}-pytorch-${item.pytorch_version}", ".", "_")
+  name = replace("${registry.url}-pytorch-${pytorch_version}-${os.name}${os.version}", ".", "_")
   context = "pytorch"
   dockerfile = "new.Dockerfile"
   matrix = {
     registry = jsondecode(registries)
-    item = [
+    os = [
       {
-        cann_tag = "8.0"
-        pytorch_version = "2.1.0"
+        name = "ubuntu"
+        version = "22.04"
       },
       {
-        cann_tag = "8.0"
-        pytorch_version = "2.2.0"
+        name = "openeuler"
+        version = "22.03"
       }
     ]
+    py_version = ["3.8"]
+    cann_chip = ["910b"]
+    cann_version = ["8.0.RC1"]
+    pytorch_version = ["2.1.0", "2.2.0"]
   }
   args = {
     BASE_NAME = "${registry.url}/${registry.owner}/cann"
-    BASE_VERSION = "${item.cann_tag}"
-    PYTORCH_VERSION = "${item.pytorch_version}"
+    BASE_VERSION = cann_tag("${cann_version}", "${cann_chip}", "${os.name}", "${os.version}", "${py_version}")
+    PYTORCH_VERSION = "${pytorch_version}"
   }
   tags = [
-    "${registry.url}/${registry.owner}/pytorch:${item.pytorch_version}"
+    "${registry.url}/${registry.owner}/pytorch:${pytorch_version}-${os.name}${os.version}"
   ]
 }
 
@@ -167,15 +171,7 @@ target "mindspore-all" {
     os = [
       {
         name = "ubuntu"
-        version = "20.04"
-      },
-      {
-        name = "ubuntu"
         version = "22.04"
-      },
-      {
-        name = "openeuler"
-        version = "20.03"
       },
       {
         name = "openeuler"
