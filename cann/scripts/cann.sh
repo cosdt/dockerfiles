@@ -91,8 +91,8 @@ install_cann() {
     fi
 
     # Install dependencies
-#    pip install --no-cache-dir \
-#        attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
+    pip install --no-cache-dir \
+        attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Install CANN Toolkit
     echo "Installing ${TOOLKIT_FILE}"

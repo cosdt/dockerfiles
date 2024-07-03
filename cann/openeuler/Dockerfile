@@ -21,6 +21,7 @@ RUN yum update -y && \
         gcc-c++ \
         make \
         cmake \
+        curl \
         zlib-devel \
         bzip2-devel \
         openssl-devel \
@@ -70,16 +71,6 @@ RUN yum update -y && \
         sqlite-devel \
         lapack-devel \
         gcc-gfortran \
-        curl \
-        bzip2-devel \
-        ncurses-devel \
-        gdbm-devel \
-        readline-devel \
-        xz-devel \
-        tk-devel \
-        libuuid-devel \
-        libnsl2-devel \
-        findutils \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
