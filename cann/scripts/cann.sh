@@ -74,11 +74,9 @@ set_env() {
         echo "CANN Toolkit ${CANN_VERSION} installation failed."
         exit 1
     else
-        local driver_path_env=$(cat <<EOF
-export LD_LIBRARY_PATH="${CANN_HOME}/driver/lib64/common/:${CANN_HOME}/driver/lib64/driver/:\${LD_LIBRARY_PATH}"
-EOF)
-        echo "${driver_path_env}" >> /etc/profile
-        echo "${driver_path_env}" >> ~/.bashrc
+        local driver_path_env="LD_LIBRARY_PATH=${CANN_HOME}/driver/lib64/common/:${CANN_HOME}/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
+        echo "export ${driver_path_env}" >> /etc/profile
+        echo "export ${driver_path_env}" >> ~/.bashrc
         echo "source ${cann_toolkit_env_file}" >> /etc/profile
         echo "source ${cann_toolkit_env_file}" >> ~/.bashrc
         source ${cann_toolkit_env_file}
@@ -86,15 +84,15 @@ EOF)
 }
 
 install_cann() {
-    # Install dependencies
-    pip config set global.index-url https://repo.huaweicloud.com/repository/pypi/simple
-    pip install --no-cache-dir attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
-
     # Download installers
     if [ ! -f "${TOOLKIT_PATH}" ] || [ ! -f "${KERNELS_PATH}" ]; then
         echo "[WARNING] Installers do not exist, re-download them."
         download_cann
     fi
+
+    # Install dependencies
+    pip install --no-cache-dir \
+        attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
     # Install CANN Toolkit
     echo "Installing ${TOOLKIT_FILE}"

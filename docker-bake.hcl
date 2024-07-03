@@ -132,7 +132,7 @@ target "pytorch-all" {
         tag = "2.1.0"
         cann_tag = "8.0"
         pytorch_version = "2.1.0"
-        torch_npu_version = "2.1.0.post3"
+        torch_npu_version = "2.1.0"
       },
       {
         tag = "2.2.0"

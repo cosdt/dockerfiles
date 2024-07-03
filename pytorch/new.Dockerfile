@@ -10,7 +10,6 @@ ARG TORCH_NPU_VERSION
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
 
-# Install PyTorch
-RUN pip install --no-cache-dir \
-        torch==${PYTORCH_VERSION} \
-        torch-npu==${TORCH_NPU_VERSION}
+# Install PyTorch and Torch-NPU
+RUN pip install --no-cache-dir torch==${PYTORCH_VERSION} --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir torch-npu==${TORCH_NPU_VERSION}

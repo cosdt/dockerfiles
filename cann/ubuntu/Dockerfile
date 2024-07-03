@@ -100,6 +100,9 @@ ARG CANN_VERSION
 ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
 ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
 
+# Change the default shell
+SHELL [ "/bin/bash", "-c" ]
+
 # Install dependencies
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
