@@ -33,6 +33,8 @@ runs:
         sudo rm -rf /tmp/*
         sudo rm -rf /usr/local/.ghcup
         sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /usr/local/share/powershell
+        sudo rm -rf /usr/local/share/chromium
         sudo rm -rf /usr/share/swift
         sudo rm -rf /usr/share/dotnet
         sudo rm -rf /opt/hostedtoolcache
@@ -44,9 +46,6 @@ runs:
       shell: bash
       run: |
         sudo df -h
-        sudo du -h -d 2 /usr/local | sort -hr
-        sudo du -h -d 2 /usr/share | sort -hr
-        sudo du -h -d 2 /usr/local/share | sort -hr
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
