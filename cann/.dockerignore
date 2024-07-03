@@ -1,2 +1,5 @@
 LICENSE
 README.md
+Dockerfile.ubuntu
+Dockerfile.openeuler
+scripts/docker-entrypoint.sh

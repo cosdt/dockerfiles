@@ -9,10 +9,10 @@ PY_MAJOR_VERSION=$(echo $PY_VERSION | cut -d'.' -f1)
 PY_LATEST_VERSION=$(curl -s https://www.python.org/ftp/python/ | grep -oE "${PY_VERSION}\.[0-9]+" | sort -V | tail -n 1)
 if [ -z "${PY_LATEST_VERSION}" ]; then
     echo "[WARNING] Could not find the latest version for Python ${PY_VERSION}"
-    PY_LATEST_VERSION="${PY_VERSION}.0"
+    exit 1
+else
+    echo "Latest Python version found: ${PY_LATEST_VERSION}"
 fi
-
-echo "Latest Python version found: ${PY_LATEST_VERSION}"
 
 PY_HOME="/usr/local/python${PY_VERSION}"
 PY_INSTALLER_TGZ="Python-${PY_LATEST_VERSION}.tgz"
@@ -20,7 +20,7 @@ PY_INSTALLER_DIR="Python-${PY_LATEST_VERSION}"
 PY_INSTALLER_URL="https://repo.huaweicloud.com/python/${PY_LATEST_VERSION}/${PY_INSTALLER_TGZ}"
 
 download_python() {
-    # download python
+    # Download python
     echo "Downloading ${PY_INSTALLER_TGZ} from ${PY_INSTALLER_URL}"
     curl -fsSL -o "/tmp/${PY_INSTALLER_TGZ}" "${PY_INSTALLER_URL}"
     if [ $? -ne 0 ]; then
@@ -30,13 +30,13 @@ download_python() {
 }
 
 install_python() {
-    # Download installer
+    # Download python
     if [ ! -f "/tmp/${PY_INSTALLER_TGZ}" ]; then
         echo "[WARNING] Installer do not exist, re-download it."
         download_python
     fi
 
-    # install python
+    # Install python
     echo "Installing ${PY_INSTALLER_DIR}"
     tar -xf /tmp/${PY_INSTALLER_TGZ} -C /tmp
     cd /tmp/${PY_INSTALLER_DIR}
@@ -45,19 +45,19 @@ install_python() {
     make -j$($(nproc) + 1)
     make altinstall
 
-    # create symbolic links at PY_HOME
+    # Create symbolic links at PY_HOME
     ln -sf ${PY_HOME}/bin/python${PY_VERSION} ${PY_HOME}/bin/python${PY_MAJOR_VERSION}
     ln -sf ${PY_HOME}/bin/pip${PY_VERSION} ${PY_HOME}/bin/pip${PY_MAJOR_VERSION}
     ln -sf ${PY_HOME}/bin/python${PY_MAJOR_VERSION} ${PY_HOME}/bin/python
     ln -sf ${PY_HOME}/bin/pip${PY_MAJOR_VERSION} ${PY_HOME}/bin/pip
 
-    # clean up
+    # Clean up
     rm -rf /tmp/${PY_INSTALLER_TGZ} /tmp/${PY_INSTALLER_DIR}
     echo "Python ${PY_LATEST_VERSION} installation successful."
     ${PY_HOME}/bin/python -c "import sys; print(sys.version)"
 }
 
-# create links
+# Create symbolic links
 create_links() {
     ln -sf ${PY_HOME}/bin/python${PY_VERSION} /usr/bin/python${PY_VERSION}
     ln -sf ${PY_HOME}/bin/pip${PY_VERSION} /usr/bin/pip${PY_VERSION}

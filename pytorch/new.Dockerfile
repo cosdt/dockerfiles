@@ -1,6 +1,7 @@
-ARG BASE_NAME=ubuntu
+ARG BASE_NAME=quay.io/ascend/cann
 ARG BASE_VERSION=latest
-FROM ${BASE_NAME}:${BASE_VERSION} as builder
+
+FROM ${BASE_NAME}:${BASE_VERSION} as official
 
 # Arguments
 ARG PYTORCH_VERSION
@@ -10,6 +11,6 @@ ARG TORCH_NPU_VERSION
 SHELL [ "/bin/bash", "-c" ]
 
 # Install PyTorch
-RUN pip3 install --no-cache-dir \
+RUN pip install --no-cache-dir \
         torch==${PYTORCH_VERSION} \
         torch-npu==${TORCH_NPU_VERSION}
