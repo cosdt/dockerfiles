@@ -48,6 +48,10 @@ env:
       {
         "url": "quay.io",
         "owner": "${{ secrets.QUAY_OWNER }}"
+      },
+      {
+        "url": "swr.cn-southwest-2.myhuaweicloud.com",
+        "owner": "${{ secrets.HW_OWNER }}"
       }
     ]
 
@@ -99,6 +103,9 @@ jobs:
           quay_owner: ${{ secrets.QUAY_OWNER }}
           quay_username: ${{ secrets.QUAY_USERNAME }}
           quay_token: ${{ secrets.QUAY_TOKEN }}
+          hw_owner: ${{ secrets.HW_OWNER }}
+          hw_username: ${{ secrets.HW_USERNAME }}
+          hw_token: ${{ secrets.HW_TOKEN }}
 
   pytorch:
     name: pytorch
@@ -127,3 +134,6 @@ jobs:
           quay_owner: ${{ secrets.QUAY_OWNER }}
           quay_username: ${{ secrets.QUAY_USERNAME }}
           quay_token: ${{ secrets.QUAY_TOKEN }}
+          hw_owner: ${{ secrets.HW_OWNER }}
+          hw_username: ${{ secrets.HW_USERNAME }}
+          hw_token: ${{ secrets.HW_TOKEN }}
