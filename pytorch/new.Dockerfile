@@ -1,4 +1,4 @@
-ARG BASE_NAME=quay.io/ascend/cann
+ARG BASE_NAME=cosdt/cann
 ARG BASE_VERSION=latest
 FROM ${BASE_NAME}:${BASE_VERSION} as official
 
