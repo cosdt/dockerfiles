@@ -37,7 +37,6 @@ runs:
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
-        sudo rm -rf /snap/*
         sudo rm -rf /usr/lib/jvm
         sudo rm -rf /usr/lib/google-cloud-sdk
         sudo rm -rf /usr/local/.ghcup
