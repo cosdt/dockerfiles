@@ -25,14 +25,33 @@ runs:
   using: 'composite'
   steps:
     - name: Clean up
-      continue-on-error: true
       shell: bash
       run: |
+        set -ex
         sudo df -h
         npm cache clean --force
         yarn cache clean
         pip cache purge
         docker system prune -a -f
+        sudo apt-get remove -y --fix-missing \
+            'php.*' \
+            '^aspnetcore-.*' \
+            '^dotnet-.*' \
+            '^llvm-.*' \
+            '^mongodb-.*' \
+            '^mysql-.*' \
+            google-chrome-stable \
+            microsoft-edge-stable \
+            firefox \
+            powershell \
+            mono-devel \
+            azure-cli \
+            google-cloud-sdk \
+            google-cloud-cli \
+            libgl1-mesa-dri \
+            snapd
+        sudo apt-get autoremove --purge -y
+        sudo apt-get clean
         rm -rf ~/.cache
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
@@ -41,6 +60,7 @@ runs:
         sudo rm -rf /usr/lib/google-cloud-sdk
         sudo rm -rf /usr/local/.ghcup
         sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /usr/local/lib/node_modules
         sudo rm -rf /usr/local/share/powershell
         sudo rm -rf /usr/local/share/chromium
         sudo rm -rf /usr/share/swift
