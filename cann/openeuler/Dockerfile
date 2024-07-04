@@ -112,6 +112,7 @@ RUN yum update -y && \
         ca-certificates \
         bash \
         glibc \
+        sqlite-devel \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*

@@ -119,6 +119,7 @@ RUN apt-get update \
         ca-certificates \
         bash \
         libc6 \
+        libsqlite3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \
