@@ -3,24 +3,34 @@ description: 'Init Docker Environment'
 inputs:
   target:
     required: true
+    description: "Bake target"
   dockerhub_owner:
     required: false
+    description: "Owner of the DockerHub registry"
   dockerhub_username:
     required: false
+    description: "Username of the DockerHub registry"
   dockerhub_token:
     required: false
+    description: "Token of the DockerHub registry"
   quay_owner:
     required: false
+    description: "Owner of the Quay registry"
   quay_username:
     required: false
+    description: "Username of the Quay registry"
   quay_token:
     required: false
+    description: "Token of the Quay registry"
   hw_owner:
     required: false
+    description: "Owner of the Huawei Cloud registry"
   hw_username:
     required: false
+    description: "Username of the Huawei Cloud registry"
   hw_token:
     required: false
+    description: "Token of the Huawei Cloud registry"
 runs:
   using: 'composite'
   steps:
