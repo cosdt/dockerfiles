@@ -76,7 +76,7 @@ target "cann-all" {
     ]
     py_version = ["3.8"]
     cann_chip = ["310p", "910", "910b"]
-    cann_version = ["7.0.1", "8.0.RC1", "8.0.RC2.alpha002"]
+    cann_version = ["7.0.1", "8.0.RC1", "8.0.RC2.alpha003"]
   }
   args = {
     BASE_VERSION = "${os.version}"
@@ -100,7 +100,7 @@ target "cann-prefer" {
         os_version = "22.04"
         py_version = "3.10"
         cann_chip = "910b"
-        cann_version = "8.0.RC2.alpha002"
+        cann_version = "8.0.RC2.alpha003"
       },
       {
         tag = "8.0"

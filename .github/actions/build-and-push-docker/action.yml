@@ -3,42 +3,74 @@ description: 'Init Docker Environment'
 inputs:
   target:
     required: true
+    description: "Bake target"
   dockerhub_owner:
     required: false
+    description: "Owner of the DockerHub registry"
   dockerhub_username:
     required: false
+    description: "Username of the DockerHub registry"
   dockerhub_token:
     required: false
+    description: "Token of the DockerHub registry"
   quay_owner:
     required: false
+    description: "Owner of the Quay registry"
   quay_username:
     required: false
+    description: "Username of the Quay registry"
   quay_token:
     required: false
+    description: "Token of the Quay registry"
   hw_owner:
     required: false
+    description: "Owner of the Huawei Cloud registry"
   hw_username:
     required: false
+    description: "Username of the Huawei Cloud registry"
   hw_token:
     required: false
+    description: "Token of the Huawei Cloud registry"
 runs:
   using: 'composite'
   steps:
     - name: Clean up
-      continue-on-error: true
       shell: bash
       run: |
+        set -ex
         sudo df -h
         npm cache clean --force
         yarn cache clean
         pip cache purge
         docker system prune -a -f
+        sudo apt-get remove -y --fix-missing \
+            'php.*' \
+            '^aspnetcore-.*' \
+            '^dotnet-.*' \
+            '^llvm-.*' \
+            '^mongodb-.*' \
+            '^mysql-.*' \
+            google-chrome-stable \
+            microsoft-edge-stable \
+            firefox \
+            powershell \
+            mono-devel \
+            azure-cli \
+            google-cloud-sdk \
+            google-cloud-cli \
+            libgl1-mesa-dri \
+            snapd
+        sudo apt-get autoremove --purge -y
+        sudo apt-get clean
         rm -rf ~/.cache
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
+        sudo rm -rf /usr/lib/jvm
+        sudo rm -rf /usr/lib/google-cloud-sdk
         sudo rm -rf /usr/local/.ghcup
         sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /usr/local/lib/node_modules
         sudo rm -rf /usr/local/share/powershell
         sudo rm -rf /usr/local/share/chromium
         sudo rm -rf /usr/share/swift

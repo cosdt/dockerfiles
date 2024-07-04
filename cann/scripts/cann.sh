@@ -46,8 +46,12 @@ download_file() {
 }
 
 download_cann() {
-    if [[ ${CANN_VERSION} =~ ^8.0.RC2.alpha ]]; then
+    if [[ ${CANN_VERSION} == "8.0.RC2.alpha001" ]]; then
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18B800TP015"
+    elif [[ ${CANN_VERSION} == "8.0.RC2.alpha002" ]]; then
         local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18SPC805"
+    elif [[ ${CANN_VERSION} == "8.0.RC2.alpha003" ]]; then
+        local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Milan-ASL/Milan-ASL%20V100R001C18SPC703"
     else
         local url_prefix="https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/CANN/CANN%20${CANN_VERSION}"
     fi
@@ -91,6 +95,7 @@ install_cann() {
     fi
 
     # Install dependencies
+    pip install --no-cache-dir --upgrade pip
     pip install --no-cache-dir \
         attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil protobuf scipy requests absl-py
 
