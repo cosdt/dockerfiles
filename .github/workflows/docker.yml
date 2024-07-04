@@ -134,9 +134,6 @@ jobs:
           quay_owner: ${{ secrets.QUAY_OWNER }}
           quay_username: ${{ secrets.QUAY_USERNAME }}
           quay_token: ${{ secrets.QUAY_TOKEN }}
-          hw_owner: ${{ secrets.HW_OWNER }}
-          hw_username: ${{ secrets.HW_USERNAME }}
-          hw_token: ${{ secrets.HW_TOKEN }}
 
   mindspore:
     name: mindspore
