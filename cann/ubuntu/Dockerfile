@@ -132,15 +132,15 @@ COPY --from=cann-installer /etc/Ascend /etc/Ascend
 
 # Set environment variables for Python
 RUN PY_PATH="PATH=/usr/local/python${PY_VERSION}/bin:\${PATH}" && \
-    echo "export ${PY_PATH}" >> /etc/profile && \
+    echo "export ${PY_PATH}" >> /etc/bash.bashrc && \
     echo "export ${PY_PATH}" >> ~/.bashrc
 
 # Set environment variables for CANN
 RUN CANN_TOOLKIT_ENV_FILE="/usr/local/Ascend/ascend-toolkit/set_env.sh" && \
     DRIVER_LIBRARY_PATH="LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
-    echo "export ${DRIVER_LIBRARY_PATH}" >> /etc/profile && \
+    echo "export ${DRIVER_LIBRARY_PATH}" >> /etc/bash.bashrc && \
     echo "export ${DRIVER_LIBRARY_PATH}" >> ~/.bashrc && \
-    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile && \
+    echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/bash.bashrc && \
     echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
 
 ENTRYPOINT [ "/bin/bash", "-c", "source /usr/local/Ascend/ascend-toolkit/set_env.sh && exec \"$@\"", "--" ]
