@@ -79,9 +79,9 @@ set_env() {
         exit 1
     else
         local driver_path_env="LD_LIBRARY_PATH=${CANN_HOME}/driver/lib64/common/:${CANN_HOME}/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
-        echo "export ${driver_path_env}" >> /etc/bash.bashrc
+        echo "export ${driver_path_env}" >> /etc/profile
         echo "export ${driver_path_env}" >> ~/.bashrc
-        echo "source ${cann_toolkit_env_file}" >> /etc/bash.bashrc
+        echo "source ${cann_toolkit_env_file}" >> /etc/profile
         echo "source ${cann_toolkit_env_file}" >> ~/.bashrc
         source ${cann_toolkit_env_file}
     fi
