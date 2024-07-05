@@ -67,7 +67,7 @@ jobs:
         id: list-cann-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
-          target: cann
+          target: cann-all
 
       - name: List pytorch targets
         id: list-pth-target
