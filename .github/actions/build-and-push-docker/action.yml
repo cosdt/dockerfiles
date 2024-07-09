@@ -11,37 +11,42 @@ inputs:
     description: "Push is a shorthand for --set=*.output=type=registry"
     required: false
     default: 'false'
-  dockerhub_owner:
+  clean-up:
+    description: "Whether to clean up"
+    required: false
+    default: 'true'
+  dockerhub-owner:
     description: "Owner of the DockerHub registry"
     required: false
-  dockerhub_username:
+  dockerhub-username:
     description: "Username of the DockerHub registry"
     required: false
-  dockerhub_token:
+  dockerhub-token:
     description: "Token of the DockerHub registry"
     required: false
-  quay_owner:
+  quay-owner:
     description: "Owner of the Quay registry"
     required: false
-  quay_username:
+  quay-username:
     description: "Username of the Quay registry"
     required: false
-  quay_token:
+  quay-token:
     description: "Token of the Quay registry"
     required: false
-  hw_owner:
+  hw-owner:
     description: "Owner of the Huawei Cloud registry"
     required: false
-  hw_username:
+  hw-username:
     description: "Username of the Huawei Cloud registry"
     required: false
-  hw_token:
+  hw-token:
     description: "Token of the Huawei Cloud registry"
     required: false
 runs:
   using: 'composite'
   steps:
     - name: Clean up
+      if: ${{ inputs.clean-up == 'true' }}
       shell: bash
       run: |
         set -ex
@@ -99,12 +104,12 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: Login to Docker Hub
-      if: ${{ github.event_name != 'pull_request' && inputs.dockerhub_username && inputs.dockerhub_token }}
+      if: ${{ github.event_name != 'pull_request' && inputs.dockerhub-username && inputs.dockerhub-token }}
       uses: docker/login-action@v3
       with:
         registry: docker.io
-        username: ${{ inputs.dockerhub_username }}
-        password: ${{ inputs.dockerhub_token }}
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-token }}
 
     - name: Login to GitHub Container
       if: ${{ github.event_name != 'pull_request' }}
@@ -115,20 +120,20 @@ runs:
         password: ${{ github.token }}
 
     - name: Login to RedHat Quay
-      if: ${{ github.event_name != 'pull_request' && inputs.quay_username && inputs.quay_token }}
+      if: ${{ github.event_name != 'pull_request' && inputs.quay-username && inputs.quay-token }}
       uses: docker/login-action@v3
       with:
         registry: quay.io
-        username: ${{ inputs.quay_username }}
-        password: ${{ inputs.quay_token }}
+        username: ${{ inputs.quay-username }}
+        password: ${{ inputs.quay-token }}
 
     - name: Login to Huawei Cloud
-      if: ${{ github.event_name != 'pull_request' && inputs.hw_username && inputs.hw_token }}
+      if: ${{ github.event_name != 'pull_request' && inputs.hw-username && inputs.hw-token }}
       uses: docker/login-action@v3
       with:
         registry: swr.cn-southwest-2.myhuaweicloud.com
-        username: ${{ inputs.hw_username }}
-        password: ${{ inputs.hw_token }}
+        username: ${{ inputs.hw-username }}
+        password: ${{ inputs.hw-token }}
 
     - name: Extract metadata for Docker
       id: metadata
