@@ -160,7 +160,7 @@ runs:
       if: ${{ steps.bake.outputs.metadata }}
       shell: bash
       run: |
-        METADATA_FILE_NAME="${{ inputs.target }}-metadata.json"
+        METADATA_FILE_NAME="${{ inputs.targets }}-metadata.json"
         echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
         echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
