@@ -105,6 +105,7 @@ jobs:
           push: false
           set: |
             *.target=py-installer
+            *.output=type=cacheonly
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=min
 
