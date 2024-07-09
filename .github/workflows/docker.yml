@@ -103,6 +103,7 @@ jobs:
         with:
           targets: ${{ matrix.target }}
           clean-up: false
+          upload-metadata: false
           push: false
           set: |
             *.target=py-installer

@@ -15,6 +15,10 @@ inputs:
     description: "Whether to clean up"
     required: false
     default: 'true'
+  upload-metadata:
+    description: "Whether to upload metadata files"
+    required: false
+    default: 'true'
   dockerhub-owner:
     description: "Owner of the DockerHub registry"
     required: false
@@ -166,6 +170,7 @@ runs:
 
     - name: Upload metadata
       id: upload-artifact
+      if: ${{ inputs.upload-metadata == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.export.outputs.metadata_file_name }}
