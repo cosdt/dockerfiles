@@ -1,9 +1,6 @@
 # Arguments
 ARG BASE_VERSION=latest
-ARG PLATFORM=${TARGETPLATFORM}
 ARG PY_VERSION=3.8
-ARG CANN_CHIP=910b
-ARG CANN_VERSION=8.0.RC2.alpha002
 
 # Stage 0: Install Python
 FROM ubuntu:${BASE_VERSION} AS py-installer
@@ -52,9 +49,9 @@ RUN bash /tmp/python.sh --install && \
 FROM py-installer AS cann-installer
 
 # Arguments
-ARG PLATFORM
-ARG CANN_CHIP
-ARG CANN_VERSION
+ARG PLATFORM=${TARGETPLATFORM}
+ARG CANN_CHIP=910b
+ARG CANN_VERSION=8.0.RC2.alpha003
 
 # Install dependencies
 RUN apt-get update \
@@ -100,14 +97,13 @@ RUN bash /tmp/cann.sh --install && \
 FROM ubuntu:${BASE_VERSION} AS official
 
 # Arguments
-ARG PLATFORM
 ARG PY_VERSION
-ARG CANN_CHIP
-ARG CANN_VERSION
 
 # Environment variables
-ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
-ENV LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:${LD_LIBRARY_PATH}
+ENV PY_HOME=/usr/local/python${PY_VERSION}
+ENV ASCEND_HOME=/usr/local/Ascend
+ENV PATH=${PY_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${ASCEND_HOME}/driver/lib64/common:${ASCEND_HOME}/driver/lib64/driver:${LD_LIBRARY_PATH}
 
 # Change the default shell
 SHELL [ "/bin/bash", "-c" ]
@@ -126,21 +122,22 @@ RUN apt-get update \
     && rm -rf /tmp/*
 
 # Copy files
-COPY --from=cann-installer /usr/local/python${PY_VERSION} /usr/local/python${PY_VERSION}
-COPY --from=cann-installer /usr/local/Ascend /usr/local/Ascend
+COPY --from=cann-installer ${PY_HOME} ${PY_HOME}
+COPY --from=cann-installer ${ASCEND_HOME} ${ASCEND_HOME}
 COPY --from=cann-installer /etc/Ascend /etc/Ascend
 
-# Set environment variables for Python
-RUN PY_PATH="PATH=/usr/local/python${PY_VERSION}/bin:\${PATH}" && \
+# Set environment varibales
+RUN \
+    # Set environment variables for Python \
+    PY_PATH="PATH=${PY_HOME}/bin:\${PATH}" && \
     echo "export ${PY_PATH}" >> /etc/profile && \
-    echo "export ${PY_PATH}" >> ~/.bashrc
-
-# Set environment variables for CANN
-RUN CANN_TOOLKIT_ENV_FILE="/usr/local/Ascend/ascend-toolkit/set_env.sh" && \
-    DRIVER_LIBRARY_PATH="LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64/common/:/usr/local/Ascend/driver/lib64/driver/:\${LD_LIBRARY_PATH}" && \
+    echo "export ${PY_PATH}" >> ~/.bashrc && \
+    # Set environment variables for CANN \
+    CANN_TOOLKIT_ENV_FILE="${ASCEND_HOME}/ascend-toolkit/set_env.sh" && \
+    DRIVER_LIBRARY_PATH="LD_LIBRARY_PATH=${ASCEND_HOME}/driver/lib64/common:${ASCEND_HOME}/driver/lib64/driver:\${LD_LIBRARY_PATH}" && \
     echo "export ${DRIVER_LIBRARY_PATH}" >> /etc/profile && \
     echo "export ${DRIVER_LIBRARY_PATH}" >> ~/.bashrc && \
     echo "source ${CANN_TOOLKIT_ENV_FILE}" >> /etc/profile && \
     echo "source ${CANN_TOOLKIT_ENV_FILE}" >> ~/.bashrc
 
-ENTRYPOINT [ "/bin/bash", "-c", "source /usr/local/Ascend/ascend-toolkit/set_env.sh && exec \"$@\"", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "source ${ASCEND_HOME}/ascend-toolkit/set_env.sh && exec \"$@\"", "--" ]
