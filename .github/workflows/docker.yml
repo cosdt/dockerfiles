@@ -67,7 +67,7 @@ jobs:
         id: list-cann-target
         uses: docker/bake-action/subaction/list-targets@v4
         with:
-          target: cann-all
+          target: cann
 
       - name: List pytorch targets
         id: list-pth-target
@@ -92,6 +92,62 @@ jobs:
       fail-fast: false
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push Docker
+        uses: ./.github/actions/build-and-push-docker
+        with:
+          target: ${{ matrix.target }}
+          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay_owner: ${{ secrets.QUAY_OWNER }}
+          quay_username: ${{ secrets.QUAY_USERNAME }}
+          quay_token: ${{ secrets.QUAY_TOKEN }}
+
+  pytorch:
+    name: pytorch
+    runs-on: ubuntu-latest
+    if: ${{ success() || failure() }}
+    permissions:
+      packages: write
+    needs:
+      - prepare
+      - cann
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.prepare.outputs.pth-targets) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and push Docker
+        uses: ./.github/actions/build-and-push-docker
+        with:
+          target: ${{ matrix.target }}
+          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay_owner: ${{ secrets.QUAY_OWNER }}
+          quay_username: ${{ secrets.QUAY_USERNAME }}
+          quay_token: ${{ secrets.QUAY_TOKEN }}
+
+  mindspore:
+    name: mindspore
+    runs-on: ubuntu-latest
+    if: ${{ success() || failure() }}
+    permissions:
+      packages: write
+    needs:
+      - prepare
+      - cann
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(needs.prepare.outputs.ms-targets) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
