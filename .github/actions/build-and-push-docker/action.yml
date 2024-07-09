@@ -1,36 +1,43 @@
 name: 'Init Docker Environment'
 description: 'Init Docker Environment'
 inputs:
-  target:
+  targets:
+    description: "List of bake targets"
     required: true
-    description: "Bake target"
+  set:
+    description: "List of targets values to override (eg. targetpattern.key=value)"
+    required: false
+  push:
+    description: "Push is a shorthand for --set=*.output=type=registry"
+    required: false
+    default: 'false'
   dockerhub_owner:
-    required: false
     description: "Owner of the DockerHub registry"
+    required: false
   dockerhub_username:
-    required: false
     description: "Username of the DockerHub registry"
+    required: false
   dockerhub_token:
-    required: false
     description: "Token of the DockerHub registry"
+    required: false
   quay_owner:
-    required: false
     description: "Owner of the Quay registry"
+    required: false
   quay_username:
-    required: false
     description: "Username of the Quay registry"
+    required: false
   quay_token:
-    required: false
     description: "Token of the Quay registry"
+    required: false
   hw_owner:
-    required: false
     description: "Owner of the Huawei Cloud registry"
+    required: false
   hw_username:
-    required: false
     description: "Username of the Huawei Cloud registry"
-  hw_token:
     required: false
+  hw_token:
     description: "Token of the Huawei Cloud registry"
+    required: false
 runs:
   using: 'composite'
   steps:
@@ -137,13 +144,11 @@ runs:
           ${{ github.workspace }}/docker-bake.hcl
           ${{ steps.metadata.outputs.bake-file-labels }}
           ${{ steps.metadata.outputs.bake-file-annotations }}
-        push: ${{ github.event_name != 'pull_request' }}
-        targets: ${{ inputs.target }}
+        push: ${{ inputs.push }}
+        targets: ${{ inputs.targets }}
         provenance: false
         sbom: false
-        set: |
-          *.cache-from=
-          *.cache-to=
+        set: ${{ inputs.set }}
 
     - name: Export metadata
       id: export
