@@ -5,7 +5,7 @@ ARG PY_VERSION=3.8
 ARG CANN_CHIP=910b
 ARG CANN_VERSION=8.0.RC2.alpha002
 
-# Phase 1: Install Python
+# Stage 0: Install Python
 FROM ubuntu:${BASE_VERSION} AS py-installer
 
 # Arguments
@@ -48,7 +48,7 @@ RUN bash /tmp/python.sh --download
 RUN bash /tmp/python.sh --install && \
     rm /tmp/python.sh
 
-# Phase 2: Install CANN
+# Stage 1: Install CANN
 FROM py-installer AS cann-installer
 
 # Arguments
@@ -96,7 +96,7 @@ RUN bash /tmp/cann.sh --download
 RUN bash /tmp/cann.sh --install && \
     rm /tmp/cann.sh
 
-# Phase 3: Copy results from previous phases
+# Stage 2: Copy results from previous stages
 FROM ubuntu:${BASE_VERSION} AS official
 
 # Arguments
