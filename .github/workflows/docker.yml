@@ -81,36 +81,6 @@ jobs:
         with:
           target: mindspore
 
-  # Cache python layers
-  python:
-    name: python
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    needs:
-      - prepare
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix:
-        target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and push Docker
-        uses: ./.github/actions/build-and-push-docker
-        with:
-          targets: ${{ matrix.target }}
-          clean-up: false
-          upload-metadata: false
-          push: false
-          set: |
-            *.target=py-installer
-            *.output=type=cacheonly
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=min
-
   cann:
     name: cann
     runs-on: ubuntu-latest
@@ -118,7 +88,6 @@ jobs:
       packages: write
     needs:
       - prepare
-      - python
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -139,9 +108,6 @@ jobs:
           quay-token: ${{ secrets.QUAY_TOKEN }}
           targets: ${{ matrix.target }}
           push: ${{ github.event_name != 'pull_request' }}
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=
 
   pytorch:
     name: pytorch

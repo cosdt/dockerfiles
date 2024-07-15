@@ -75,7 +75,8 @@ runs:
             google-cloud-sdk \
             google-cloud-cli \
             libgl1-mesa-dri \
-            snapd
+            snapd \
+            1>/dev/null 2>&1
         sudo apt-get autoremove --purge -y
         sudo apt-get clean
         rm -rf ~/.cache
@@ -157,6 +158,7 @@ runs:
         targets: ${{ inputs.targets }}
         provenance: false
         sbom: false
+        no-cache: true
         set: ${{ inputs.set }}
 
     - name: Export metadata
