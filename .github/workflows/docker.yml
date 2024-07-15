@@ -90,6 +90,7 @@ jobs:
       - prepare
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
     steps:
@@ -99,13 +100,14 @@ jobs:
       - name: Build and push Docker
         uses: ./.github/actions/build-and-push-docker
         with:
-          target: ${{ matrix.target }}
-          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay_owner: ${{ secrets.QUAY_OWNER }}
-          quay_username: ${{ secrets.QUAY_USERNAME }}
-          quay_token: ${{ secrets.QUAY_TOKEN }}
+          dockerhub-owner: ${{ secrets.DOCKERHUB_OWNER }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay-owner: ${{ secrets.QUAY_OWNER }}
+          quay-username: ${{ secrets.QUAY_USERNAME }}
+          quay-token: ${{ secrets.QUAY_TOKEN }}
+          targets: ${{ matrix.target }}
+          push: ${{ github.event_name != 'pull_request' }}
 
   pytorch:
     name: pytorch
@@ -118,6 +120,7 @@ jobs:
       - cann
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.pth-targets) }}
     steps:
@@ -127,13 +130,12 @@ jobs:
       - name: Build and push Docker
         uses: ./.github/actions/build-and-push-docker
         with:
-          target: ${{ matrix.target }}
-          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay_owner: ${{ secrets.QUAY_OWNER }}
-          quay_username: ${{ secrets.QUAY_USERNAME }}
-          quay_token: ${{ secrets.QUAY_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay-username: ${{ secrets.QUAY_USERNAME }}
+          quay-token: ${{ secrets.QUAY_TOKEN }}
+          targets: ${{ matrix.target }}
+          push: ${{ github.event_name != 'pull_request' }}
 
   mindspore:
     name: mindspore
@@ -146,6 +148,7 @@ jobs:
       - cann
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.ms-targets) }}
     steps:
@@ -155,10 +158,9 @@ jobs:
       - name: Build and push Docker
         uses: ./.github/actions/build-and-push-docker
         with:
-          target: ${{ matrix.target }}
-          dockerhub_owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay_owner: ${{ secrets.QUAY_OWNER }}
-          quay_username: ${{ secrets.QUAY_USERNAME }}
-          quay_token: ${{ secrets.QUAY_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          quay-username: ${{ secrets.QUAY_USERNAME }}
+          quay-token: ${{ secrets.QUAY_TOKEN }}
+          targets: ${{ matrix.target }}
+          push: ${{ github.event_name != 'pull_request' }}
