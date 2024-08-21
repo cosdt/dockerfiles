@@ -42,7 +42,7 @@ install_python() {
     cd /tmp/${PY_INSTALLER_DIR}
     mkdir -p /${PY_HOME}/lib
     ./configure --prefix=${PY_HOME} --enable-shared LDFLAGS="-Wl,-rpath ${PY_HOME}/lib"
-    make -j$($(nproc) + 1)
+    make -j "$(nproc)"
     make altinstall
 
     # Create symbolic links at PY_HOME
