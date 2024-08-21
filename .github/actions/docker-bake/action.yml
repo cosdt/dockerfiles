@@ -1,40 +1,60 @@
-name: 'Init Docker Environment'
-description: 'Init Docker Environment'
+name: 'Build and push Docker images'
+description: 'Build and push Docker images using Bake'
 inputs:
-  target:
+  targets:
+    description: "List of bake targets"
     required: true
-    description: "Bake target"
-  dockerhub_owner:
+  set:
+    description: "List of targets values to override (eg. targetpattern.key=value)"
     required: false
+  push:
+    description: "Push is a shorthand for --set=*.output=type=registry"
+    required: false
+    default: 'false'
+  clean-up:
+    description: "Whether to clean up"
+    required: false
+    default: 'true'
+  upload-metadata:
+    description: "Whether to upload metadata files"
+    required: false
+    default: 'true'
+  dockerhub-owner:
     description: "Owner of the DockerHub registry"
-  dockerhub_username:
     required: false
+  dockerhub-username:
     description: "Username of the DockerHub registry"
-  dockerhub_token:
     required: false
+  dockerhub-token:
     description: "Token of the DockerHub registry"
-  quay_owner:
     required: false
+  quay-owner:
     description: "Owner of the Quay registry"
-  quay_username:
     required: false
+  quay-username:
     description: "Username of the Quay registry"
-  quay_token:
     required: false
+  quay-token:
     description: "Token of the Quay registry"
-  hw_owner:
     required: false
+  hw-registry:
+    description: "Server address of Huawei Cloud registry"
+    required: false
+    default: 'swr.cn-southwest-2.myhuaweicloud.com'
+  hw-owner:
     description: "Owner of the Huawei Cloud registry"
-  hw_username:
     required: false
+  hw-username:
     description: "Username of the Huawei Cloud registry"
-  hw_token:
     required: false
+  hw-token:
     description: "Token of the Huawei Cloud registry"
+    required: false
 runs:
   using: 'composite'
   steps:
     - name: Clean up
+      if: ${{ inputs.clean-up == 'true' }}
       shell: bash
       run: |
         set -ex
@@ -59,7 +79,9 @@ runs:
             google-cloud-sdk \
             google-cloud-cli \
             libgl1-mesa-dri \
-            snapd
+            snapd \
+            1>/dev/null \
+            2>&1
         sudo apt-get autoremove --purge -y
         sudo apt-get clean
         rm -rf ~/.cache
@@ -83,7 +105,9 @@ runs:
     - name: Show space
       shell: bash
       run: |
+        set -ex
         sudo df -h
+        docker images -a
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -92,15 +116,15 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: Login to Docker Hub
-      if: ${{ github.event_name != 'pull_request' && inputs.dockerhub_username && inputs.dockerhub_token }}
+      if: ${{ inputs.push == 'true' && inputs.dockerhub-username && inputs.dockerhub-token }}
       uses: docker/login-action@v3
       with:
         registry: docker.io
-        username: ${{ inputs.dockerhub_username }}
-        password: ${{ inputs.dockerhub_token }}
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-token }}
 
     - name: Login to GitHub Container
-      if: ${{ github.event_name != 'pull_request' }}
+      if: ${{ inputs.push == 'true' }}
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
@@ -108,20 +132,20 @@ runs:
         password: ${{ github.token }}
 
     - name: Login to RedHat Quay
-      if: ${{ github.event_name != 'pull_request' && inputs.quay_username && inputs.quay_token }}
+      if: ${{ inputs.push == 'true' && inputs.quay-username && inputs.quay-token }}
       uses: docker/login-action@v3
       with:
         registry: quay.io
-        username: ${{ inputs.quay_username }}
-        password: ${{ inputs.quay_token }}
+        username: ${{ inputs.quay-username }}
+        password: ${{ inputs.quay-token }}
 
     - name: Login to Huawei Cloud
-      if: ${{ github.event_name != 'pull_request' && inputs.hw_username && inputs.hw_token }}
+      if: ${{ inputs.push == 'true' && inputs.hw-username && inputs.hw-token }}
       uses: docker/login-action@v3
       with:
-        registry: swr.cn-southwest-2.myhuaweicloud.com
-        username: ${{ inputs.hw_username }}
-        password: ${{ inputs.hw_token }}
+        registry: ${{ inputs.hw-registry }}
+        username: ${{ inputs.hw-username }}
+        password: ${{ inputs.hw-token }}
 
     - name: Extract metadata for Docker
       id: metadata
@@ -137,25 +161,24 @@ runs:
           ${{ github.workspace }}/docker-bake.hcl
           ${{ steps.metadata.outputs.bake-file-labels }}
           ${{ steps.metadata.outputs.bake-file-annotations }}
-        push: ${{ github.event_name != 'pull_request' }}
-        targets: ${{ inputs.target }}
+        push: ${{ inputs.push }}
+        targets: ${{ inputs.targets }}
         provenance: false
         sbom: false
-        set: |
-          *.cache-from=
-          *.cache-to=
+        set: ${{ inputs.set }}
 
     - name: Export metadata
       id: export
       if: ${{ steps.bake.outputs.metadata }}
       shell: bash
       run: |
-        METADATA_FILE_NAME="${{ inputs.target }}-metadata.json"
+        METADATA_FILE_NAME="${{ inputs.targets }}-metadata.json"
         echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
         echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
     - name: Upload metadata
       id: upload-artifact
+      if: ${{ inputs.upload-metadata == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.export.outputs.metadata_file_name }}
@@ -167,5 +190,6 @@ runs:
       if: ${{ always() }}
       shell: bash
       run: |
+        set -ex
         sudo df -h
         docker images -a

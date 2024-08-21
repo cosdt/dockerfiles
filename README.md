@@ -15,13 +15,13 @@
     <a href="README_zh.md">
         <b>中文文档</b>
     </a> •
-    <a href="https://hub.docker.com/u/cosdt">
+    <a href="https://hub.docker.com/u/ascendai">
         <b>Docker Hub</b>
     </a> •
-    <a href="https://github.com/orgs/cosdt/packages?ecosystem=container">
+    <a href="https://github.com/orgs/ascend/packages?ecosystem=container">
         <b>GitHub Container</b>
     </a> •
-    <a href="https://quay.io/organization/cosdt">
+    <a href="https://quay.io/organization/ascend">
         <b>Red Hat Quay</b>
     </a>
 </p>
@@ -51,7 +51,7 @@ custom_registries='
 [
   {
     "url": "quay.io",
-    "owner": "cosdt"
+    "owner": "ascend"
   }
 ]'
 registries="${custom_registries}" \
