@@ -217,28 +217,15 @@ main() {
     check_vars
 
     IMAGE_TAG="${CANN_VERSION}-${CANN_CHIP}-${OS}${OS_VERSION}-py${PY_VERSION}"
-    if [[ -n ${LOAD_ARG} || -n ${PUSH_ARG} || -n ${PLATFORM_ARG} ]]; then
-        # use buildkit
-        run_cmd docker buildx build \
-            --pull ${LOAD_ARG} ${PUSH_ARG} ${PLATFORM_ARG} \
-            -t ${IMAGE_NAME}:${IMAGE_TAG} \
-            -f cann/${OS}/Dockerfile \
-            --build-arg BASE_VERSION="${OS_VERSION}" \
-            --build-arg PY_VERSION="${PY_VERSION}" \
-            --build-arg CANN_CHIP="${CANN_CHIP}" \
-            --build-arg CANN_VERSION="${CANN_VERSION}" \
-            cann/
-    else
-        run_cmd docker build \
-            --pull \
-            -t ${IMAGE_NAME}:${IMAGE_TAG} \
-            -f cann/${OS}/Dockerfile \
-            --build-arg BASE_VERSION="${OS_VERSION}" \
-            --build-arg PY_VERSION="${PY_VERSION}" \
-            --build-arg CANN_CHIP="${CANN_CHIP}" \
-            --build-arg CANN_VERSION="${CANN_VERSION}" \
-            cann/
-    fi
+    run_cmd docker buildx build \
+        --pull ${LOAD_ARG} ${PUSH_ARG} ${PLATFORM_ARG} \
+        -t ${IMAGE_NAME}:${IMAGE_TAG} \
+        -f cann/${OS}/Dockerfile \
+        --build-arg BASE_VERSION="${OS_VERSION}" \
+        --build-arg PY_VERSION="${PY_VERSION}" \
+        --build-arg CANN_CHIP="${CANN_CHIP}" \
+        --build-arg CANN_VERSION="${CANN_VERSION}" \
+        cann/
 }
 
 main
