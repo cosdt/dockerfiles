@@ -1,28 +1,32 @@
-ARG BASE_IMAGE=ascendai/cann:ubuntu2004
-FROM ${BASE_IMAGE}
+ARG BASE_NAME=cosdt/cann
+ARG BASE_VERSION=latest
+FROM ${BASE_NAME}:${BASE_VERSION} as official
 
-RUN pip install --no-cache-dir cmake ninja -i https://repo.huaweicloud.com/repository/pypi/simple
+# Arguments
+ARG PYTORCH_VERSION=2.2.0
 
-# Replace below commands with `pip install torch>=2.1.0` after PyTorch 2.1.0 release.
-RUN git clone https://github.com/pytorch/pytorch.git && \
-    cd pytorch && \
-    git reset 5913437a40a6e45ab7e164afb7c6ec930dd40b2f --hard && \
-    git cherry-pick 68cb854d734 || \
-    cp aten/src/ATen/native/CPUFallback.cpp ../ && \
-    git cherry-pick --abort && \
-    mv ../CPUFallback.cpp aten/src/ATen/native/CPUFallback.cpp && \
-    pip install --no-cache-dir -r ./requirements.txt -i https://repo.huaweicloud.com/repository/pypi/simple && \
-    export USE_CUDA=0 && \
-    export USE_XNNPACK=0 && \
-    python3 setup.py develop
+# Change the default shell
+SHELL [ "/bin/bash", "-c" ]
 
-# Replace below commands with `pip install torch_npu` after PyTorch 2.1.0 release.
-RUN git clone https://github.com/ascend/pytorch.git ascend-pytorch && \
-    cd ascend-pytorch && \
-    git reset 81ece7b664adc28e698044d0e9091d39a1a6dfa6 --hard && \
-    pip install --no-cache-dir pyyaml wheel decorator snippy && \
-    bash ci/build.sh --python=3.8 && \
-    pip3 install --upgrade dist/torch_npu-2.1.0-cp38-cp38-linux_aarch64.whl && \
-    cd .. && rm -rf ascend-pytorch
-
-RUN pip install --no-cache-dir protobuf==3.20.0 attrs cython numpy decorator sympy cffi pyyaml pathlib2 psutil scipy requests absl-py
+# Install pytorch, torch-npu and related packages
+RUN if [ "${PYTORCH_VERSION}" == "2.1.0" ]; then \
+        TORCH_VISION_VERSION=0.16.0; \
+        TORCH_AUDIO_VERSION=2.1.0; \
+        TORCH_NPU_VERSION=2.1.0; \
+    elif [ "${PYTORCH_VERSION}" == "2.2.0" ]; then \
+        TORCH_VISION_VERSION=0.17.0; \
+        TORCH_AUDIO_VERSION=2.2.0; \
+        TORCH_NPU_VERSION=2.2.0; \
+    else \
+        echo "Not supported version: ${PYTORCH_VERSION}. Feel free to submit an issue to us: https://github.com/cosdt/dockerfiles/issues"; \
+        exit 1; \
+    fi && \
+    # Uninstall the latest numpy and sympy first, as the right versions will be installed again \
+    # after installing following packages \
+    pip uninstall -y numpy sympy && \
+    pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+        torch==${PYTORCH_VERSION} \
+        torchvision==${TORCH_VISION_VERSION} \
+        torchaudio==${TORCH_AUDIO_VERSION} && \
+    pip install --no-cache-dir \
+        torch-npu==${TORCH_NPU_VERSION}

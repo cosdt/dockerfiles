@@ -133,7 +133,7 @@ target "pytorch-all" {
   inherits = ["base-target"]
   name = replace("${registry.url}-pytorch-${pytorch_version}-${os.name}${os.version}", ".", "_")
   context = "pytorch"
-  dockerfile = "new.Dockerfile"
+  dockerfile = "Dockerfile"
   matrix = {
     registry = jsondecode(registries)
     os = [
