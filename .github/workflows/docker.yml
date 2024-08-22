@@ -8,7 +8,7 @@ on:
     tags:
       - 'v*'
     paths:
-      - '.github/actions/docker-bake/action.yml'
+      - '.github/workflows/_docker-build.yml'
       - '.github/workflows/docker.yml'
       - 'docker-bake.hcl'
       - 'cann/**'
@@ -19,7 +19,7 @@ on:
     branches:
       - 'main'
     paths:
-      - '.github/actions/docker-bake/action.yml'
+      - '.github/workflows/_docker-build.yml'
       - '.github/workflows/docker.yml'
       - 'docker-bake.hcl'
       - 'cann/**'
@@ -31,7 +31,7 @@ on:
       - 'published'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' }}-${{ github.event_name == 'schedule' }}"
   cancel-in-progress: ${{ !contains(github.ref, 'release/')}}
 
 env:
@@ -83,88 +83,58 @@ jobs:
 
   cann:
     name: cann
-    runs-on: ubuntu-latest
     permissions:
       packages: write
     needs:
       - prepare
-    strategy:
-      fail-fast: false
-      max-parallel: 10
-      matrix:
-        target: ${{ fromJson(needs.prepare.outputs.cann-targets) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and push Docker
-        uses: ./.github/actions/docker-bake
-        with:
-          dockerhub-owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay-owner: ${{ secrets.QUAY_OWNER }}
-          quay-username: ${{ secrets.QUAY_USERNAME }}
-          quay-token: ${{ secrets.QUAY_TOKEN }}
-          targets: ${{ matrix.target }}
-          push: ${{ github.event_name != 'pull_request' }}
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      targets: ${{ needs.prepare.outputs.cann-targets }}
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
 
   pytorch:
     name: pytorch
-    runs-on: ubuntu-latest
     if: ${{ success() || failure() }}
     permissions:
       packages: write
     needs:
       - prepare
       - cann
-    strategy:
-      fail-fast: false
-      max-parallel: 10
-      matrix:
-        target: ${{ fromJson(needs.prepare.outputs.pth-targets) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and push Docker
-        uses: ./.github/actions/docker-bake
-        with:
-          dockerhub-owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay-owner: ${{ secrets.QUAY_OWNER }}
-          quay-username: ${{ secrets.QUAY_USERNAME }}
-          quay-token: ${{ secrets.QUAY_TOKEN }}
-          targets: ${{ matrix.target }}
-          push: ${{ github.event_name != 'pull_request' }}
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      targets: ${{ needs.prepare.outputs.pth-targets }}
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
 
   mindspore:
     name: mindspore
-    runs-on: ubuntu-latest
     if: ${{ success() || failure() }}
     permissions:
       packages: write
     needs:
       - prepare
       - cann
-    strategy:
-      fail-fast: false
-      max-parallel: 10
-      matrix:
-        target: ${{ fromJson(needs.prepare.outputs.ms-targets) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and push Docker
-        uses: ./.github/actions/docker-bake
-        with:
-          dockerhub-owner: ${{ secrets.DOCKERHUB_OWNER }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
-          quay-owner: ${{ secrets.QUAY_OWNER }}
-          quay-username: ${{ secrets.QUAY_USERNAME }}
-          quay-token: ${{ secrets.QUAY_TOKEN }}
-          targets: ${{ matrix.target }}
-          push: ${{ github.event_name != 'pull_request' }}
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      targets: ${{ needs.prepare.outputs.ms-targets }}
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}

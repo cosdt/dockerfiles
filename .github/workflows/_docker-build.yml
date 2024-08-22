@@ -1,195 +1,215 @@
 name: 'Build and push Docker images'
-description: 'Build and push Docker images using Bake'
-inputs:
-  targets:
-    description: "List of bake targets"
-    required: true
-  set:
-    description: "List of targets values to override (eg. targetpattern.key=value)"
-    required: false
-  push:
-    description: "Push is a shorthand for --set=*.output=type=registry"
-    required: false
-    default: 'false'
-  clean-up:
-    description: "Whether to clean up"
-    required: false
-    default: 'true'
-  upload-metadata:
-    description: "Whether to upload metadata files"
-    required: false
-    default: 'true'
-  dockerhub-owner:
-    description: "Owner of the DockerHub registry"
-    required: false
-  dockerhub-username:
-    description: "Username of the DockerHub registry"
-    required: false
-  dockerhub-token:
-    description: "Token of the DockerHub registry"
-    required: false
-  quay-owner:
-    description: "Owner of the Quay registry"
-    required: false
-  quay-username:
-    description: "Username of the Quay registry"
-    required: false
-  quay-token:
-    description: "Token of the Quay registry"
-    required: false
-  hw-registry:
-    description: "Server address of Huawei Cloud registry"
-    required: false
-    default: 'swr.cn-southwest-2.myhuaweicloud.com'
-  hw-owner:
-    description: "Owner of the Huawei Cloud registry"
-    required: false
-  hw-username:
-    description: "Username of the Huawei Cloud registry"
-    required: false
-  hw-token:
-    description: "Token of the Huawei Cloud registry"
-    required: false
-runs:
-  using: 'composite'
-  steps:
-    - name: Clean up
-      if: ${{ inputs.clean-up == 'true' }}
-      shell: bash
-      run: |
-        set -ex
-        sudo df -h
-        npm cache clean --force
-        yarn cache clean
-        pip cache purge
-        docker system prune -a -f
-        sudo apt-get remove -y --fix-missing \
-            'php.*' \
-            '^aspnetcore-.*' \
-            '^dotnet-.*' \
-            '^llvm-.*' \
-            '^mongodb-.*' \
-            '^mysql-.*' \
-            google-chrome-stable \
-            microsoft-edge-stable \
-            firefox \
-            powershell \
-            mono-devel \
-            azure-cli \
-            google-cloud-sdk \
-            google-cloud-cli \
-            libgl1-mesa-dri \
-            snapd \
-            1>/dev/null \
-            2>&1
-        sudo apt-get autoremove --purge -y
-        sudo apt-get clean
-        rm -rf ~/.cache
-        sudo rm -rf /root/.cache
-        sudo rm -rf /root/.sbt
-        sudo rm -rf /tmp/*
-        sudo rm -rf /usr/lib/jvm
-        sudo rm -rf /usr/lib/google-cloud-sdk
-        sudo rm -rf /usr/local/.ghcup
-        sudo rm -rf /usr/local/lib/android
-        sudo rm -rf /usr/local/lib/node_modules
-        sudo rm -rf /usr/local/share/powershell
-        sudo rm -rf /usr/local/share/chromium
-        sudo rm -rf /usr/share/swift
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /opt/hostedtoolcache
-        sudo rm -rf /opt/az
-        sudo rm -rf /opt/microsoft
-        sudo rm -rf /opt/google
 
-    - name: Show space
-      shell: bash
-      run: |
-        set -ex
-        sudo df -h
-        docker images -a
+on:
+  workflow_call:
+    inputs:
+      targets:
+        description: "List of bake targets"
+        required: true
+        type: string
+      set:
+        description: "List of targets values to override (eg. targetpattern.key=value)"
+        required: false
+        type: string
+      push:
+        description: "Push is a shorthand for --set=*.output=type=registry"
+        required: false
+        type: boolean
+        default: false
+      clean-up:
+        description: "Whether to clean up"
+        required: false
+        type: boolean
+        default: true
+      upload-metadata:
+        description: "Whether to upload metadata files"
+        required: false
+        type: boolean
+        default: true
+      hw-registry:
+        description: "Server address of Huawei Cloud registry"
+        required: false
+        type: string
+        default: 'swr.cn-southwest-2.myhuaweicloud.com'
+    secrets:
+      DOCKERHUB_OWNER:
+        description: "Owner of the DockerHub registry"
+        required: false
+      DOCKERHUB_USERNAME:
+        description: "Username of the DockerHub registry"
+        required: false
+      DOCKERHUB_TOKEN:
+        description: "Token of the DockerHub registry"
+        required: false
+      QUAY_OWNER:
+        description: "Owner of the Quay registry"
+        required: false
+      QUAY_USERNAME:
+        description: "Username of the Quay registry"
+        required: false
+      QUAY_TOKEN:
+        description: "Token of the Quay registry"
+        required: false
+      HW_OWNER:
+        description: "Owner of the Huawei Cloud registry"
+        required: false
+      HW_USERNAME:
+        description: "Username of the Huawei Cloud registry"
+        required: false
+      HW_TOKEN:
+        description: "Token of the Huawei Cloud registry"
+        required: false
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        target: ${{ fromJson(inputs.targets) }}
+    steps:
+      - name: Clean up
+        if: ${{ inputs.clean-up == 'true' }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -ex
+          sudo df -h
+          npm cache clean --force
+          yarn cache clean
+          pip cache purge
+          docker system prune -a -f
+          sudo apt-get remove -y --fix-missing \
+              'php.*' \
+              '^aspnetcore-.*' \
+              '^dotnet-.*' \
+              '^llvm-.*' \
+              '^mongodb-.*' \
+              '^mysql-.*' \
+              google-chrome-stable \
+              microsoft-edge-stable \
+              firefox \
+              powershell \
+              mono-devel \
+              azure-cli \
+              google-cloud-sdk \
+              google-cloud-cli \
+              libgl1-mesa-dri \
+              snapd \
+              1>/dev/null \
+              2>&1
+          sudo apt-get autoremove --purge -y
+          sudo apt-get clean
+          rm -rf ~/.cache
+          sudo rm -rf /root/.cache
+          sudo rm -rf /root/.sbt
+          sudo rm -rf /tmp/*
+          sudo rm -rf /usr/lib/jvm
+          sudo rm -rf /usr/lib/google-cloud-sdk
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/lib/node_modules
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /opt/az
+          sudo rm -rf /opt/microsoft
+          sudo rm -rf /opt/google
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Show space
+        shell: bash
+        run: |
+          set -ex
+          sudo df -h
+          docker images -a
 
-    - name: Login to Docker Hub
-      if: ${{ inputs.push == 'true' && inputs.dockerhub-username && inputs.dockerhub-token }}
-      uses: docker/login-action@v3
-      with:
-        registry: docker.io
-        username: ${{ inputs.dockerhub-username }}
-        password: ${{ inputs.dockerhub-token }}
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Login to GitHub Container
-      if: ${{ inputs.push == 'true' }}
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ github.token }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-    - name: Login to RedHat Quay
-      if: ${{ inputs.push == 'true' && inputs.quay-username && inputs.quay-token }}
-      uses: docker/login-action@v3
-      with:
-        registry: quay.io
-        username: ${{ inputs.quay-username }}
-        password: ${{ inputs.quay-token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Login to Huawei Cloud
-      if: ${{ inputs.push == 'true' && inputs.hw-username && inputs.hw-token }}
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ inputs.hw-registry }}
-        username: ${{ inputs.hw-username }}
-        password: ${{ inputs.hw-token }}
+      - name: Login to Docker Hub
+        if: ${{ inputs.push == 'true' && secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN }}
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Extract metadata for Docker
-      id: metadata
-      uses: docker/metadata-action@v5
-      with:
-        bake-target: "docker-metadata-action"
+      - name: Login to GitHub Container
+        if: ${{ inputs.push == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
 
-    - name: Build and push Docker image
-      id: bake
-      uses: docker/bake-action@v5
-      with:
-        files: |
-          ${{ github.workspace }}/docker-bake.hcl
-          ${{ steps.metadata.outputs.bake-file-labels }}
-          ${{ steps.metadata.outputs.bake-file-annotations }}
-        push: ${{ inputs.push }}
-        targets: ${{ inputs.targets }}
-        provenance: false
-        sbom: false
-        set: ${{ inputs.set }}
+      - name: Login to RedHat Quay
+        if: ${{ inputs.push == 'true' && secrets.QUAY_USERNAME && secrets.QUAY_TOKEN }}
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
 
-    - name: Export metadata
-      id: export
-      if: ${{ steps.bake.outputs.metadata }}
-      shell: bash
-      run: |
-        METADATA_FILE_NAME="${{ inputs.targets }}-metadata.json"
-        echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
-        echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
+      - name: Login to Huawei Cloud
+        if: ${{ inputs.push == 'true' && secrets.HW_USERNAME && secrets.HW_TOKEN && inputs.hw-registry }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ inputs.hw-registry }}
+          username: ${{ secrets.HW_USERNAME }}
+          password: ${{ secrets.HW_TOKEN }}
 
-    - name: Upload metadata
-      id: upload-artifact
-      if: ${{ inputs.upload-metadata == 'true' }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ steps.export.outputs.metadata_file_name }}
-        path: /tmp/${{ steps.export.outputs.metadata_file_name }}
-        if-no-files-found: error
-        retention-days: 7
+      - name: Extract metadata for Docker
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          bake-target: "docker-metadata-action"
 
-    - name: Show space
-      if: ${{ always() }}
-      shell: bash
-      run: |
-        set -ex
-        sudo df -h
-        docker images -a
+      - name: Build and push Docker image
+        id: bake
+        uses: docker/bake-action@v5
+        with:
+          files: |
+            ${{ github.workspace }}/docker-bake.hcl
+            ${{ steps.metadata.outputs.bake-file-labels }}
+            ${{ steps.metadata.outputs.bake-file-annotations }}
+          push: ${{ inputs.push }}
+          targets: ${{ matrix.target }}
+          provenance: false
+          sbom: false
+          set: ${{ inputs.set }}
+
+      - name: Export metadata
+        id: export
+        if: ${{ steps.bake.outputs.metadata }}
+        shell: bash
+        run: |
+          METADATA_FILE_NAME="${{ inputs.targets }}-metadata.json"
+          echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
+          echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
+
+      - name: Upload metadata
+        id: upload-artifact
+        if: ${{ inputs.upload-metadata == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.export.outputs.metadata_file_name }}
+          path: /tmp/${{ steps.export.outputs.metadata_file_name }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Show space
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -ex
+          sudo df -h
+          docker images -a
