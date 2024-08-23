@@ -62,6 +62,7 @@ on:
 
 jobs:
   docker:
+    name: ''
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
