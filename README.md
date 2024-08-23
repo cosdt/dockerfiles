@@ -26,13 +26,24 @@
     </a>
 </p>
 
+We have several Docker images as following, you can find out details in 
+their README.md:
+
+- [CANN](./cann)
+- [PyTorch](./pytorch)
+- [MindSpore](./mindspore)
+
 ## Build
 
 In order to build Ascend Docker images, ensure you have the following.
 
 - Docker Engine 20.10+
 
-Run in the root directory of the repository:
+Run from the repository directory after cloning. All Ascend Docker images will
+be built using [Docker Buildx Bake][1]. Please note that this process will
+cost a lot of disk space.
+
+[1]: https://docs.docker.com/build/bake/
 
 ```docker
 docker buildx bake -f docker-bake.hcl

@@ -62,7 +62,7 @@ on:
 
 jobs:
   docker:
-    name: ''
+    name: 'docker'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -123,7 +123,7 @@ jobs:
       - name: Show space
         shell: bash
         run: |
-          set -ex
+          set -x
           sudo df -h
           docker images -a
 
@@ -230,6 +230,6 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
-          set -ex
+          set -x
           sudo df -h
           docker images -a
