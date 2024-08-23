@@ -1,13 +1,13 @@
 # Ascend Docker Images
 
 <p align="center">
-    <a href="https://github.com/cosdt/dockerfiles/actions/workflows/docker.yml">
-        <img src="https://github.com/cosdt/dockerfiles/actions/workflows/docker.yml/badge.svg" />
+    <a href="https://github.com/Ascend/dockerfiles/actions/workflows/docker.yml">
+        <img src="https://github.com/Ascend/dockerfiles/actions/workflows/docker.yml/badge.svg" />
     </a>
     <a href="LICENSE">
-        <img src="https://img.shields.io/github/license/cosdt/dockerfiles.svg" />
+        <img src="https://img.shields.io/github/license/Ascend/dockerfiles.svg" />
     </a>
-    <img src="https://img.shields.io/github/v/release/cosdt/dockerfiles" />
+    <img src="https://img.shields.io/github/v/release/Ascend/dockerfiles" />
     <img src="https://img.shields.io/badge/language-dockerfile-384D54.svg">
 </p>
 

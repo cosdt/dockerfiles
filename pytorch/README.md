@@ -14,7 +14,7 @@ docker run \
     -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
     -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
     -v /etc/ascend_install.info:/etc/ascend_install.info \
-    -it cosdt/pytorch:<TAG> bash
+    -it ascendai/pytorch:<TAG> bash
 ```
 
 ## Build
@@ -42,7 +42,7 @@ custom_registries='
 [
   {
     "url": "quay.io",
-    "owner": "cosdt"
+    "owner": "ascend"
   }
 ]'
 registries="${custom_registries}" \
@@ -53,9 +53,9 @@ Don't have Bake? Use `docker buildx build` instead:
 
 ```docker
 docker buildx build \
-    -t cosdt/pytorch:latest \
+    -t ascendai/pytorch:latest \
     -f pytorch/new.Dockerfile \
-    --build-arg BASE_NAME=cosdt/cann \
+    --build-arg BASE_NAME=ascendai/cann \
     --build-arg BASE_VERSION=latest \
     --build-arg PYTORCH_VERSION=2.2.0 \
     pytorch/

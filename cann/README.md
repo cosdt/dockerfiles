@@ -14,7 +14,7 @@ docker run \
     -v /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/ \
     -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
     -v /etc/ascend_install.info:/etc/ascend_install.info \
-    -it cosdt/cann:<TAG> bash
+    -it ascendai/cann:latest bash
 ```
 
 ## Build
@@ -42,7 +42,7 @@ custom_registries='
 [
   {
     "url": "quay.io",
-    "owner": "cosdt"
+    "owner": "ascend"
   }
 ]'
 registries="${custom_registries}" \
@@ -53,7 +53,7 @@ Don't have Bake? Use `docker buildx build` instead:
 
 ```docker
 docker buildx build \
-    -t cosdt/cann:latest \
+    -t ascendai/cann:latest \
     -f cann/ubuntu/Dockerfile \
     --build-arg BASE_VERSION=22.04 \
     --build-arg PY_VERSION=3.10 \

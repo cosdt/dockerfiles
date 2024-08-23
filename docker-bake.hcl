@@ -3,11 +3,15 @@ variable "registries" {
 [
   {
     "url": "docker.io",
-    "owner": "cosdt"
+    "owner": "ascendai"
   },
   {
     "url": "ghcr.io",
-    "owner": "cosdt"
+    "owner": "ascend"
+  },
+  {
+    "url": "quay.io",
+    "owner": "ascend"
   }
 ]
 EOT
