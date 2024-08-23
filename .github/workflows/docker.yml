@@ -34,23 +34,6 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' }}-${{ github.event_name == 'schedule' }}"
   cancel-in-progress: ${{ !contains(github.ref, 'release/')}}
 
-env:
-  registries: |
-    [
-      {
-        "url": "docker.io",
-        "owner": "${{ secrets.DOCKERHUB_OWNER }}"
-      },
-      {
-        "url": "ghcr.io",
-        "owner": "${{ github.repository_owner }}"
-      },
-      {
-        "url": "quay.io",
-        "owner": "${{ secrets.QUAY_OWNER }}"
-      }
-    ]
-
 jobs:
   prepare:
     name: prepare
@@ -111,6 +94,7 @@ jobs:
     with:
       targets: ${{ needs.prepare.outputs.pth-targets }}
       push: ${{ github.event_name != 'pull_request' }}
+      clean-up: false
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -131,6 +115,7 @@ jobs:
     with:
       targets: ${{ needs.prepare.outputs.ms-targets }}
       push: ${{ github.event_name != 'pull_request' }}
+      clean-up: false
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
