@@ -213,7 +213,7 @@ jobs:
         shell: bash
         run: |
           METADATA_FILE_NAME="${{ matrix.target }}-metadata.json"
-          echo "metadata_file_name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
+          echo "metadata-file-name=${METADATA_FILE_NAME}" >> $GITHUB_OUTPUT
           echo '${{ steps.bake.outputs.metadata }}' > /tmp/${METADATA_FILE_NAME}
 
       - name: Upload metadata
@@ -221,8 +221,8 @@ jobs:
         if: ${{ inputs.upload-metadata }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.export.outputs.metadata_file_name }}
-          path: /tmp/${{ steps.export.outputs.metadata_file_name }}
+          name: ${{ steps.export.outputs.metadata-file-name }}
+          path: /tmp/${{ steps.export.outputs.metadata-file-name }}
           if-no-files-found: error
           retention-days: 7
 
