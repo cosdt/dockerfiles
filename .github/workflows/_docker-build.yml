@@ -105,11 +105,6 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     steps:
-      - run: |
-          set -x
-          echo $registries
-          echo ${{ env.registries }}
-
       - name: Clean up
         if: ${{ inputs.clean-up }}
         continue-on-error: true
