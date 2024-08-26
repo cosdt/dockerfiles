@@ -62,7 +62,7 @@ on:
 
 env:
   # Registries to push the images to, see the variable definition in docker-bake.hcl
-  registries: |-
+  registries: |
     [
       {
         "url": "docker.io",
