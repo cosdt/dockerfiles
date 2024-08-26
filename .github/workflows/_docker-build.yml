@@ -266,14 +266,6 @@ jobs:
           set: ${{ inputs.set }}
           provenance: false
           sbom: false
-<<<<<<< Updated upstream
-          set: ${{ inputs.set }}
-        env:
-          registries: ${{ inputs.registries }}
-=======
-        env:
-          registries: ${{ steps.list-registries.outputs.registries }}
->>>>>>> Stashed changes
 
       - name: Export metadata
         id: export
