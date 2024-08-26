@@ -3,8 +3,8 @@ name: 'Build and push Docker images'
 on:
   workflow_call:
     inputs:
-      targets:
-        description: "List of bake targets"
+      target:
+        description: "Bake target"
         required: true
         type: string
       set:
@@ -60,15 +60,50 @@ on:
         description: "Token of the Huawei Cloud registry"
         required: false
 
+env:
+  # Registries to push the images to, see the variable definition in docker-bake.hcl
+  registries: |
+    [
+      {
+        "url": "docker.io",
+        "owner": "${{ secrets.DOCKERHUB_OWNER }}"
+      },
+      {
+        "url": "ghcr.io",
+        "owner": "${{ github.repository_owner }}"
+      },
+      {
+        "url": "quay.io",
+        "owner": "${{ secrets.QUAY_OWNER }}"
+      }
+    ]
+
 jobs:
+  prepare:
+    name: 'prepare'
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.list-target.outputs.targets }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: List targets
+        id: list-target
+        uses: docker/bake-action/subaction/list-targets@v4
+        with:
+          target: ${{ inputs.target }}
+
   docker:
     name: 'docker'
     runs-on: ubuntu-latest
+    needs:
+      - prepare
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
-        target: ${{ fromJson(inputs.targets) }}
+        target: ${{ fromJson(needs.prepare.outputs.targets) }}
     steps:
       - name: Clean up
         if: ${{ inputs.clean-up }}
@@ -206,6 +241,8 @@ jobs:
           provenance: false
           sbom: false
           set: ${{ inputs.set }}
+        env:
+          registries: ${{ inputs.registries }}
 
       - name: Export metadata
         id: export

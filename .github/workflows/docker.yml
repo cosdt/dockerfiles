@@ -34,63 +34,14 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' }}-${{ github.event_name == 'schedule' }}"
   cancel-in-progress: ${{ !contains(github.ref, 'release/')}}
 
-env:
-  # Registries to push the images to, see the variable definition in docker-bake.hcl
-  registries: |
-    [
-      {
-        "url": "docker.io",
-        "owner": "${{ secrets.DOCKERHUB_OWNER }}"
-      },
-      {
-        "url": "ghcr.io",
-        "owner": "${{ github.repository_owner }}"
-      },
-      {
-        "url": "quay.io",
-        "owner": "${{ secrets.QUAY_OWNER }}"
-      }
-    ]
-
 jobs:
-  prepare:
-    name: prepare
-    runs-on: ubuntu-latest
-    outputs:
-      cann-targets: ${{ steps.list-cann-target.outputs.targets }}
-      pth-targets: ${{ steps.list-pth-target.outputs.targets }}
-      ms-targets: ${{ steps.list-ms-target.outputs.targets }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: List cann targets
-        id: list-cann-target
-        uses: docker/bake-action/subaction/list-targets@v4
-        with:
-          target: cann
-
-      - name: List pytorch targets
-        id: list-pth-target
-        uses: docker/bake-action/subaction/list-targets@v4
-        with:
-          target: pytorch
-
-      - name: List mindspore targets
-        id: list-ms-target
-        uses: docker/bake-action/subaction/list-targets@v4
-        with:
-          target: mindspore
-
   cann:
     name: cann
     permissions:
       packages: write
-    needs:
-      - prepare
     uses: ./.github/workflows/_docker-build.yml
     with:
-      targets: ${{ needs.prepare.outputs.cann-targets }}
+      target: 'cann'
       push: ${{ github.event_name != 'pull_request' }}
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
@@ -106,11 +57,10 @@ jobs:
     permissions:
       packages: write
     needs:
-      - prepare
       - cann
     uses: ./.github/workflows/_docker-build.yml
     with:
-      targets: ${{ needs.prepare.outputs.pth-targets }}
+      target: 'pytorch'
       push: ${{ github.event_name != 'pull_request' }}
       clean-up: false
     secrets:
@@ -127,11 +77,10 @@ jobs:
     permissions:
       packages: write
     needs:
-      - prepare
       - cann
     uses: ./.github/workflows/_docker-build.yml
     with:
-      targets: ${{ needs.prepare.outputs.ms-targets }}
+      target: 'mindspore'
       push: ${{ github.event_name != 'pull_request' }}
       clean-up: false
     secrets:
