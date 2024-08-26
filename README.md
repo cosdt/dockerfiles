@@ -29,6 +29,7 @@
 We have several Docker images as following, you can find out details in 
 their README.md:
 
+- [Python](./python)
 - [CANN](./cann)
 - [PyTorch](./pytorch)
 - [MindSpore](./mindspore)

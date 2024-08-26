@@ -30,11 +30,15 @@ function "cann_tag" {
 }
 
 group "default" {
-  targets = ["cann-all", "cann-prefer", "pytorch-all", "mindspore-all"]
+  targets = ["cann-all", "cann-prefer", "python-all", "pytorch-all", "mindspore-all"]
 }
 
 group "cann" {
   targets = ["cann-all", "cann-prefer"]
+}
+
+group "python" {
+  targets = ["python-all"]
 }
 
 group "pytorch" {
@@ -131,6 +135,39 @@ target "cann-prefer" {
     CANN_VERSION = "${item.cann_version}"
   }
   tags = generate_tags("cann", "${item.tag}")
+}
+
+target "python-all" {
+  inherits = ["base-target"]
+  name = replace("python-${py_version}-${os.name}${os.version}", ".", "_")
+  context = "python"
+  dockerfile = "${os.name}.Dockerfile"
+  matrix = {
+    os = [
+      {
+        name = "ubuntu"
+        version = "20.04"
+      },
+      {
+        name = "ubuntu"
+        version = "22.04"
+      },
+      {
+        name = "openeuler"
+        version = "20.03"
+      },
+      {
+        name = "openeuler"
+        version = "22.03"
+      }
+    ]
+    py_version = ["3.8", "3.9", "3.10"]
+  }
+  args = {
+    BASE_VERSION = "${os.version}"
+    PY_VERSION = "${py_version}"
+  }
+  tags = generate_tags("python", "${py_version}-${os.name}${os.version}")
 }
 
 target "pytorch-all" {
