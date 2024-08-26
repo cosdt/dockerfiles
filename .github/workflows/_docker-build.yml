@@ -101,8 +101,8 @@ jobs:
             exit 1
           fi
 
-          # Output formatted content
-          registry_array=$(jq '.' <<< "$registry_array")
+          # Output compact content
+          registry_array=$(jq -c '.' <<< "$registry_array")
           echo "registries=$registry_array" >>$GITHUB_OUTPUT
 
           echo "::group::Registries"
