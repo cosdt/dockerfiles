@@ -3,7 +3,7 @@
 ## Usage
 
 ```docker
-docker run -d -it ascendai/python:latest \
+docker run --rm -it ascendai/python:latest \
     python -c "import sys; print(sys.version)"
 ```
 
