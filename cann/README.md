@@ -54,7 +54,7 @@ Don't have Bake? Use `docker buildx build` instead:
 ```docker
 docker buildx build \
     -t ascendai/cann:latest \
-    -f cann/ubuntu/Dockerfile \
+    -f cann/ubuntu.Dockerfile \
     --build-arg BASE_VERSION=22.04 \
     --build-arg PY_VERSION=3.10 \
     --build-arg CANN_CHIP=910b \

@@ -62,7 +62,7 @@ target "cann-all" {
   inherits = ["base-target"]
   name = replace("cann-${cann_version}-${cann_chip}-${os.name}${os.version}-py${py_version}", ".", "_")
   context = "cann"
-  dockerfile = "${os.name}/Dockerfile"
+  dockerfile = "${os.name}.Dockerfile"
   matrix = {
     os = [
       {
@@ -99,7 +99,7 @@ target "cann-prefer" {
   inherits = ["base-target"]
   name = replace("cann-${item.tag}", ".", "_")
   context = "cann"
-  dockerfile = "${item.os}/Dockerfile"
+  dockerfile = "${item.os}.Dockerfile"
   matrix = {
     item = [
       {
