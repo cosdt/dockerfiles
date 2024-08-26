@@ -60,35 +60,14 @@ on:
         description: "Token of the Huawei Cloud registry"
         required: false
 
-env:
-  # Registries to push the images to, see the variable definition in docker-bake.hcl
-  registries: |
-    [
-      {
-        "url": "docker.io",
-        "owner": "${{ secrets.DOCKERHUB_OWNER }}"
-      },
-      {
-        "url": "ghcr.io",
-        "owner": "${{ github.repository_owner }}"
-      },
-      {
-        "url": "quay.io",
-        "owner": "${{ secrets.QUAY_OWNER }}"
-      }
-    ]
-
 jobs:
   prepare:
     name: 'prepare'
     runs-on: ubuntu-latest
     outputs:
       targets: ${{ steps.list-target.outputs.targets }}
+      registries: ${{ step.list-registry.outputs.registries }}
     steps:
-      - run: |
-          set -x
-          echo $registries
-          echo ${{ env.registries }}
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -97,6 +76,38 @@ jobs:
         uses: docker/bake-action/subaction/list-targets@v4
         with:
           target: ${{ inputs.target }}
+
+      # List registries to push the images to, see the variable definition in docker-bake.hcl
+      - name: List registries in JSON format
+        id: list-registry
+        run: |
+          registry_array='[]'
+
+          add_registry() {
+            local url=$1
+            local owner=$2
+            if [ -n "$owner" ]; then
+              registry_array=$(jq --arg url "$url" --arg owner "$owner" '. += [{"url": $url, "owner": $owner}]' <<< "$registry_array")
+            fi
+          }
+
+          add_registry "docker.io" "${{ secrets.DOCKERHUB_OWNER }}"
+          add_registry "ghcr.io" "${{ github.repository_owner }}"
+          add_registry "quay.io" "${{ secrets.QUAY_OWNER }}"
+          add_registry "${{ inputs.hw-registry }}" "${{ secrets.HW_OWNER }}"
+
+          if [[ $(jq 'empty' <<< "$json_array") == 'true' ]]; then
+            echo "No registries found. You should add the registry tokens as secrets in GitHub Actions." >&2
+            exit 1
+          fi
+
+          # Output formatted content
+          registry_array=$(jq '.' <<< "$registry_array")
+          echo "registries=$registry_array" >>$GITHUB_OUTPUT
+
+          echo "::group::Registries"
+          echo "$registry_array"
+          echo "::endgroup::"
 
   docker:
     name: 'docker'
@@ -108,6 +119,8 @@ jobs:
       max-parallel: 10
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
+    env:
+      registries: ${{ needs.prepare.outputs.registries }}
     steps:
       - run: |
           set -x
@@ -199,6 +212,7 @@ jobs:
             echo "hw=true" >> $GITHUB_OUTPUT
           fi
 
+
       - name: Login to Docker Hub
         if: ${{ inputs.push && steps.check-tokens.outputs.dockerhub == 'true' }}
         uses: docker/login-action@v3
@@ -236,6 +250,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           bake-target: "docker-metadata-action"
+        env:
+          registries: ${{ steps.list-registries.outputs.registries }}
 
       - name: Build and push Docker image
         id: bake
@@ -245,13 +261,19 @@ jobs:
             ${{ github.workspace }}/docker-bake.hcl
             ${{ steps.metadata.outputs.bake-file-labels }}
             ${{ steps.metadata.outputs.bake-file-annotations }}
-          push: ${{ inputs.push }}
           targets: ${{ matrix.target }}
+          push: ${{ inputs.push }}
+          set: ${{ inputs.set }}
           provenance: false
           sbom: false
+<<<<<<< Updated upstream
           set: ${{ inputs.set }}
         env:
           registries: ${{ inputs.registries }}
+=======
+        env:
+          registries: ${{ steps.list-registries.outputs.registries }}
+>>>>>>> Stashed changes
 
       - name: Export metadata
         id: export
