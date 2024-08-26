@@ -87,7 +87,7 @@ jobs:
     steps:
       - run: |
           set -x
-          echo ${{ registries }}
+          echo $registries
           echo ${{ env.registries }}
       - name: Checkout
         uses: actions/checkout@v4
@@ -111,7 +111,7 @@ jobs:
     steps:
       - run: |
           set -x
-          echo ${{ registries }}
+          echo $registries
           echo ${{ env.registries }}
 
       - name: Clean up
