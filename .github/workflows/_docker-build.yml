@@ -184,9 +184,11 @@ jobs:
         run: |
           if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
             echo "dockerhub=true" >> $GITHUB_OUTPUT
-          elif [ -n "$QUAY_USERNAME" ] && [ -n "$QUAY_TOKEN" ]; then
+          fi
+          if [ -n "$QUAY_USERNAME" ] && [ -n "$QUAY_TOKEN" ]; then
             echo "quay=true" >> $GITHUB_OUTPUT
-          elif [ -n "$HW_USERNAME" ] && [ -n "$HW_TOKEN" ]; then
+          fi
+          if [ -n "$HW_USERNAME" ] && [ -n "$HW_TOKEN" ]; then
             echo "hw=true" >> $GITHUB_OUTPUT
           fi
 
