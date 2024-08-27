@@ -53,20 +53,21 @@ docker buildx bake -f docker-bake.hcl
 To build single-arch images only:
 
 ```docker
-docker buildx bake -f docker-bake.hcl --set '*.platform=linux/arm64'
+docker buildx bake -f docker-bake.hcl \
+    --set '*.platform=linux/arm64'
 ```
 
 To customize the registry and owner using JSON format:
 
 ```bash
-custom_registries='
+export registries='
 [
   {
     "url": "quay.io",
     "owner": "ascend"
   }
 ]'
-registries="${custom_registries}" \
+
 docker buildx bake -f docker-bake.hcl
 ```
 
