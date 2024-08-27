@@ -44,6 +44,9 @@ jobs:
       target: 'python'
       push: ${{ github.event_name != 'pull_request' }}
       clean-up: false
+      set: |
+        *.cache-from=type=gha
+        *.cache-to=type=gha,mode=min
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -72,7 +75,6 @@ jobs:
 
   pytorch:
     name: pytorch
-    if: ${{ success() || failure() }}
     permissions:
       packages: write
     needs:
@@ -92,7 +94,6 @@ jobs:
 
   mindspore:
     name: mindspore
-    if: ${{ success() || failure() }}
     permissions:
       packages: write
     needs:
