@@ -35,6 +35,7 @@ RUN apt-get update \
         gfortran \
         patchelf \
         libblas3 \
+        curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/tmp/* \

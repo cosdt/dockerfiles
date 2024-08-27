@@ -28,6 +28,7 @@ RUN yum update -y && \
         gcc-gfortran \
         util-linux \
         findutils \
+        curl \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && rm -rf /tmp/*
