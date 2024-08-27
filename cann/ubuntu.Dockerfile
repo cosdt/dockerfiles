@@ -41,15 +41,9 @@ RUN apt-get update \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
-# Copy files
 COPY ./cann.sh /tmp/cann.sh
-
-# Download CANN
 RUN bash /tmp/cann.sh --download
-
-# Install CANN
-RUN bash /tmp/cann.sh --install && \
-    rm /tmp/cann.sh
+RUN bash /tmp/cann.sh --install
 
 # Stage 2: Copy results from previous stages
 FROM ubuntu:${BASE_VERSION} AS official

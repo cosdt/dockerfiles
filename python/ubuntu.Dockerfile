@@ -2,13 +2,10 @@
 ARG BASE_VERSION=latest
 ARG PY_VERSION=3.8
 
-# Stage 0: Install Python
+# Stage 1: Install Python
 FROM ubuntu:${BASE_VERSION} AS py-installer
 
-# Arguments
 ARG PY_VERSION
-
-# Environment variables
 ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
 
 # Install dependencies
@@ -35,23 +32,14 @@ RUN apt-get update \
     && rm -rf /var/tmp/* \
     && rm -rf /tmp/*
 
-# Copy files
 COPY ./python.sh /tmp/python.sh
-
-# Download Python
 RUN bash /tmp/python.sh --download
+RUN bash /tmp/python.sh --install
 
-# Install Python
-RUN bash /tmp/python.sh --install && \
-    rm /tmp/python.sh
-
-# Stage 1: Copy results from previous stages
+# Stage 2: Copy results from previous stages
 FROM ubuntu:${BASE_VERSION} AS official
 
-# Arguments
 ARG PY_VERSION
-
-# Environment variables
 ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
 
 # Change the default shell
