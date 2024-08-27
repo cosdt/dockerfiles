@@ -2,53 +2,8 @@
 ARG BASE_VERSION=latest
 ARG PY_VERSION=3.8
 
-# Stage 0: Install Python
-FROM openeuler/openeuler:${BASE_VERSION} AS py-installer
-
-# Arguments
-ARG PY_VERSION
-
-# Environment variables
-ENV PATH=/usr/local/python${PY_VERSION}/bin:${PATH}
-
-# Install dependencies
-RUN yum update -y && \
-    yum install -y \
-        gcc \
-        gcc-c++ \
-        make \
-        cmake \
-        curl \
-        zlib-devel \
-        bzip2-devel \
-        openssl-devel \
-        ncurses-devel \
-        sqlite-devel \
-        readline-devel \
-        tk-devel \
-        gdbm-devel \
-        libpcap-devel \
-        xz-devel \
-        libev-devel \
-        expat-devel \
-        libffi-devel \
-        systemtap-sdt-devel \
-    && yum clean all \
-    && rm -rf /var/cache/yum \
-    && rm -rf /tmp/*
-
-# Copy files
-COPY ../scripts/python.sh /tmp/python.sh
-
-# Download Python
-RUN bash /tmp/python.sh --download
-
-# Install Python
-RUN bash /tmp/python.sh --install && \
-    rm /tmp/python.sh
-
 # Stage 1: Install CANN
-FROM py-installer AS cann-installer
+FROM ascendai/python:${PY_VERSION}-openeuler${BASE_VERSION} AS cann-installer
 
 # Arguments
 ARG PLATFORM=${TARGETPLATFORM}
@@ -78,7 +33,7 @@ RUN yum update -y && \
     && rm -rf /tmp/*
 
 # Copy files
-COPY ../scripts/cann.sh /tmp/cann.sh
+COPY ./cann.sh /tmp/cann.sh
 
 # Download CANN
 RUN bash /tmp/cann.sh --download
