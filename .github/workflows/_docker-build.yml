@@ -105,6 +105,9 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Clean up
         continue-on-error: true
         uses: ./.github/actions/clean-up
