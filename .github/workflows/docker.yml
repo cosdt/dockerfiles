@@ -83,7 +83,6 @@ jobs:
     with:
       target: 'pytorch'
       push: ${{ github.event_name != 'pull_request' }}
-      clean-up: false
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -102,7 +101,6 @@ jobs:
     with:
       target: 'mindspore'
       push: ${{ github.event_name != 'pull_request' }}
-      clean-up: false
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
