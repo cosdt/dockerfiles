@@ -24,6 +24,7 @@ runs:
       shell: bash
       run: |
         echo "::group::Run apt-get remove"
+        sudo snap remove --purge $(sudo snap list | awk '{print$1}')
         sudo apt-get remove -y --fix-missing \
             'php.*' \
             '^aspnetcore-.*' \
