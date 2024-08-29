@@ -45,6 +45,7 @@ runs:
             snapd
         sudo apt-get autoremove --purge -y
         sudo apt-get clean
+        sudo apt list --installed
         echo "::endgroup::"
 
     - name: Remove files
@@ -69,6 +70,7 @@ runs:
         sudo rm -rf /opt/az
         sudo rm -rf /opt/microsoft
         sudo rm -rf /opt/google
+        sudo rm -rf /opt/pipx
         echo "::endgroup::"
 
     - name: Display available disk space
@@ -79,4 +81,7 @@ runs:
         sudo df -h
         sudo du -h -d 1 /usr | sort -hr
         sudo du -h -d 1 /opt | sort -hr
+        sudo du -h -d 1 /usr/local | sort -hr
+        sudo du -h -d 1 /usr/lib | sort -hr
+        sudo du -h -d 1 /usr/share | sort -hr
         echo "::endgroup::"
