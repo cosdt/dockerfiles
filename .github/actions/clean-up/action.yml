@@ -24,7 +24,6 @@ runs:
       shell: bash
       run: |
         echo "::group::Run apt-get remove"
-        sudo snap remove --purge core20 lxd
         sudo apt-get remove -y --fix-missing \
             'php.*' \
             '^aspnetcore-.*' \
