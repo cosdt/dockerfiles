@@ -169,4 +169,3 @@ jobs:
           sudo du -h -d 2 /root | sort -hr
           sudo du -h -d 2 /usr | sort -hr
           sudo du -h -d 2 /opt | sort -hr
-          sudo du -h -d 1 / | sort -hr
