@@ -108,59 +108,7 @@ jobs:
       - name: Clean up
         if: ${{ inputs.clean-up }}
         continue-on-error: true
-        shell: bash
-        run: |
-          set -ex
-          sudo df -h
-          npm cache clean --force
-          yarn cache clean
-          pip cache purge
-          docker system prune -a -f
-          sudo apt-get remove -y --fix-missing \
-              'php.*' \
-              '^aspnetcore-.*' \
-              '^dotnet-.*' \
-              '^llvm-.*' \
-              '^mongodb-.*' \
-              '^mysql-.*' \
-              google-chrome-stable \
-              microsoft-edge-stable \
-              firefox \
-              powershell \
-              mono-devel \
-              azure-cli \
-              google-cloud-sdk \
-              google-cloud-cli \
-              libgl1-mesa-dri \
-              snapd \
-              1>/dev/null \
-              2>&1
-          sudo apt-get autoremove --purge -y
-          sudo apt-get clean
-          rm -rf ~/.cache
-          sudo rm -rf /root/.cache
-          sudo rm -rf /root/.sbt
-          sudo rm -rf /tmp/*
-          sudo rm -rf /usr/lib/jvm
-          sudo rm -rf /usr/lib/google-cloud-sdk
-          sudo rm -rf /usr/local/.ghcup
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/local/lib/node_modules
-          sudo rm -rf /usr/local/share/powershell
-          sudo rm -rf /usr/local/share/chromium
-          sudo rm -rf /usr/share/swift
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/hostedtoolcache
-          sudo rm -rf /opt/az
-          sudo rm -rf /opt/microsoft
-          sudo rm -rf /opt/google
-
-      - name: Show space
-        shell: bash
-        run: |
-          set -x
-          sudo df -h
-          docker images -a
+        uses: ./.github/actions/clean-up
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -263,7 +211,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Show space
+      - name: Display available disk space
         if: ${{ always() }}
         shell: bash
         run: |
