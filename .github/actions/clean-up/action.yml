@@ -6,23 +6,25 @@ runs:
     - name: Display available disk space
       shell: bash
       run: |
-        set -x
+        echo "::group::Display disk space"
         sudo df -h
-        sudo du -h -d 1 /usr | sort -hr
-        sudo du -h -d 1 /opt | sort -hr
+        echo "::endgroup::"
 
     - name: Clean cache
       shell: bash
       run: |
+        echo "::group::Clean cache"
         set -x
         npm cache clean --force
         yarn cache clean
         pip cache purge
         docker system prune -a -f
+        echo "::endgroup::"
 
     - name: Remove packages
       shell: bash
       run: |
+        echo "::group::Run apt-get remove"
         set -x
         sudo apt-get remove -y --fix-missing \
             'php.*' \
@@ -43,16 +45,17 @@ runs:
             snapd
         sudo apt-get autoremove --purge -y
         sudo apt-get clean
+        echo "::endgroup::"
 
     - name: Remove files
       shell: bash
       run: |
+        echo "::group::Run rm -rf"
         set -x
         rm -rf ~/.cache
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
-        sudo rm -rf /snap/*
         sudo rm -rf /usr/lib/jvm
         sudo rm -rf /usr/lib/google-cloud-sdk
         sudo rm -rf /usr/local/.ghcup
@@ -66,11 +69,14 @@ runs:
         sudo rm -rf /opt/az
         sudo rm -rf /opt/microsoft
         sudo rm -rf /opt/google
+        echo "::endgroup::"
 
     - name: Display available disk space
       shell: bash
       run: |
+        echo "::group::Display disk space"
         set -x
         sudo df -h
         sudo du -h -d 1 /usr | sort -hr
         sudo du -h -d 1 /opt | sort -hr
+        echo "::endgroup::"
