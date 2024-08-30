@@ -120,7 +120,9 @@ jobs:
       matrix:
         target: ${{ fromJson(needs.prepare.outputs.targets) }}
     steps:
-      - run: echo $registries
+      - run: |
+          echo $registries
+          echo ${{ needs.prepare.outputs.registries }}
 
       - name: Checkout
         uses: actions/checkout@v4
