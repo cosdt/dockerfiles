@@ -84,6 +84,7 @@ jobs:
       - name: List registries in JSON format
         id: list-registry
         run: |
+          set -e
           registry_array='[]'
 
           add_registry() {
@@ -100,7 +101,11 @@ jobs:
           add_registry "${{ inputs.hw-registry }}" "${{ secrets.HW_OWNER }}"
 
           registry_array=$(jq -c '.' <<< "$registry_array")
-          echo "registries=$registry_array" >>$GITHUB_OUTPUT
+          echo "registries=$registry_array" >> $GITHUB_OUTPUT
+
+          echo "::group::Set output"
+          echo "registries: ${registry_array}"
+          echo "::endgroup::"
 
   docker:
     name: 'docker'
