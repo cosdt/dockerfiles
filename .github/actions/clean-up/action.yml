@@ -8,7 +8,6 @@ runs:
       run: |
         echo "::group::Display disk space"
         sudo df -h
-        sudo brew list
         who
         sudo cat /etc/passwd
         echo "::endgroup::"
