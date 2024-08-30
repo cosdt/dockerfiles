@@ -56,6 +56,7 @@ runs:
         sudo rm -rf /tmp/*
 
         sudo rm -rf /usr/lib/jvm
+        sudo rm -rf /usr/lib/heroku
         sudo rm -rf /usr/lib/google-cloud-sdk
 
         sudo rm -rf /usr/local/.ghcup
@@ -73,6 +74,8 @@ runs:
         sudo rm -rf /usr/share/az*
         sudo rm -rf /usr/share/gradle*
         sudo rm -rf /usr/share/sbt
+        sudo rm -rf /usr/share/kotlinc
+        sudo rm -rf /usr/share/doc
 
         sudo rm -rf /opt/hostedtoolcache
         sudo rm -rf /opt/az
@@ -88,7 +91,12 @@ runs:
         sudo df -h
         sudo du -h -d 1 /usr | sort -hr
         sudo du -h -d 1 /opt | sort -hr
-        sudo du -h -d 1 /usr/local | sort -hr
+        sudo du -h -d 1 /home | sort -hr
+        sudo du -h -d 1 /usr/bin | sort -hr
         sudo du -h -d 1 /usr/lib | sort -hr
+        sudo du -h -d 1 /usr/local | sort -hr
         sudo du -h -d 1 /usr/share | sort -hr
+
+        sudo du -h -d 1 /var | sort -hr
+        sudo du -h -d 1 /etc | sort -hr
         echo "::endgroup::"
