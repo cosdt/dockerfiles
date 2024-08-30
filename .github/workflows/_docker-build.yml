@@ -105,6 +105,8 @@ jobs:
   docker:
     name: 'docker'
     runs-on: ubuntu-latest
+    needs:
+      - prepare
     env:
       registries: ${{ needs.prepare.outputs.registries }}
     strategy:
