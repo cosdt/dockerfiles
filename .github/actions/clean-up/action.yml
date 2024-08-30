@@ -1,5 +1,5 @@
 name: "Clean up space"
-description: "Clean up disk space on GitHub Runner"
+description: "Remove redundant files and packages when building Docker images"
 runs:
   using: 'composite'
   steps:
@@ -120,17 +120,4 @@ runs:
       run: |
         echo "::group::Display disk space"
         sudo df -h
-        sudo du -h -d 1 /usr | sort -hr
-        sudo du -h -d 1 /opt | sort -hr
-        sudo du -h -d 2 /home | sort -hr
-        sudo du -h -d 2 ~ | sort -hr
-        sudo du -h -d 1 /usr/bin | sort -hr
-        sudo du -h -d 1 /usr/lib | sort -hr
-        sudo du -h -d 1 /usr/local | sort -hr
-        sudo du -h -d 1 /usr/share | sort -hr
-
-        sudo du -h -d 1 /var/lib | sort -hr
-        sudo du -h -d 1 /var/cache | sort -hr
-        sudo du -h -d 1 /etc | sort -hr
-
         echo "::endgroup::"

@@ -56,3 +56,51 @@ jobs:
       QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+
+  cann:
+    name: cann
+    needs:
+      - python
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      target: 'cann'
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+
+  pytorch:
+    name: pytorch
+    needs:
+      - cann
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      target: 'pytorch'
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+
+  mindspore:
+    name: mindspore
+    needs:
+      - cann
+    uses: ./.github/workflows/_docker-build.yml
+    with:
+      target: 'mindspore'
+      push: ${{ github.event_name != 'pull_request' }}
+    secrets:
+      DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      QUAY_OWNER: ${{ secrets.QUAY_OWNER }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
