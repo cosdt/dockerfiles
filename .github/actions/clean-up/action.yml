@@ -32,8 +32,9 @@ runs:
     - name: Uninstall Rust
       shell: bash
       run: |
-        echo "::group::Uninstall Homebrew"
-        rustup self uninstall
+        echo "::group::Uninstall Rust"
+        rustup self uninstall -y
+        sudo -u runneradmin bash -c 'rustup self uninstall -y'
         echo "::endgroup::"
 
     - name: Remove packages
