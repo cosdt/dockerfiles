@@ -29,6 +29,13 @@ runs:
         ./uninstall.sh --force
         echo "::endgroup::"
 
+    - name: Uninstall Rust
+      shell: bash
+      run: |
+        echo "::group::Uninstall Homebrew"
+        rustup self uninstall
+        echo "::endgroup::"
+
     - name: Remove packages
       shell: bash
       run: |
@@ -49,7 +56,8 @@ runs:
             google-cloud-sdk \
             google-cloud-cli \
             libgl1-mesa-dri \
-            snapd
+            snapd \
+            cargo
         sudo apt-get autoremove --purge -y
         sudo apt-get clean
         sudo apt list --installed
@@ -60,6 +68,12 @@ runs:
       run: |
         echo "::group::Run rm -rf"
         rm -rf ~/.cache
+        rm -rf ~/.rustup
+        rm -rf ~/.cargo
+
+        sudo rm -rf /home/runneradmin/.rustup
+        sudo rm -rf /home/runneradmin/.cargo
+
         sudo rm -rf /root/.cache
         sudo rm -rf /root/.sbt
         sudo rm -rf /tmp/*
@@ -91,6 +105,14 @@ runs:
         sudo rm -rf /opt/microsoft
         sudo rm -rf /opt/google
         sudo rm -rf /opt/pipx
+
+        sudo rm -rf /etc/skel
+
+        sudo rm -rf /var/lib/snapd
+        sudo rm -rf /var/lib/mysql
+        sudo rm -rf /var/lib/gems
+        sudo rm -rf /var/lib/postgresql
+        sudo rm -rf /var/cache/apt/*
         echo "::endgroup::"
 
     - name: Display available disk space
@@ -101,6 +123,7 @@ runs:
         sudo du -h -d 1 /usr | sort -hr
         sudo du -h -d 1 /opt | sort -hr
         sudo du -h -d 2 /home | sort -hr
+        sudo du -h -d 2 ~ | sort -hr
         sudo du -h -d 1 /usr/bin | sort -hr
         sudo du -h -d 1 /usr/lib | sort -hr
         sudo du -h -d 1 /usr/local | sort -hr
@@ -110,5 +133,4 @@ runs:
         sudo du -h -d 1 /var/cache | sort -hr
         sudo du -h -d 1 /etc | sort -hr
 
-        ls -lah ~
         echo "::endgroup::"
