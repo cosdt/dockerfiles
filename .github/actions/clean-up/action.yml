@@ -34,7 +34,6 @@ runs:
       run: |
         echo "::group::Uninstall Rust"
         rustup self uninstall -y
-        sudo -u runneradmin bash -c 'rustup self uninstall -y'
         echo "::endgroup::"
 
     - name: Remove packages
