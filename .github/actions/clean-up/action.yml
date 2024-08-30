@@ -8,8 +8,6 @@ runs:
       run: |
         echo "::group::Display disk space"
         sudo df -h
-        who
-        sudo cat /etc/passwd
         echo "::endgroup::"
 
     - name: Clean cache
@@ -25,9 +23,11 @@ runs:
     - name: Uninstall Homebrew
       shell: bash
       run: |
+        echo "::group::Uninstall Homebrew"
         curl -fsSL -O https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh
         chmod +x uninstall.sh
         ./uninstall.sh --force
+        echo "::endgroup::"
 
     - name: Remove packages
       shell: bash
@@ -100,12 +100,15 @@ runs:
         sudo df -h
         sudo du -h -d 1 /usr | sort -hr
         sudo du -h -d 1 /opt | sort -hr
-        sudo du -h -d 1 /home | sort -hr
+        sudo du -h -d 2 /home | sort -hr
         sudo du -h -d 1 /usr/bin | sort -hr
         sudo du -h -d 1 /usr/lib | sort -hr
         sudo du -h -d 1 /usr/local | sort -hr
         sudo du -h -d 1 /usr/share | sort -hr
 
-        sudo du -h -d 1 /var | sort -hr
+        sudo du -h -d 1 /var/lib | sort -hr
+        sudo du -h -d 1 /var/cache | sort -hr
         sudo du -h -d 1 /etc | sort -hr
+
+        ls -lah ~
         echo "::endgroup::"
