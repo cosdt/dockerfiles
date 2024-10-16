@@ -1,0 +1,24 @@
+{
+    "crs-hangzhou" : [
+        {
+            "image_name" : "space-public",
+            "organization" : "openmind-space-public",
+            "update_time" : "xxx",
+            "download_num" : 45
+        }
+    ],
+    "quay": [
+        {
+            "image_name" : "mindspore",
+            "organization" : "ascend",
+            "update_time" : "xxx",
+            "download_num" : 100
+        },
+        {
+            "image_name" : "zzz",
+            "organization" : "xxx",
+            "update_time" : "xxx",
+            "download_num" : 100
+        }
+    ]   
+}
