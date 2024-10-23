@@ -3,7 +3,7 @@
         {
             "image_name" : "space-public",
             "organization" : "openmind-space-public",
-            "update_time" : "2024-10-23T17:34:44+08:00",
+            "update_time" : "2024-10-23",
             "download_num" : 0
         }
     ],
@@ -11,19 +11,19 @@
         {
             "image_name" : "cann",
             "organization" : "ascend",
-            "update_time" : "2024-10-23T17:34:44+08:00",
+            "update_time" : "2024-10-23",
             "download_num" : 166
         },
         {
             "image_name" : "mindspore",
             "organization" : "ascend",
-            "update_time" : "2024-10-23T17:34:44+08:00",
+            "update_time" : "2024-10-23",
             "download_num" : 13
         },
         {
             "image_name" : "pytorch",
             "organization" : "ascend",
-            "update_time" : "2024-10-23T17:34:44+08:00",
+            "update_time" : "2024-10-23",
             "download_num" : 20
         }
     ]   
