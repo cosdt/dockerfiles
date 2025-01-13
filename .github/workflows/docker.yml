@@ -65,19 +65,19 @@ jobs:
 
       - name: List cann targets
         id: list-cann-target
-        uses: docker/bake-action/subaction/list-targets@v4
+        uses: docker/bake-action/subaction/list-targets@v6
         with:
           target: cann
 
       - name: List pytorch targets
         id: list-pth-target
-        uses: docker/bake-action/subaction/list-targets@v4
+        uses: docker/bake-action/subaction/list-targets@v6
         with:
           target: pytorch
 
       - name: List mindspore targets
         id: list-ms-target
-        uses: docker/bake-action/subaction/list-targets@v4
+        uses: docker/bake-action/subaction/list-targets@v6
         with:
           target: mindspore
 
